@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class PdfService {
@@ -24,26 +24,26 @@ public class PdfService {
     final private String now = ZonedDateTime.now()
                                             .toOffsetDateTime()
                                             .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-    final private String fontPath = "src/main/resources/fonts/arial.ttf";
+    final private String FONT_PATH = "src/main/resources/fonts/arial.ttf";
+
+    final private String SELLER_FIRMA_NAME = "Viggo-Programer";
+    final private String SELLER_NAME = "Michał Rydzanicz";
+    final private String SELLER_Address = "Popowicka 68/17, 54-237 Wrocław";
+    final private String SELLER_NIP = "6574654654654";
     final private DecimalFormat df = new DecimalFormat("#.00");
 
     public ByteArrayOutputStream generateInvoicePdf(final int invoiceNumber,
-                                                    final String sellerName,
-                                                    final String sellerfirmaName,
-                                                    final String sellerAddress,
-                                                    final String sellerNip,
                                                     final String buyerName,
                                                     final String buyerAddress,
                                                     final String buyerAddressEmail,
                                                     final String buyerNip,
-                                                    final ArrayList<Product> products) throws IOException {
-
+                                                    final List<Product> products) throws IOException {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         final PdfWriter writer = new PdfWriter(out);
         final PdfDocument pdfDoc = new PdfDocument(writer);
         final Document document = new Document(pdfDoc);
 
-        final PdfFont font = PdfFontFactory.createFont(fontPath, "Identity-H", pdfDoc);
+        final PdfFont font = PdfFontFactory.createFont(FONT_PATH, "Identity-H", pdfDoc);
 
         document.setFont(font);
         document.setFontSize(9);
@@ -65,9 +65,9 @@ public class PdfService {
         document.showTextAligned(new Paragraph("________________________________________"), 50, 690, TextAlignment.LEFT);
 
         document.showTextAligned(new Paragraph("SPRZEDAWCA"), 50, 690, TextAlignment.LEFT);
-        document.showTextAligned(new Paragraph(sellerfirmaName), 50, 670, TextAlignment.LEFT);
-        document.showTextAligned(new Paragraph(sellerAddress), 50, 650, TextAlignment.LEFT);
-        document.showTextAligned(new Paragraph("NIP " + sellerNip), 50, 630, TextAlignment.LEFT);
+        document.showTextAligned(new Paragraph(SELLER_FIRMA_NAME), 50, 670, TextAlignment.LEFT);
+        document.showTextAligned(new Paragraph(SELLER_Address), 50, 650, TextAlignment.LEFT);
+        document.showTextAligned(new Paragraph("NIP " + SELLER_NIP), 50, 630, TextAlignment.LEFT);
 
         document.showTextAligned(new Paragraph("________________________________________"), 320, 700, TextAlignment.LEFT);
         document.showTextAligned(new Paragraph("________________________________________"), 320, 690, TextAlignment.LEFT);
@@ -99,13 +99,21 @@ public class PdfService {
 
         for (int i = 0; i < products.size(); i++) {
             invoiceItemsTable.addCell(String.valueOf(i + 1));
-            invoiceItemsTable.addCell(products.get(i).getName());
-            invoiceItemsTable.addCell(products.get(i).getDescription());
-            invoiceItemsTable.addCell(String.valueOf(products.get(i).getQuantity()));
-            invoiceItemsTable.addCell(df.format(products.get(i).getPrice()));
+            invoiceItemsTable.addCell(products.get(i)
+                                              .getName());
+            invoiceItemsTable.addCell(products.get(i)
+                                              .getDescription());
+            invoiceItemsTable.addCell(String.valueOf(products.get(i)
+                                                             .getQuantity()));
+            invoiceItemsTable.addCell(df.format(products.get(i)
+                                                        .getPrice()));
             invoiceItemsTable.addCell("23%");
-            invoiceItemsTable.addCell(df.format(products.get(i).getPrice() * products.get(i).getQuantity()));
-            invoiceItemsTable.addCell(df.format(products.get(i).getPriceWithVAT() * products.get(i).getQuantity()));
+            invoiceItemsTable.addCell(df.format(products.get(i)
+                                                        .getPrice() * products.get(i)
+                                                                              .getQuantity()));
+            invoiceItemsTable.addCell(df.format(products.get(i)
+                                                        .getPriceWithVAT() * products.get(i)
+                                                                                     .getQuantity()));
         }
         document.add(invoiceItemsTable.setMarginBottom(20));
 
@@ -137,7 +145,7 @@ public class PdfService {
         document.showTextAligned(new Paragraph("Osoba upoważniona do odbioru faktury\n"), 50, 50, TextAlignment.LEFT);
 
         document.showTextAligned(new Paragraph("________________________________________"), 320, 80, TextAlignment.LEFT);
-        document.showTextAligned(new Paragraph("Osoba upoważniona do wystawienia faktury\n" + sellerName), 320, 50, TextAlignment.LEFT);
+        document.showTextAligned(new Paragraph("Osoba upoważniona do wystawienia faktury\n" + SELLER_NAME), 320, 50, TextAlignment.LEFT);
 
         document.close();
 

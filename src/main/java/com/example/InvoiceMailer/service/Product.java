@@ -1,18 +1,19 @@
 package com.example.InvoiceMailer.service;
 
 public class Product {
+    private final String name;
+    private final String description;
     private final int quantity;
     private final double price;
     private final double priceWithVAT;
-    private final String name;
-    private final String description;
 
-    public Product(final int quantity, final double price, final String name, final String description) {
+
+    public Product(final String name, final String description, final int quantity, final double price) {
+        this.name = name;
+        this.description = description;
         this.quantity = quantity;
         this.price = price;
         this.priceWithVAT = price * 1.23;
-        this.name = name;
-        this.description = description;
     }
 
     public int getQuantity() {

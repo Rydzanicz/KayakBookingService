@@ -22,26 +22,18 @@ public class PdfServiceTest {
     public void testGenerateInvoicePdf() throws Exception {
         //given
         final int invoiceNumber = 12345;
-        final String sellerName = "Sprzedawca";
-        final String sellerFirmaName = "Firma XYZ";
-        final String sellerAddress = "ul. Przykładowa 1, 00-000 Warszawa";
-        final String sellerNip = "1234567890";
         final String buyerName = "Nabywca";
         final String buyerAddress = "ul. Przykładowa 2, 00-000 Warszawa";
         final String buyerEmail = "buyer@example.com";
         final String buyerNip = "0987654321";
 
         final ArrayList<Product> products = new ArrayList<>();
-        products.add(new Product(2, 100.0, "Produkt A", "Opis A"));
+        products.add(new Product("Produkt A", "Opis A", 2, 100.0));
 
         final PdfService pdfService = Mockito.spy(PdfService.class);
 
         //when
         final ByteArrayOutputStream pdfOutput = pdfService.generateInvoicePdf(invoiceNumber,
-                                                                              sellerName,
-                                                                              sellerFirmaName,
-                                                                              sellerAddress,
-                                                                              sellerNip,
                                                                               buyerName,
                                                                               buyerAddress,
                                                                               buyerEmail,
@@ -56,7 +48,7 @@ public class PdfServiceTest {
     public void testCalculateVat() {
         //given
         final ArrayList<Product> products = new ArrayList<>();
-        products.add(new Product(2, 100.0, "Produkt A", "Opis A"));
+        products.add(new Product("Produkt A", "Opis A", 2, 100.0));
 
         final PdfService pdfService = new PdfService();
         //when
@@ -76,24 +68,16 @@ public class PdfServiceTest {
     public void testCurrencyFormatting() throws Exception {
         //given
         final int invoiceNumber = 12345;
-        final String sellerName = "Sprzedawca";
-        final String sellerFirmaName = "Firma XYZ";
-        final String sellerAddress = "ul. Przykładowa 1";
-        final String sellerNip = "1234567890";
         final String buyerName = "Nabywca";
         final String buyerAddress = "ul. Przykładowa 2";
         final String buyerEmail = "buyer@example.com";
         final String buyerNip = "0987654321";
 
         final ArrayList<Product> products = new ArrayList<>();
-        products.add(new Product(2, 100.0, "Produkt A", "Opis A"));
+        products.add(new Product("Produkt A", "Opis A", 2, 100.0));
 
         final PdfService pdfService = new PdfService();
         final ByteArrayOutputStream pdfOutput = pdfService.generateInvoicePdf(invoiceNumber,
-                                                                              sellerName,
-                                                                              sellerFirmaName,
-                                                                              sellerAddress,
-                                                                              sellerNip,
                                                                               buyerName,
                                                                               buyerAddress,
                                                                               buyerEmail,
@@ -116,10 +100,6 @@ public class PdfServiceTest {
     public void testLargeNumberOfProducts() throws Exception {
         //given
         final int invoiceNumber = 12345;
-        final String sellerName = "Sprzedawca";
-        final String sellerFirmaName = "Firma XYZ";
-        final String sellerAddress = "ul. Przykładowa 1";
-        final String sellerNip = "1234567890";
         final String buyerName = "Nabywca";
         final String buyerAddress = "ul. Przykładowa 2";
         final String buyerEmail = "buyer@example.com";
@@ -127,17 +107,13 @@ public class PdfServiceTest {
 
         final ArrayList<Product> products = new ArrayList<>();
         for (int i = 0; i < 1000; i++) {
-            products.add(new Product(2, 100.0, "Produkt " + i, "Opis " + i));
+            products.add(new Product("Produkt " + i, "Opis " + i, 2, 100.0));
         }
 
         final PdfService pdfService = new PdfService();
 
         //when
         final ByteArrayOutputStream pdfOutput = pdfService.generateInvoicePdf(invoiceNumber,
-                                                                              sellerName,
-                                                                              sellerFirmaName,
-                                                                              sellerAddress,
-                                                                              sellerNip,
                                                                               buyerName,
                                                                               buyerAddress,
                                                                               buyerEmail,
@@ -152,26 +128,18 @@ public class PdfServiceTest {
     public void testVatCalculation() throws Exception {
         //given
         final int invoiceNumber = 12345;
-        final String sellerName = "Sprzedawca";
-        final String sellerFirmaName = "Firma XYZ";
-        final String sellerAddress = "ul. Przykładowa 1";
-        final String sellerNip = "1234567890";
         final String buyerName = "Nabywca";
         final String buyerAddress = "ul. Przykładowa 2";
         final String buyerEmail = "buyer@example.com";
         final String buyerNip = "0987654321";
 
         final ArrayList<Product> products = new ArrayList<>();
-        products.add(new Product(2, 100.0, "Produkt A", "Opis A"));
+        products.add(new Product("Produkt A", "Opis A", 2, 100.0));
 
         final PdfService pdfService = new PdfService();
 
         //when
         final ByteArrayOutputStream pdfOutput = pdfService.generateInvoicePdf(invoiceNumber,
-                                                                              sellerName,
-                                                                              sellerFirmaName,
-                                                                              sellerAddress,
-                                                                              sellerNip,
                                                                               buyerName,
                                                                               buyerAddress,
                                                                               buyerEmail,
@@ -191,10 +159,6 @@ public class PdfServiceTest {
     public void testEmptyProductList() {
         //given
         final int invoiceNumber = 12345;
-        final String sellerName = "Sprzedawca";
-        final String sellerFirmaName = "Firma XYZ";
-        final String sellerAddress = "ul. Przykładowa 1";
-        final String sellerNip = "1234567890";
         final String buyerName = "Nabywca";
         final String buyerAddress = "ul. Przykładowa 2";
         final String buyerEmail = "buyer@example.com";
@@ -204,16 +168,7 @@ public class PdfServiceTest {
 
         assertThrows(IllegalArgumentException.class, () -> {
             PdfService pdfService = new PdfService();
-            pdfService.generateInvoicePdf(invoiceNumber,
-                                          sellerName,
-                                          sellerFirmaName,
-                                          sellerAddress,
-                                          sellerNip,
-                                          buyerName,
-                                          buyerAddress,
-                                          buyerEmail,
-                                          buyerNip,
-                                          products);
+            pdfService.generateInvoicePdf(invoiceNumber, buyerName, buyerAddress, buyerEmail, buyerNip, products);
         });
     }
 }

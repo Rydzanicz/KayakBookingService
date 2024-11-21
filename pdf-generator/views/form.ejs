@@ -1,44 +1,69 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formularz Faktury</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formularz Faktury</title>
 </head>
 <body>
-    <h1>Formularz Faktury VAT</h1>
+  <h1>Formularz Faktury VAT</h1>
 
-<form action="http://localhost:8080/invoice" method="POST">
+  <form id="invoice-form" action="/generate-invoice" method="POST">
+    <h2>Dane nabywcy</h2>
+    <label for="buyerName">Nazwa firmy:</label><br>
+    <input type="text" id="buyerName" name="buyerName" required><br><br>
 
+    <label for="buyerAddressEmail">Adres email:</label><br>
+    <input type="email" id="buyerAddressEmail" name="buyerAddressEmail" required><br><br>
 
-        <h2>Dane nabywcy</h2>
+    <label for="buyerAddress">Adres:</label><br>
+    <input type="text" id="buyerAddress" name="buyerAddress" required><br><br>
 
-        <label for="buyerName">Nazwa firmy:</label><br>
-        <input type="text" id="buyerName" name="buyerName" required><br><br>
+    <label for="buyerNip">NIP:</label><br>
+    <input type="text" id="buyerNip" name="buyerNip"><br><br>
 
-          <label for="buyerAddressEmail">Nazwa firmy:</label><br>
-        <input type="text" id="buyerAddressEmail" name="buyerAddressEmail" required><br><br>
+    <h2>Pozycje na fakturze</h2>
+    <div id="products">
+      <div class="product">
+        <label for="name">Nazwa:</label><br>
+        <input type="text" name="products[0].name" required><br><br>
 
-        <label for="buyerAddress">Adres:</label><br>
-        <input type="text" id="buyerAddress" name="buyerAddress" required><br><br>
-
-        <label for="buyerNip">NIP:</label><br>
-        <input type="text" id="buyerNip" name="buyerNip" ><br><br>
-
-        <h2>Pozycja na fakturze</h2>
-        <label for="description">Opis towaru/usługi:</label><br>
-        <input type="text" id="description" name="description" required><br><br>
-
-        <label for="name">Opis towaru/usługi:</label><br>
-        <input type="text" id="name" name="name" required><br><br>
+        <label for="description">Opis:</label><br>
+        <input type="text" name="products[0].description" required><br><br>
 
         <label for="quantity">Ilość:</label><br>
-        <input type="number" id="quantity" name="quantity" required><br><br>
+        <input type="number" name="products[0].quantity" required><br><br>
 
-        <label for="unitPrice">Cena netto:</label><br>
-        <input type="number" id="unitPrice" name="unitPrice" required><br><br>
+        <label for="price">Cena netto:</label><br>
+        <input type="number" name="products[0].price" required><br><br>
+      </div>
+    </div>
+    <button type="button" id="add-product">Dodaj produkt</button><br><br>
+    <button type="submit">Generuj PDF</button>
+  </form>
 
-        <button type="submit">Generuj PDF</button>
-    </form>
+  <script>
+    let productCount = 1;
+
+    document.getElementById('add-product').addEventListener('click', function () {
+      const productDiv = document.createElement('div');
+      productDiv.classList.add('product');
+      productDiv.innerHTML = `
+        <label for="name">Nazwa:</label><br>
+        <input type="text" name="products[${productCount}].name" required><br><br>
+
+        <label for="description">Opis:</label><br>
+        <input type="text" name="products[${productCount}].description" required><br><br>
+
+        <label for="quantity">Ilość:</label><br>
+        <input type="number" name="products[${productCount}].quantity" required><br><br>
+
+        <label for="price">Cena netto:</label><br>
+        <input type="number" name="products[${productCount}].price" required><br><br>
+      `;
+      document.getElementById('products').appendChild(productDiv);
+      productCount++;
+    });
+  </script>
 </body>
 </html>
