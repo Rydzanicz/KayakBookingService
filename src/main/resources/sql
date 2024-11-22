@@ -1,0 +1,24 @@
+CREATE DATABASE invoiceMailer_database;
+
+CREATE USER Viggo WITH PASSWORD 'Viggo123Password';
+GRANT ALL PRIVILEGES ON DATABASE invoiceMailer_database TO Viggo;
+
+
+CREATE TABLE invoices (
+    id SERIAL PRIMARY KEY,
+    invoice_id VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    address VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL
+);
+
+INSERT INTO invoices (invoice_id, name, address, email)
+VALUES
+('FV/000000001/2024', 'Jan Kowalski','popowicka 68, 54-237 Wroclaw', 'jan.kowalski@example.com');
+
+SELECT * FROM invoices;
+
+psql -U postgres
+Viggo123Password
+
+psql -U postgres -d invoicemailer_database

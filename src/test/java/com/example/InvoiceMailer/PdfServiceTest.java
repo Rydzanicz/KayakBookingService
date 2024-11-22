@@ -21,7 +21,7 @@ public class PdfServiceTest {
     @Test
     public void testGenerateInvoicePdf() throws Exception {
         //given
-        final int invoiceNumber = 12345;
+        final String invoiceNumber = "FV/01/2024";
         final String buyerName = "Nabywca";
         final String buyerAddress = "ul. Przykładowa 2, 00-000 Warszawa";
         final String buyerEmail = "buyer@example.com";
@@ -67,7 +67,7 @@ public class PdfServiceTest {
     @Test
     public void testCurrencyFormatting() throws Exception {
         //given
-        final int invoiceNumber = 12345;
+        final String invoiceNumber = "FV/01/2024";
         final String buyerName = "Nabywca";
         final String buyerAddress = "ul. Przykładowa 2";
         final String buyerEmail = "buyer@example.com";
@@ -99,7 +99,7 @@ public class PdfServiceTest {
     @Test
     public void testLargeNumberOfProducts() throws Exception {
         //given
-        final int invoiceNumber = 12345;
+        final String invoiceNumber = "FV/01/2024";
         final String buyerName = "Nabywca";
         final String buyerAddress = "ul. Przykładowa 2";
         final String buyerEmail = "buyer@example.com";
@@ -127,7 +127,7 @@ public class PdfServiceTest {
     @Test
     public void testVatCalculation() throws Exception {
         //given
-        final int invoiceNumber = 12345;
+        final String invoiceNumber = "FV/01/2024";
         final String buyerName = "Nabywca";
         final String buyerAddress = "ul. Przykładowa 2";
         final String buyerEmail = "buyer@example.com";
@@ -158,7 +158,7 @@ public class PdfServiceTest {
     @Test
     public void testEmptyProductList() {
         //given
-        final int invoiceNumber = 12345;
+        final String invoiceNumber = "FV/01/2024";
         final String buyerName = "Nabywca";
         final String buyerAddress = "ul. Przykładowa 2";
         final String buyerEmail = "buyer@example.com";

@@ -21,18 +21,18 @@ import java.util.List;
 @Service
 public class PdfService {
 
-    final private String now = ZonedDateTime.now()
-                                            .toOffsetDateTime()
-                                            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-    final private String FONT_PATH = "src/main/resources/fonts/arial.ttf";
+    final static private String NOW = ZonedDateTime.now()
+                                                   .toOffsetDateTime()
+                                                   .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    private static final String FONT_PATH = "src/main/resources/fonts/arial.ttf";
 
-    final private String SELLER_FIRMA_NAME = "Viggo-Programer";
-    final private String SELLER_NAME = "Michał Rydzanicz";
-    final private String SELLER_Address = "Popowicka 68/17, 54-237 Wrocław";
-    final private String SELLER_NIP = "6574654654654";
-    final private DecimalFormat df = new DecimalFormat("#.00");
+    final static private String SELLER_FIRMA_NAME = "Viggo-Programer";
+    final static private String SELLER_NAME = "Michał Rydzanicz";
+    final static private String SELLER_Address = "Popowicka 68/17, 54-237 Wrocław";
+    final static private String SELLER_NIP = "6574654654654";
+    final static private DecimalFormat df = new DecimalFormat("#.00");
 
-    public ByteArrayOutputStream generateInvoicePdf(final int invoiceNumber,
+    public ByteArrayOutputStream generateInvoicePdf(final String invoiceNumber,
                                                     final String buyerName,
                                                     final String buyerAddress,
                                                     final String buyerAddressEmail,
@@ -57,8 +57,8 @@ public class PdfService {
                                  TextAlignment.LEFT);
 
         document.showTextAligned(new Paragraph("Faktura VAT nr: " + invoiceNumber), 320, 760, TextAlignment.LEFT);
-        document.showTextAligned(new Paragraph("Data wystawienia: " + now), 320, 740, TextAlignment.LEFT);
-        document.showTextAligned(new Paragraph("Data sprzedaży: " + now), 320, 720, TextAlignment.LEFT);
+        document.showTextAligned(new Paragraph("Data wystawienia: " + NOW), 320, 740, TextAlignment.LEFT);
+        document.showTextAligned(new Paragraph("Data sprzedaży: " + NOW), 320, 720, TextAlignment.LEFT);
 
         document.showTextAligned(new Paragraph("________________________________________"), 50, 700, TextAlignment.LEFT);
 
