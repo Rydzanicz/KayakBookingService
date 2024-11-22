@@ -64,6 +64,52 @@
       document.getElementById('products').appendChild(productDiv);
       productCount++;
     });
+  document.getElementById('invoice-form').addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const formData = new FormData(this);
+      const buyerName = formData.get('buyerName');
+      const buyerAddressEmail = formData.get('buyerAddressEmail');
+      const buyerAddress = formData.get('buyerAddress');
+      const buyerNip = formData.get('buyerNip');
+
+      const products = [];
+      for (let i = 0; i < productCount; i++) {
+        products.push({
+          name: formData.get(`products[${i}].name`),
+          description: formData.get(`products[${i}].description`),
+          quantity: formData.get(`products[${i}].quantity`),
+          price: formData.get(`products[${i}].price`)
+        });
+      }
+
+      const data = {
+        buyerName,
+        buyerAddressEmail,
+        buyerAddress,
+        buyerNip,
+        products
+      };
+
+        fetch('/generate-invoice', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => {
+        const contentDisposition = response.headers.get('content-disposition');
+        const fileName = contentDisposition ? contentDisposition.split('filename=')[1].replace(/"/g, '') : 'invoice.pdf';
+        return response.blob().then(blob => {
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = fileName;
+          link.click();
+        });
+      })
+      .catch(error => console.error('Błąd podczas generowania PDF:', error));
+    });
   </script>
 </body>
 </html>
