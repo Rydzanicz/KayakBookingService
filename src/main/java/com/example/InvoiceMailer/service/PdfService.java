@@ -1,5 +1,6 @@
 package com.example.InvoiceMailer.service;
 
+import com.example.InvoiceMailer.model.Product;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;

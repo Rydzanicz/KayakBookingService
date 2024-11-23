@@ -1,6 +1,6 @@
 package com.example.InvoiceMailer.RestControler;
 
-import com.example.InvoiceMailer.service.Product;
+import com.example.InvoiceMailer.model.Product;
 
 import java.util.List;
 

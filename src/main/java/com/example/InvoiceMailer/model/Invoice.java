@@ -1,6 +1,4 @@
-package com.example.InvoiceMailer.service;
-
-import com.example.InvoiceMailer.model.InvoiceEntity;
+package com.example.InvoiceMailer.model;
 
 import java.time.Year;
 import java.util.regex.Matcher;

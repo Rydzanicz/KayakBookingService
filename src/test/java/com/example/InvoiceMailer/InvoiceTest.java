@@ -1,6 +1,6 @@
 package com.example.InvoiceMailer;
 
-import com.example.InvoiceMailer.service.Invoice;
+import com.example.InvoiceMailer.model.Invoice;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

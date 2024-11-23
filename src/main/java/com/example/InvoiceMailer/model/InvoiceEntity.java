@@ -1,7 +1,6 @@
 package com.example.InvoiceMailer.model;
 
 
-import com.example.InvoiceMailer.service.Invoice;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

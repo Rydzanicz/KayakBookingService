@@ -1,6 +1,6 @@
 package com.example.InvoiceMailer.RestControler;
 
-import com.example.InvoiceMailer.service.Invoice;
+import com.example.InvoiceMailer.model.Invoice;
 import com.example.InvoiceMailer.service.InvoiceService;
 import com.example.InvoiceMailer.service.PdfService;
 import org.springframework.http.HttpHeaders;

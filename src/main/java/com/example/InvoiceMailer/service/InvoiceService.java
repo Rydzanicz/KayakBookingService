@@ -1,5 +1,6 @@
 package com.example.InvoiceMailer.service;
 
+import com.example.InvoiceMailer.model.Invoice;
 import com.example.InvoiceMailer.model.InvoiceEntity;
 import com.example.InvoiceMailer.repository.InvoiceRepository;
 import org.springframework.stereotype.Service;

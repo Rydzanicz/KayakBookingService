@@ -1,4 +1,4 @@
-package com.example.InvoiceMailer.service;
+package com.example.InvoiceMailer.model;
 
 public class Product {
     private final String name;
