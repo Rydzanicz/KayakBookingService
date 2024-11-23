@@ -20,7 +20,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
-public class PdfService {
+public class PdfGeneratorService {
 
     final static private String NOW = ZonedDateTime.now()
                                                    .toOffsetDateTime()

@@ -3,6 +3,7 @@ CREATE DATABASE invoiceMailer_database;
 CREATE USER Viggo WITH PASSWORD 'Viggo123Password';
 GRANT ALL PRIVILEGES ON DATABASE invoiceMailer_database TO Viggo;
 
+DROP TABLE IF EXISTS invoices;
 
 CREATE TABLE invoices (
     id SERIAL PRIMARY KEY,
@@ -18,7 +19,12 @@ VALUES
 
 SELECT * FROM invoices;
 
-psql -U postgres
+psql -U postgres -d invoicemailer_database
 Viggo123Password
 
 psql -U postgres -d invoicemailer_database
+
+
+http://localhost:8080/get-invoices-data?invoiceId=FV/000000001/2024
+http://localhost:8080/get-invoices-data?addressEmail=Viggo@wp.pl
+http://localhost:8080/get-all-unique-email

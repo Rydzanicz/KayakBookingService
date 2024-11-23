@@ -6,9 +6,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class InvoiceMailerApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(InvoiceMailerApplication.class, args);
+    public static void main(String[] args) {
+        SpringApplication.run(InvoiceMailerApplication.class, args);
 
-	}
+    }
 
 }

@@ -32,7 +32,8 @@ public class InvoiceTest {
         String buyerAddress = "popowicka 68";
         String buyerEmail = "jan.kowalski@example.com";
 
-        // when & then
+        //when
+        //then
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
             new Invoice(invoiceNumber, buyerName, buyerAddress, buyerEmail);
         });

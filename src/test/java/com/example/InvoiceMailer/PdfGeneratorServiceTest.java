@@ -1,6 +1,6 @@
 package com.example.InvoiceMailer;
 
-import com.example.InvoiceMailer.service.PdfService;
+import com.example.InvoiceMailer.service.PdfGeneratorService;
 import com.example.InvoiceMailer.model.Product;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-public class PdfServiceTest {
+public class PdfGeneratorServiceTest {
 
     @Test
     public void testGenerateInvoicePdf() throws Exception {
@@ -30,15 +30,15 @@ public class PdfServiceTest {
         final ArrayList<Product> products = new ArrayList<>();
         products.add(new Product("Produkt A", "Opis A", 2, 100.0));
 
-        final PdfService pdfService = Mockito.spy(PdfService.class);
+        final PdfGeneratorService pdfGeneratorService = Mockito.spy(PdfGeneratorService.class);
 
         //when
-        final ByteArrayOutputStream pdfOutput = pdfService.generateInvoicePdf(invoiceNumber,
-                                                                              buyerName,
-                                                                              buyerAddress,
-                                                                              buyerEmail,
-                                                                              buyerNip,
-                                                                              products);
+        final ByteArrayOutputStream pdfOutput = pdfGeneratorService.generateInvoicePdf(invoiceNumber,
+                                                                                       buyerName,
+                                                                                       buyerAddress,
+                                                                                       buyerEmail,
+                                                                                       buyerNip,
+                                                                                       products);
         //then
         assertNotNull(pdfOutput);
         assertTrue(pdfOutput.size() > 0);
@@ -49,8 +49,6 @@ public class PdfServiceTest {
         //given
         final ArrayList<Product> products = new ArrayList<>();
         products.add(new Product("Produkt A", "Opis A", 2, 100.0));
-
-        final PdfService pdfService = new PdfService();
         //when
 
         final double sumNet = products.stream()
@@ -76,13 +74,13 @@ public class PdfServiceTest {
         final ArrayList<Product> products = new ArrayList<>();
         products.add(new Product("Produkt A", "Opis A", 2, 100.0));
 
-        final PdfService pdfService = new PdfService();
-        final ByteArrayOutputStream pdfOutput = pdfService.generateInvoicePdf(invoiceNumber,
-                                                                              buyerName,
-                                                                              buyerAddress,
-                                                                              buyerEmail,
-                                                                              buyerNip,
-                                                                              products);
+        final PdfGeneratorService pdfGeneratorService = new PdfGeneratorService();
+        final ByteArrayOutputStream pdfOutput = pdfGeneratorService.generateInvoicePdf(invoiceNumber,
+                                                                                       buyerName,
+                                                                                       buyerAddress,
+                                                                                       buyerEmail,
+                                                                                       buyerNip,
+                                                                                       products);
 
 
         //when
@@ -110,15 +108,15 @@ public class PdfServiceTest {
             products.add(new Product("Produkt " + i, "Opis " + i, 2, 100.0));
         }
 
-        final PdfService pdfService = new PdfService();
+        final PdfGeneratorService pdfGeneratorService = new PdfGeneratorService();
 
         //when
-        final ByteArrayOutputStream pdfOutput = pdfService.generateInvoicePdf(invoiceNumber,
-                                                                              buyerName,
-                                                                              buyerAddress,
-                                                                              buyerEmail,
-                                                                              buyerNip,
-                                                                              products);
+        final ByteArrayOutputStream pdfOutput = pdfGeneratorService.generateInvoicePdf(invoiceNumber,
+                                                                                       buyerName,
+                                                                                       buyerAddress,
+                                                                                       buyerEmail,
+                                                                                       buyerNip,
+                                                                                       products);
         //then
         assertNotNull(pdfOutput);
         assertTrue(pdfOutput.size() > 0);
@@ -136,15 +134,15 @@ public class PdfServiceTest {
         final ArrayList<Product> products = new ArrayList<>();
         products.add(new Product("Produkt A", "Opis A", 2, 100.0));
 
-        final PdfService pdfService = new PdfService();
+        final PdfGeneratorService pdfGeneratorService = new PdfGeneratorService();
 
         //when
-        final ByteArrayOutputStream pdfOutput = pdfService.generateInvoicePdf(invoiceNumber,
-                                                                              buyerName,
-                                                                              buyerAddress,
-                                                                              buyerEmail,
-                                                                              buyerNip,
-                                                                              products);
+        final ByteArrayOutputStream pdfOutput = pdfGeneratorService.generateInvoicePdf(invoiceNumber,
+                                                                                       buyerName,
+                                                                                       buyerAddress,
+                                                                                       buyerEmail,
+                                                                                       buyerNip,
+                                                                                       products);
 
         //then
         assertNotNull(pdfOutput);
@@ -167,8 +165,8 @@ public class PdfServiceTest {
         final ArrayList<Product> products = new ArrayList<>();
 
         assertThrows(IllegalArgumentException.class, () -> {
-            PdfService pdfService = new PdfService();
-            pdfService.generateInvoicePdf(invoiceNumber, buyerName, buyerAddress, buyerEmail, buyerNip, products);
+            PdfGeneratorService pdfGeneratorService = new PdfGeneratorService();
+            pdfGeneratorService.generateInvoicePdf(invoiceNumber, buyerName, buyerAddress, buyerEmail, buyerNip, products);
         });
     }
 }

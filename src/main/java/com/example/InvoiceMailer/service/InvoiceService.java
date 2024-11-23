@@ -15,20 +15,38 @@ public class InvoiceService {
         this.invoiceRepository = invoiceRepository;
     }
 
-    public List<InvoiceEntity> getAllInvoices() {
-        return invoiceRepository.findAll();
+    public List<Invoice> getAllInvoices() {
+        final List<InvoiceEntity> entities = invoiceRepository.findAll();
+        return entities.stream()
+                       .map(this::mapToInvoice)
+                       .toList();
+    }
+
+    public List<String> getUniqueEmail() {
+        return invoiceRepository.findUniqueEmails();
     }
 
     public Invoice getLastInvoices() {
-        final List<InvoiceEntity> invoices = invoiceRepository.findAll();
+        return new Invoice(invoiceRepository.getLastInvoices());
+    }
 
-        if (invoices.isEmpty()) {
-            throw new IllegalStateException("Brak faktur w bazie.");
-        }
-        return new Invoice(invoiceRepository.findAll()
-                                            .stream()
-                                            .reduce((x, y) -> x)
-                                            .get());
+    public List<Invoice> getInvoicesByInvoiceId(String invoiceId) {
+        final List<InvoiceEntity> entities = invoiceRepository.findInvoicesByInvoiceId(invoiceId);
+        return entities.stream()
+                       .map(this::mapToInvoice)
+                       .toList();
+    }
+
+    public List<Invoice> getInvoicesByAddressEmail(String addressEmail) {
+        final List<InvoiceEntity> entities = invoiceRepository.findInvoicesByEmail(addressEmail);
+        return entities.stream()
+                       .map(this::mapToInvoice)
+                       .toList();
+    }
+
+    private Invoice mapToInvoice(InvoiceEntity entity) {
+        return new Invoice(Integer.parseInt(entity.getInvoiceId()
+                                                  .split("/")[1]), entity.getName(), entity.getAddress(), entity.getEmail());
     }
 
     public InvoiceEntity saveInvoice(final Invoice invoice) {
