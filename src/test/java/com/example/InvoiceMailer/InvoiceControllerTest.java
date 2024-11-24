@@ -5,6 +5,7 @@ import com.example.InvoiceMailer.RestControler.InvoiceRequest;
 import com.example.InvoiceMailer.model.Invoice;
 import com.example.InvoiceMailer.model.InvoiceEntity;
 import com.example.InvoiceMailer.model.Product;
+import com.example.InvoiceMailer.service.EmailService;
 import com.example.InvoiceMailer.service.InvoiceService;
 import com.example.InvoiceMailer.service.PdfGeneratorService;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,6 +38,9 @@ public class InvoiceControllerTest {
     @Mock
     private InvoiceService invoiceService;
 
+    @Mock
+    private EmailService emailService;
+
     private InvoiceController invoiceController;
     @Mock
     private PdfGeneratorService pdfGeneratorService;
@@ -44,7 +48,7 @@ public class InvoiceControllerTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        invoiceController = new InvoiceController(invoiceService);
+        invoiceController = new InvoiceController(invoiceService, emailService);
     }
 
     @Test

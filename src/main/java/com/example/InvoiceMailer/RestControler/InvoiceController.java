@@ -1,6 +1,7 @@
 package com.example.InvoiceMailer.RestControler;
 
 import com.example.InvoiceMailer.model.Invoice;
+import com.example.InvoiceMailer.service.EmailService;
 import com.example.InvoiceMailer.service.InvoiceService;
 import com.example.InvoiceMailer.service.PdfGeneratorService;
 import org.springframework.http.HttpHeaders;
@@ -21,15 +22,18 @@ import java.util.Map;
 @RestController
 public class InvoiceController {
     private final InvoiceService invoiceService;
+    private final EmailService emailService;
 
-    public InvoiceController(InvoiceService invoiceService) {
+    public InvoiceController(final InvoiceService invoiceService, final EmailService emailService) {
         this.invoiceService = invoiceService;
+        this.emailService = emailService;
     }
 
     @PostMapping(value = "/generate-invoice", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> generateInvoice(@RequestBody InvoiceRequest invoiceRequest) {
         if (invoiceRequest == null || invoiceRequest.getBuyerName() == null) {
-            return ResponseEntity.badRequest().body("Invalid request payload");
+            return ResponseEntity.badRequest()
+                                 .body("Invalid request payload");
         }
 
         try {
@@ -49,9 +53,10 @@ public class InvoiceController {
                                                   .toByteArray();
 
             invoiceService.saveInvoice(newInvoice);
-
-            invoiceService.getAllInvoices();
             final String fileName = "Faktura-" + newInvoice.getInvoiceId() + ".pdf";
+
+            emailService.sendEmails(invoiceRequest.getBuyerAddressEmail(), out, fileName);
+
 
             final Map<String, Object> response = new HashMap<>();
             response.put("fileName", fileName);
