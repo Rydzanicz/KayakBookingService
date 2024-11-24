@@ -50,8 +50,8 @@ public class InvoiceService {
     }
 
     public InvoiceEntity saveInvoice(final Invoice invoice) {
-        if (invoice == null) {
-            throw new IllegalArgumentException("Invoice cannot be null");
+        if (invoice == null || invoice.getInvoiceId() == null) {
+            throw new IllegalArgumentException("Invoice or Invoice ID cannot be null");
         }
 
         final InvoiceEntity invoiceEntity = new InvoiceEntity(invoice);

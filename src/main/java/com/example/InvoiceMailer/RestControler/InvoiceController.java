@@ -28,7 +28,9 @@ public class InvoiceController {
 
     @PostMapping(value = "/generate-invoice", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> generateInvoice(@RequestBody InvoiceRequest invoiceRequest) {
-
+        if (invoiceRequest == null || invoiceRequest.getBuyerName() == null) {
+            return ResponseEntity.badRequest().body("Invalid request payload");
+        }
 
         try {
             final PdfGeneratorService pdfGeneratorService = new PdfGeneratorService();

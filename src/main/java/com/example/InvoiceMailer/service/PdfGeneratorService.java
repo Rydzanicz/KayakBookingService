@@ -15,6 +15,7 @@ import com.itextpdf.layout.properties.UnitValue;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.ZonedDateTime;
@@ -42,6 +43,10 @@ public class PdfGeneratorService {
                                                     final String buyerAddressEmail,
                                                     final String buyerNip,
                                                     final List<Product> products) throws IOException {
+        if (products == null || products.isEmpty()) {
+            throw new IllegalArgumentException("Products cannot be null or empty");
+        }
+
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         final PdfWriter writer = new PdfWriter(out);
         final PdfDocument pdfDoc = new PdfDocument(writer);
@@ -67,10 +72,14 @@ public class PdfGeneratorService {
         document.showTextAligned(new Paragraph("________________________________________"), 50, 700, TextAlignment.LEFT);
         document.showTextAligned(new Paragraph("________________________________________"), 50, 690, TextAlignment.LEFT);
 
-        final Image logo = new Image(ImageDataFactory.create(LOGO_PATH));
-        logo.setFixedPosition(36, 700);
-        logo.scaleToFit(100, 80);
-        document.add(logo);
+        if (!new File(LOGO_PATH).exists()) {
+            System.err.println("Logo file not found, skipping logo placement.");
+        } else {
+            Image logo = new Image(ImageDataFactory.create(LOGO_PATH));
+            logo.setFixedPosition(36, 700);
+            logo.scaleToFit(100, 80);
+            document.add(logo);
+        }
 
         document.showTextAligned(new Paragraph("SPRZEDAWCA"), 50, 690, TextAlignment.LEFT);
         document.showTextAligned(new Paragraph(SELLER_FIRMA_NAME), 50, 670, TextAlignment.LEFT);
