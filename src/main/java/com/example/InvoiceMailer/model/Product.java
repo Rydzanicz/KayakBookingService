@@ -16,6 +16,14 @@ public class Product {
         this.priceWithVAT = price * 1.23;
     }
 
+    public Product(final OrderEntity order) {
+        this.name = order.getProductName();
+        this.description = order.getProductDescription();
+        this.quantity = order.getQuantity();
+        this.price = order.getPrice();
+        this.priceWithVAT = price * 1.23;
+    }
+
     public int getQuantity() {
         return quantity;
     }

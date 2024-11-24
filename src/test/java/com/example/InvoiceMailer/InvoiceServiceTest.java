@@ -2,6 +2,7 @@ package com.example.InvoiceMailer;
 
 import com.example.InvoiceMailer.model.Invoice;
 import com.example.InvoiceMailer.model.InvoiceEntity;
+import com.example.InvoiceMailer.model.Product;
 import com.example.InvoiceMailer.repository.InvoiceRepository;
 import com.example.InvoiceMailer.service.InvoiceService;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,9 +38,12 @@ public class InvoiceServiceTest {
     @Test
     public void testGetAllInvoices() {
         // given
+        final List<Product> products = new ArrayList<>();
+        products.add(new Product("Produkt A", "Opis A", 1, 100.0));
+
         final List<InvoiceEntity> entities = new ArrayList<>();
-        entities.add(new InvoiceEntity(new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com")));
-        entities.add(new InvoiceEntity(new Invoice(2, "Anna Nowak", "Kwiatowa 12", "anna.nowak@example.com")));
+        entities.add(new InvoiceEntity(new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, products)));
+        entities.add(new InvoiceEntity(new Invoice(2, "Anna Nowak", "Kwiatowa 12", "anna.nowak@example.com", null, products)));
         when(invoiceRepository.findAll()).thenReturn(entities);
 
         // when
@@ -77,11 +81,15 @@ public class InvoiceServiceTest {
     @Test
     public void testGetInvoicesByInvoiceId() {
         // given
+        final List<Product> products = new ArrayList<>();
+        products.add(new Product("Produkt A", "Opis A", 1, 100.0));
         final String invoiceId = "FV/000000001/2024";
         final List<InvoiceEntity> entities = List.of(new InvoiceEntity(new Invoice(1,
                                                                                    "Jan Kowalski",
                                                                                    "Popowicka 68",
-                                                                                   "jan.kowalski@example.com")));
+                                                                                   "jan.kowalski@example.com",
+                                                                                   null,
+                                                                                   products)));
         when(invoiceRepository.findInvoicesByInvoiceId(invoiceId)).thenReturn(entities);
 
         // when
@@ -99,11 +107,19 @@ public class InvoiceServiceTest {
     @Test
     public void testGetLastInvoices() {
         // given
-        InvoiceEntity lastInvoiceEntity = new InvoiceEntity(new Invoice(5, "Anna Nowak", "Kwiatowa 12", "anna.nowak@example.com"));
+        final List<Product> products = new ArrayList<>();
+        products.add(new Product("Produkt A", "Opis A", 1, 100.0));
+
+        final InvoiceEntity lastInvoiceEntity = new InvoiceEntity(new Invoice(5,
+                                                                              "Anna Nowak",
+                                                                              "Kwiatowa 12",
+                                                                              "anna.nowak@example.com",
+                                                                              null,
+                                                                              products));
         when(invoiceRepository.getLastInvoices()).thenReturn(lastInvoiceEntity);
 
         // when
-        Invoice lastInvoice = invoiceService.getLastInvoices();
+        final Invoice lastInvoice = invoiceService.getLastInvoices();
 
         // then
         assertNotNull(lastInvoice);
@@ -117,8 +133,15 @@ public class InvoiceServiceTest {
     @Test
     public void testGetInvoicesByAddressEmail() {
         // given
+        final List<Product> products = new ArrayList<>();
+        products.add(new Product("Produkt A", "Opis A", 1, 100.0));
         final String email = "jan.kowalski@example.com";
-        final List<InvoiceEntity> entities = List.of(new InvoiceEntity(new Invoice(1, "Jan Kowalski", "Popowicka 68", email)));
+        final List<InvoiceEntity> entities = List.of(new InvoiceEntity(new Invoice(1,
+                                                                                   "Jan Kowalski",
+                                                                                   "Popowicka 68",
+                                                                                   email,
+                                                                                   null,
+                                                                                   products)));
         when(invoiceRepository.findInvoicesByEmail(email)).thenReturn(entities);
 
         // when
@@ -136,12 +159,14 @@ public class InvoiceServiceTest {
     @Test
     public void testSaveInvoice() {
         // given
-        final Invoice invoice = new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com");
+        final List<Product> products = new ArrayList<>();
+        products.add(new Product("Produkt A", "Opis A", 1, 100.0));
+        final Invoice invoice = new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, products);
         final InvoiceEntity savedEntity = new InvoiceEntity(invoice);
         when(invoiceRepository.save(any(InvoiceEntity.class))).thenReturn(savedEntity);
 
         // when
-        final InvoiceEntity result = invoiceService.saveInvoice(invoice);
+        final InvoiceEntity result = invoiceService.saveInvoiceWithOrders(invoice, products);
 
         // then
         assertNotNull(result);
@@ -154,6 +179,6 @@ public class InvoiceServiceTest {
         // given
         // when
         // then
-        assertThrows(IllegalArgumentException.class, () -> invoiceService.saveInvoice(null));
+        assertThrows(IllegalArgumentException.class, () -> invoiceService.saveInvoiceWithOrders(null, null));
     }
 }

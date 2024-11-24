@@ -3,26 +3,43 @@ CREATE DATABASE invoiceMailer_database;
 CREATE USER Viggo WITH PASSWORD 'Viggo123Password';
 GRANT ALL PRIVILEGES ON DATABASE invoiceMailer_database TO Viggo;
 
+DROP TABLE IF EXISTS products;
 DROP TABLE IF EXISTS invoices;
 
 CREATE TABLE invoices (
-    id SERIAL PRIMARY KEY,
-    invoice_id VARCHAR(255) NOT NULL,
+    invoice_id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     address VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL
+    email VARCHAR(255) NOT NULL,
+    nip VARCHAR(20)
 );
 
-INSERT INTO invoices (invoice_id, name, address, email)
+CREATE TABLE products (
+    order_id SERIAL PRIMARY KEY,
+    invoice_id VARCHAR(255) NOT NULL,
+    product_name VARCHAR(255) NOT NULL,
+    product_description TEXT,
+    quantity INT NOT NULL,
+    price NUMERIC(10, 2) NOT NULL,
+    FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id)
+    ON DELETE CASCADE
+);
+
+INSERT INTO invoices (invoice_id, name, address, email,nip)
 VALUES
-('FV/000000001/2024', 'Jan Kowalski','popowicka 68, 54-237 Wroclaw', 'jan.kowalski@example.com');
+('FV/000000111/2024', 'Jan Kowalski','popowicka 68, 54-237 Wroclaw', 'jan.kowalski@example.com',2);
+
+INSERT INTO products (invoice_id, product_name, product_description, quantity, price)
+VALUES
+('FV/000000001/2024', 'AdresLuks', 'Milka', 1, 130.00),
+('FV/000000001/2024', 'AdresLuks', 'Abi', 2, 260.00);
 
 SELECT * FROM invoices;
+SELECT * FROM products;
 
 psql -U postgres -d invoicemailer_database
 Viggo123Password
 
-psql -U postgres -d invoicemailer_database
 
 
 http://localhost:8080/get-invoices-data?invoiceId=FV/000000001/2024

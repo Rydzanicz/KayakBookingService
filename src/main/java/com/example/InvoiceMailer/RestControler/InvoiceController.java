@@ -31,7 +31,7 @@ public class InvoiceController {
 
     @PostMapping(value = "/generate-invoice", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> generateInvoice(@RequestBody InvoiceRequest invoiceRequest) {
-        if (invoiceRequest == null || invoiceRequest.getBuyerName() == null) {
+        if (invoiceRequest == null || invoiceRequest.getBuyerName() == null || invoiceRequest.getProducts() == null) {
             return ResponseEntity.badRequest()
                                  .body("Invalid request payload");
         }
@@ -42,7 +42,9 @@ public class InvoiceController {
             final Invoice newInvoice = new Invoice(invoice.extractAndIncreaseInvoiceNumber(),
                                                    invoiceRequest.getBuyerName(),
                                                    invoiceRequest.getBuyerAddress(),
-                                                   invoiceRequest.getBuyerAddressEmail());
+                                                   invoiceRequest.getBuyerAddressEmail(),
+                                                   invoiceRequest.getBuyerNip(),
+                                                   invoiceRequest.getProducts());
 
             final byte[] out = pdfGeneratorService.generateInvoicePdf(newInvoice.getInvoiceId(),
                                                                       invoiceRequest.getBuyerName(),
@@ -52,7 +54,8 @@ public class InvoiceController {
                                                                       invoiceRequest.getProducts())
                                                   .toByteArray();
 
-            invoiceService.saveInvoice(newInvoice);
+
+            invoiceService.saveInvoiceWithOrders(newInvoice, invoiceRequest.getProducts());
             final String fileName = "Faktura-" + newInvoice.getInvoiceId() + ".pdf";
 
             emailService.sendEmails(invoiceRequest.getBuyerAddressEmail(), out, fileName);

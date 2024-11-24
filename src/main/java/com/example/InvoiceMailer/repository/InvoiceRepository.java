@@ -10,6 +10,8 @@ import java.util.List;
 
 @Repository
 public interface InvoiceRepository extends JpaRepository<InvoiceEntity, Long> {
+    InvoiceEntity findByInvoiceId(String invoiceId);
+
     List<InvoiceEntity> findInvoicesByInvoiceId(String invoiceId);
 
     List<InvoiceEntity> findInvoicesByEmail(String email);

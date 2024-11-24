@@ -64,11 +64,11 @@ public class InvoiceControllerTest {
         products.add(new Product("Produkt A", "Opis A", 1, 100.0));
         invoiceRequest.setProducts(products);
 
-        final Invoice mockInvoice = new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com");
+        final Invoice mockInvoice = new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, products);
         final InvoiceEntity savedEntity = new InvoiceEntity(mockInvoice);
 
         when(invoiceService.getLastInvoices()).thenReturn(mockInvoice);
-        when(invoiceService.saveInvoice(any(Invoice.class))).thenReturn(savedEntity);
+        when(invoiceService.saveInvoiceWithOrders(any(Invoice.class), anyList())).thenReturn(savedEntity);
 
         // when
         final ResponseEntity<?> response = invoiceController.generateInvoice(invoiceRequest);
@@ -76,7 +76,7 @@ public class InvoiceControllerTest {
         // then
         assertNotNull(response);
         assertEquals(200, response.getStatusCodeValue());
-        verify(invoiceService, times(1)).saveInvoice(any(Invoice.class));
+        verify(invoiceService, times(1)).saveInvoiceWithOrders(any(Invoice.class), anyList());
         verify(invoiceService, times(1)).getLastInvoices();
     }
 
@@ -88,14 +88,15 @@ public class InvoiceControllerTest {
         invoiceRequest.setBuyerAddress("Test Address");
         invoiceRequest.setBuyerAddressEmail("test@example.com");
         invoiceRequest.setBuyerNip("1234567890");
-        invoiceRequest.setProducts(List.of(new Product("Product A", "Description A", 1, 100.0)));
-
+        final List<Product> products = new ArrayList<>();
+        products.add(new Product("Produkt A", "Opis A", 1, 100.0));
+        invoiceRequest.setProducts(products);
         byte[] pdfBytes = "PDF content".getBytes();
         when(pdfGeneratorService.generateInvoicePdf(anyString(), anyString(), anyString(), anyString(), anyString(), anyList())).thenReturn(
                 new ByteArrayOutputStream() {{
                     write(pdfBytes);
                 }});
-        when(invoiceService.getLastInvoices()).thenReturn(new Invoice(1, "Last Buyer", "Last Address", "last@example.com"));
+        when(invoiceService.getLastInvoices()).thenReturn(new Invoice(1, "Last Buyer", "Last Address", "last@example.com", null, products));
 
         // when
         ResponseEntity<?> response = invoiceController.generateInvoice(invoiceRequest);
@@ -113,8 +114,10 @@ public class InvoiceControllerTest {
     @Test
     public void testGetInvoicesByInvoiceId() {
         // given
+        final List<Product> products = new ArrayList<>();
+        products.add(new Product("Produkt A", "Opis A", 1, 100.0));
         final List<Invoice> invoices = new ArrayList<>();
-        invoices.add(new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com"));
+        invoices.add(new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, products));
         when(invoiceService.getInvoicesByInvoiceId("FV/001/2024")).thenReturn(invoices);
 
         // when
@@ -132,8 +135,10 @@ public class InvoiceControllerTest {
     @Test
     public void testGetInvoicesByEmail() {
         // given
+        final List<Product> products = new ArrayList<>();
+        products.add(new Product("Produkt A", "Opis A", 1, 100.0));
         final List<Invoice> invoices = new ArrayList<>();
-        invoices.add(new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com"));
+        invoices.add(new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, products));
         when(invoiceService.getInvoicesByAddressEmail("jan.kowalski@example.com")).thenReturn(invoices);
 
         // when
@@ -151,9 +156,11 @@ public class InvoiceControllerTest {
     @Test
     public void testGetAllInvoices() {
         // given
+        final List<Product> products = new ArrayList<>();
+        products.add(new Product("Produkt A", "Opis A", 1, 100.0));
         final List<Invoice> invoices = new ArrayList<>();
-        invoices.add(new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com"));
-        invoices.add(new Invoice(2, "Anna Nowak", "Kwiatowa 12", "anna.nowak@example.com"));
+        invoices.add(new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, products));
+        invoices.add(new Invoice(2, "Anna Nowak", "Kwiatowa 12", "anna.nowak@example.com", null, products));
         when(invoiceService.getAllInvoices()).thenReturn(invoices);
 
         // when

@@ -2,6 +2,8 @@ package com.example.InvoiceMailer.service;
 
 import com.example.InvoiceMailer.model.Invoice;
 import com.example.InvoiceMailer.model.InvoiceEntity;
+import com.example.InvoiceMailer.model.OrderEntity;
+import com.example.InvoiceMailer.model.Product;
 import com.example.InvoiceMailer.repository.InvoiceRepository;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +13,7 @@ import java.util.List;
 public class InvoiceService {
     private final InvoiceRepository invoiceRepository;
 
-    public InvoiceService(InvoiceRepository invoiceRepository) {
+    public InvoiceService(final InvoiceRepository invoiceRepository) {
         this.invoiceRepository = invoiceRepository;
     }
 
@@ -44,17 +46,34 @@ public class InvoiceService {
                        .toList();
     }
 
-    private Invoice mapToInvoice(InvoiceEntity entity) {
+    private Invoice mapToInvoice(final InvoiceEntity entity) {
         return new Invoice(Integer.parseInt(entity.getInvoiceId()
-                                                  .split("/")[1]), entity.getName(), entity.getAddress(), entity.getEmail());
+                                                  .split("/")[1]),
+                           entity.getName(),
+                           entity.getAddress(),
+                           entity.getEmail(),
+                           entity.getNip(),
+                           entity.getOrders()
+                                 .stream()
+                                 .map(Product::new)
+                                 .toList());
     }
 
-    public InvoiceEntity saveInvoice(final Invoice invoice) {
-        if (invoice == null || invoice.getInvoiceId() == null) {
-            throw new IllegalArgumentException("Invoice or Invoice ID cannot be null");
+    public InvoiceEntity saveInvoiceWithOrders(final Invoice invoice, final List<Product> products) {
+        if (products == null || products.isEmpty()) {
+            throw new IllegalArgumentException("List of Product cannot be null or empty.");
         }
-
         final InvoiceEntity invoiceEntity = new InvoiceEntity(invoice);
+
+        final List<OrderEntity> ordersEntity = products.stream()
+                                                       .map(order -> {
+                                                           OrderEntity orderEntity = new OrderEntity(order);
+                                                           orderEntity.setInvoice(invoiceEntity);
+                                                           return orderEntity;
+                                                       })
+                                                       .toList();
+
+        invoiceEntity.setOrders(ordersEntity);
 
         return invoiceRepository.save(invoiceEntity);
     }

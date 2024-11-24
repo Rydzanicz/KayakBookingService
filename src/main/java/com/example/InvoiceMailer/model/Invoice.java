@@ -1,6 +1,7 @@
 package com.example.InvoiceMailer.model;
 
 import java.time.Year;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,8 +12,15 @@ public class Invoice {
     private final String buyerName;
     private final String buyerAddress;
     private final String buyerAddressEmail;
+    private final String buyerNIP;
+    private final List<Product> product;
 
-    public Invoice(final int invoiceNR, final String buyerName, final String buyerAddress, final String buyerAddressEmail) {
+    public Invoice(final int invoiceNR,
+                   final String buyerName,
+                   final String buyerAddress,
+                   final String buyerAddressEmail,
+                   final String buyerNIP,
+                   final List<Product> product) {
         if (buyerName == null || buyerName.isEmpty()) {
             throw new IllegalArgumentException("Name cannot be null or empty.");
         }
@@ -22,11 +30,16 @@ public class Invoice {
         if (buyerAddressEmail == null || buyerAddressEmail.isEmpty()) {
             throw new IllegalArgumentException("Email cannot be null or empty.");
         }
+        if (product.isEmpty()) {
+            throw new IllegalArgumentException("List of Product cannot be null or empty.");
+        }
 
         this.invoiceId = generateInvoiceId(invoiceNR);
         this.buyerName = buyerName;
         this.buyerAddress = buyerAddress;
         this.buyerAddressEmail = buyerAddressEmail;
+        this.buyerNIP = buyerNIP;
+        this.product = product;
     }
 
     public Invoice(final InvoiceEntity invoice) {
@@ -36,6 +49,11 @@ public class Invoice {
         this.buyerName = invoice.getName();
         this.buyerAddress = invoice.getAddress();
         this.buyerAddressEmail = invoice.getEmail();
+        this.buyerNIP = invoice.getNip();
+        this.product = invoice.getOrders()
+                              .stream()
+                              .map(Product::new)
+                              .toList();
     }
 
     public static String generateInvoiceId(int invoiceNumber) {
@@ -91,5 +109,13 @@ public class Invoice {
 
     public String getBuyerAddressEmail() {
         return buyerAddressEmail;
+    }
+
+    public List<Product> getProduct() {
+        return product;
+    }
+
+    public String getBuyerNIP() {
+        return buyerNIP;
     }
 }
