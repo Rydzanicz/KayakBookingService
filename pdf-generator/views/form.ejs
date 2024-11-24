@@ -23,19 +23,19 @@
     <input type="text" id="buyerNip" name="buyerNip"><br><br>
 
     <h2>Pozycje na fakturze</h2>
-    <div id="products">
+    <div id="orders">
       <div class="product">
         <label for="name">Nazwa:</label><br>
-        <input type="text" name="products[0].name" required><br><br>
+        <input type="text" name="orders[0].name" required><br><br>
 
         <label for="description">Opis:</label><br>
-        <input type="text" name="products[0].description" required><br><br>
+        <input type="text" name="orders[0].description" required><br><br>
 
         <label for="quantity">Ilość:</label><br>
-        <input type="number" name="products[0].quantity" required><br><br>
+        <input type="number" name="orders[0].quantity" required><br><br>
 
         <label for="price">Cena netto:</label><br>
-        <input type="number" name="products[0].price" required><br><br>
+        <input type="number" name="orders[0].price" required><br><br>
       </div>
     </div>
     <button type="button" id="add-product">Dodaj produkt</button><br><br>
@@ -50,18 +50,18 @@
       productDiv.classList.add('product');
       productDiv.innerHTML = `
         <label for="name">Nazwa:</label><br>
-        <input type="text" name="products[${productCount}].name" required><br><br>
+        <input type="text" name="orders[${productCount}].name" required><br><br>
 
         <label for="description">Opis:</label><br>
-        <input type="text" name="products[${productCount}].description" required><br><br>
+        <input type="text" name="orders[${productCount}].description" required><br><br>
 
         <label for="quantity">Ilość:</label><br>
-        <input type="number" name="products[${productCount}].quantity" required><br><br>
+        <input type="number" name="orders[${productCount}].quantity" required><br><br>
 
         <label for="price">Cena netto:</label><br>
-        <input type="number" name="products[${productCount}].price" required><br><br>
+        <input type="number" name="orders[${productCount}].price" required><br><br>
       `;
-      document.getElementById('products').appendChild(productDiv);
+      document.getElementById('orders').appendChild(productDiv);
       productCount++;
     });
   document.getElementById('invoice-form').addEventListener('submit', function (event) {
@@ -73,13 +73,13 @@
       const buyerAddress = formData.get('buyerAddress');
       const buyerNip = formData.get('buyerNip');
 
-      const products = [];
+      const orders = [];
       for (let i = 0; i < productCount; i++) {
-        products.push({
-          name: formData.get(`products[${i}].name`),
-          description: formData.get(`products[${i}].description`),
-          quantity: formData.get(`products[${i}].quantity`),
-          price: formData.get(`products[${i}].price`)
+        orders.push({
+          name: formData.get(`orders[${i}].name`),
+          description: formData.get(`orders[${i}].description`),
+          quantity: formData.get(`orders[${i}].quantity`),
+          price: formData.get(`orders[${i}].price`)
         });
       }
 
@@ -88,7 +88,7 @@
         buyerAddressEmail,
         buyerAddress,
         buyerNip,
-        products
+        orders
       };
 
         fetch('/generate-invoice', {

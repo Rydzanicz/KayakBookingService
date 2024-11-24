@@ -16,11 +16,11 @@ app.get('/', (req, res) => {
 
 app.post('/generate-invoice', async (req, res) => {
   try {
-    const { buyerName, buyerAddressEmail, buyerAddress, buyerNip, products } = req.body;
+    const { buyerName, buyerAddressEmail, buyerAddress, buyerNip, orders } = req.body;
 
     const response = await axios.post(
       'http://localhost:8080/generate-invoice',
-      { buyerName, buyerAddressEmail, buyerAddress, buyerNip, products },
+      { buyerName, buyerAddressEmail, buyerAddress, buyerNip, orders },
       { responseType: 'arraybuffer' }
     );
 

@@ -43,12 +43,12 @@ public class OrderEntity {
         price = 0;
     }
 
-    public OrderEntity(final Product product) {
+    public OrderEntity(final Order order) {
         invoice = null;
-        productName = product.getName();
-        productDescription = product.getDescription();
-        quantity = product.getQuantity();
-        price = product.getPrice();
+        productName = order.getName();
+        productDescription = order.getDescription();
+        quantity = order.getQuantity();
+        price = order.getPrice();
 
     }
 

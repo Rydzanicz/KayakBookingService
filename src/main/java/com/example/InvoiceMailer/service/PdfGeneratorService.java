@@ -1,6 +1,6 @@
 package com.example.InvoiceMailer.service;
 
-import com.example.InvoiceMailer.model.Product;
+import com.example.InvoiceMailer.model.Order;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
@@ -42,8 +42,8 @@ public class PdfGeneratorService {
                                                     final String buyerAddress,
                                                     final String buyerAddressEmail,
                                                     final String buyerNip,
-                                                    final List<Product> products) throws IOException {
-        if (products == null || products.isEmpty()) {
+                                                    final List<Order> orders) throws IOException {
+        if (orders == null || orders.isEmpty()) {
             throw new IllegalArgumentException("Products cannot be null or empty");
         }
 
@@ -110,39 +110,39 @@ public class PdfGeneratorService {
         invoiceItemsTable.addCell("Wartość netto");
         invoiceItemsTable.addCell("Wartość brutto");
 
-        if (products.isEmpty()) {
+        if (orders.isEmpty()) {
             throw new IllegalArgumentException("Lista produktów nie może być pusta.");
         }
 
-        for (int i = 0; i < products.size(); i++) {
+        for (int i = 0; i < orders.size(); i++) {
             invoiceItemsTable.addCell(String.valueOf(i + 1));
-            invoiceItemsTable.addCell(products.get(i)
-                                              .getName());
-            invoiceItemsTable.addCell(products.get(i)
-                                              .getDescription());
-            invoiceItemsTable.addCell(String.valueOf(products.get(i)
-                                                             .getQuantity()));
-            invoiceItemsTable.addCell(df.format(products.get(i)
-                                                        .getPrice()));
+            invoiceItemsTable.addCell(orders.get(i)
+                                            .getName());
+            invoiceItemsTable.addCell(orders.get(i)
+                                            .getDescription());
+            invoiceItemsTable.addCell(String.valueOf(orders.get(i)
+                                                           .getQuantity()));
+            invoiceItemsTable.addCell(df.format(orders.get(i)
+                                                      .getPrice()));
             invoiceItemsTable.addCell("23%");
-            invoiceItemsTable.addCell(df.format(products.get(i)
-                                                        .getPrice() * products.get(i)
-                                                                              .getQuantity()));
-            invoiceItemsTable.addCell(df.format(products.get(i)
-                                                        .getPriceWithVAT() * products.get(i)
-                                                                                     .getQuantity()));
+            invoiceItemsTable.addCell(df.format(orders.get(i)
+                                                      .getPrice() * orders.get(i)
+                                                                          .getQuantity()));
+            invoiceItemsTable.addCell(df.format(orders.get(i)
+                                                      .getPriceWithVAT() * orders.get(i)
+                                                                                 .getQuantity()));
         }
         document.add(invoiceItemsTable.setMarginBottom(20));
 
         final Table summaryTable = new Table(UnitValue.createPercentArray(2)).useAllAvailableWidth();
 
-        final double priceSum = products.stream()
-                                        .mapToDouble(x -> x.getPrice() * x.getQuantity())
-                                        .sum();
+        final double priceSum = orders.stream()
+                                      .mapToDouble(x -> x.getPrice() * x.getQuantity())
+                                      .sum();
 
-        final double priceVatSum = products.stream()
-                                           .mapToDouble(x -> x.getPriceWithVAT() * x.getQuantity())
-                                           .sum();
+        final double priceVatSum = orders.stream()
+                                         .mapToDouble(x -> x.getPriceWithVAT() * x.getQuantity())
+                                         .sum();
 
         summaryTable.addCell("Suma netto:")
                     .setTextAlignment(TextAlignment.RIGHT);

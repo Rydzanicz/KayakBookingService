@@ -13,14 +13,14 @@ public class Invoice {
     private final String buyerAddress;
     private final String buyerAddressEmail;
     private final String buyerNIP;
-    private final List<Product> product;
+    private final List<Order> order;
 
     public Invoice(final int invoiceNR,
                    final String buyerName,
                    final String buyerAddress,
                    final String buyerAddressEmail,
                    final String buyerNIP,
-                   final List<Product> product) {
+                   final List<Order> order) {
         if (buyerName == null || buyerName.isEmpty()) {
             throw new IllegalArgumentException("Name cannot be null or empty.");
         }
@@ -30,7 +30,7 @@ public class Invoice {
         if (buyerAddressEmail == null || buyerAddressEmail.isEmpty()) {
             throw new IllegalArgumentException("Email cannot be null or empty.");
         }
-        if (product.isEmpty()) {
+        if (order.isEmpty()) {
             throw new IllegalArgumentException("List of Product cannot be null or empty.");
         }
 
@@ -39,7 +39,7 @@ public class Invoice {
         this.buyerAddress = buyerAddress;
         this.buyerAddressEmail = buyerAddressEmail;
         this.buyerNIP = buyerNIP;
-        this.product = product;
+        this.order = order;
     }
 
     public Invoice(final InvoiceEntity invoice) {
@@ -50,10 +50,10 @@ public class Invoice {
         this.buyerAddress = invoice.getAddress();
         this.buyerAddressEmail = invoice.getEmail();
         this.buyerNIP = invoice.getNip();
-        this.product = invoice.getOrders()
-                              .stream()
-                              .map(Product::new)
-                              .toList();
+        this.order = invoice.getOrders()
+                            .stream()
+                            .map(Order::new)
+                            .toList();
     }
 
     public static String generateInvoiceId(int invoiceNumber) {
@@ -111,8 +111,8 @@ public class Invoice {
         return buyerAddressEmail;
     }
 
-    public List<Product> getProduct() {
-        return product;
+    public List<Order> getProduct() {
+        return order;
     }
 
     public String getBuyerNIP() {

@@ -1,6 +1,6 @@
 package com.example.InvoiceMailer.model;
 
-public class Product {
+public class Order {
     private final String name;
     private final String description;
     private final int quantity;
@@ -8,7 +8,7 @@ public class Product {
     private final double priceWithVAT;
 
 
-    public Product(final String name, final String description, final int quantity, final double price) {
+    public Order(final String name, final String description, final int quantity, final double price) {
         this.name = name;
         this.description = description;
         this.quantity = quantity;
@@ -16,7 +16,7 @@ public class Product {
         this.priceWithVAT = price * 1.23;
     }
 
-    public Product(final OrderEntity order) {
+    public Order(final OrderEntity order) {
         this.name = order.getProductName();
         this.description = order.getProductDescription();
         this.quantity = order.getQuantity();

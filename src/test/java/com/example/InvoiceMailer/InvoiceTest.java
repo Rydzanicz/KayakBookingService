@@ -1,7 +1,7 @@
 package com.example.InvoiceMailer;
 
 import com.example.InvoiceMailer.model.Invoice;
-import com.example.InvoiceMailer.model.Product;
+import com.example.InvoiceMailer.model.Order;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -17,10 +17,10 @@ public class InvoiceTest {
     @Test
     public void testShouldBePositive() {
         //given
-        final List<Product> products = new ArrayList<>();
-        products.add(new Product("Produkt A", "Opis A", 1, 100.0));
+        final List<Order> orders = new ArrayList<>();
+        orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
         //when
-        final Invoice invoice = new Invoice(1, "Jan Kowalski", "popowicka 68", "jan.kowalski@example.com", null, products);
+        final Invoice invoice = new Invoice(1, "Jan Kowalski", "popowicka 68", "jan.kowalski@example.com", null, orders);
 
         //then
         assertNotNull(invoice);
@@ -37,12 +37,12 @@ public class InvoiceTest {
         String buyerName = "Jan Kowalski";
         String buyerAddress = "popowicka 68";
         String buyerEmail = "jan.kowalski@example.com";
-        final List<Product> products = new ArrayList<>();
-        products.add(new Product("Produkt A", "Opis A", 1, 100.0));
+        final List<Order> orders = new ArrayList<>();
+        orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
         //when
         //then
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-            new Invoice(invoiceNumber, buyerName, buyerAddress, buyerEmail, null, products);
+            new Invoice(invoiceNumber, buyerName, buyerAddress, buyerEmail, null, orders);
         });
         assertEquals("Invoice ID cannot be 0 or less than 0.", thrown.getMessage());
     }
@@ -50,24 +50,24 @@ public class InvoiceTest {
     @Test
     public void testThrowWhenNameIsNull() {
         //given
-        final List<Product> products = new ArrayList<>();
-        products.add(new Product("Produkt A", "Opis A", 1, 100.0));
+        final List<Order> orders = new ArrayList<>();
+        orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
         //when
         //then
         assertThrows(IllegalArgumentException.class,
-                     () -> new Invoice(1, null, "popowicka 68", "jan.kowalski@example.com", null, products),
+                     () -> new Invoice(1, null, "popowicka 68", "jan.kowalski@example.com", null, orders),
                      "Name cannot be null or empty.");
     }
 
     @Test
     public void testThrowWhenEmailIsNull() {
         //given
-        final List<Product> products = new ArrayList<>();
-        products.add(new Product("Produkt A", "Opis A", 1, 100.0));
+        final List<Order> orders = new ArrayList<>();
+        orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
         //when
         //then
         assertThrows(IllegalArgumentException.class,
-                     () -> new Invoice(1, null, "popowicka 68", "jan.kowalski@example.com", null, products),
+                     () -> new Invoice(1, null, "popowicka 68", "jan.kowalski@example.com", null, orders),
                      "Email cannot be null or empty.");
     }
 
@@ -119,9 +119,9 @@ public class InvoiceTest {
     @Test
     public void testShouldIncreaseInvoiceNumber() {
         // given
-        final List<Product> products = new ArrayList<>();
-        products.add(new Product("Produkt A", "Opis A", 1, 100.0));
-        final Invoice invoice = new Invoice(900000000, "Jan Kowalski", "popowicka 68", "jan.kowalski@example.com", null, products);
+        final List<Order> orders = new ArrayList<>();
+        orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
+        final Invoice invoice = new Invoice(900000000, "Jan Kowalski", "popowicka 68", "jan.kowalski@example.com", null, orders);
 
         // when
         int extractedInvoiceNumber = invoice.extractAndIncreaseInvoiceNumber();

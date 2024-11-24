@@ -31,7 +31,7 @@ public class InvoiceController {
 
     @PostMapping(value = "/generate-invoice", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> generateInvoice(@RequestBody InvoiceRequest invoiceRequest) {
-        if (invoiceRequest == null || invoiceRequest.getBuyerName() == null || invoiceRequest.getProducts() == null) {
+        if (invoiceRequest == null || invoiceRequest.getBuyerName() == null || invoiceRequest.getOrders() == null) {
             return ResponseEntity.badRequest()
                                  .body("Invalid request payload");
         }
@@ -44,18 +44,18 @@ public class InvoiceController {
                                                    invoiceRequest.getBuyerAddress(),
                                                    invoiceRequest.getBuyerAddressEmail(),
                                                    invoiceRequest.getBuyerNip(),
-                                                   invoiceRequest.getProducts());
+                                                   invoiceRequest.getOrders());
 
             final byte[] out = pdfGeneratorService.generateInvoicePdf(newInvoice.getInvoiceId(),
                                                                       invoiceRequest.getBuyerName(),
                                                                       invoiceRequest.getBuyerAddress(),
                                                                       invoiceRequest.getBuyerAddressEmail(),
                                                                       invoiceRequest.getBuyerNip(),
-                                                                      invoiceRequest.getProducts())
+                                                                      invoiceRequest.getOrders())
                                                   .toByteArray();
 
 
-            invoiceService.saveInvoiceWithOrders(newInvoice, invoiceRequest.getProducts());
+            invoiceService.saveInvoiceWithOrders(newInvoice, invoiceRequest.getOrders());
             final String fileName = "Faktura-" + newInvoice.getInvoiceId() + ".pdf";
 
             emailService.sendEmails(invoiceRequest.getBuyerAddressEmail(), out, fileName);

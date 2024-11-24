@@ -3,7 +3,7 @@ package com.example.InvoiceMailer.service;
 import com.example.InvoiceMailer.model.Invoice;
 import com.example.InvoiceMailer.model.InvoiceEntity;
 import com.example.InvoiceMailer.model.OrderEntity;
-import com.example.InvoiceMailer.model.Product;
+import com.example.InvoiceMailer.model.Order;
 import com.example.InvoiceMailer.repository.InvoiceRepository;
 import org.springframework.stereotype.Service;
 
@@ -55,23 +55,23 @@ public class InvoiceService {
                            entity.getNip(),
                            entity.getOrders()
                                  .stream()
-                                 .map(Product::new)
+                                 .map(Order::new)
                                  .toList());
     }
 
-    public InvoiceEntity saveInvoiceWithOrders(final Invoice invoice, final List<Product> products) {
-        if (products == null || products.isEmpty()) {
+    public InvoiceEntity saveInvoiceWithOrders(final Invoice invoice, final List<Order> orders) {
+        if (orders == null || orders.isEmpty()) {
             throw new IllegalArgumentException("List of Product cannot be null or empty.");
         }
         final InvoiceEntity invoiceEntity = new InvoiceEntity(invoice);
 
-        final List<OrderEntity> ordersEntity = products.stream()
-                                                       .map(order -> {
+        final List<OrderEntity> ordersEntity = orders.stream()
+                                                     .map(order -> {
                                                            OrderEntity orderEntity = new OrderEntity(order);
                                                            orderEntity.setInvoice(invoiceEntity);
                                                            return orderEntity;
                                                        })
-                                                       .toList();
+                                                     .toList();
 
         invoiceEntity.setOrders(ordersEntity);
 

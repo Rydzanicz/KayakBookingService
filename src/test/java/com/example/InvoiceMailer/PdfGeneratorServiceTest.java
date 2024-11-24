@@ -1,7 +1,7 @@
 package com.example.InvoiceMailer;
 
+import com.example.InvoiceMailer.model.Order;
 import com.example.InvoiceMailer.service.PdfGeneratorService;
-import com.example.InvoiceMailer.model.Product;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,8 +27,8 @@ public class PdfGeneratorServiceTest {
         final String buyerEmail = "buyer@example.com";
         final String buyerNip = "0987654321";
 
-        final ArrayList<Product> products = new ArrayList<>();
-        products.add(new Product("Produkt A", "Opis A", 2, 100.0));
+        final ArrayList<Order> orders = new ArrayList<>();
+        orders.add(new Order("Produkt A", "Opis A", 2, 100.0));
 
         final PdfGeneratorService pdfGeneratorService = Mockito.spy(PdfGeneratorService.class);
 
@@ -38,7 +38,7 @@ public class PdfGeneratorServiceTest {
                                                                                        buyerAddress,
                                                                                        buyerEmail,
                                                                                        buyerNip,
-                                                                                       products);
+                                                                                       orders);
         //then
         assertNotNull(pdfOutput);
         assertTrue(pdfOutput.size() > 0);
@@ -47,16 +47,16 @@ public class PdfGeneratorServiceTest {
     @Test
     public void testCalculateVat() {
         //given
-        final ArrayList<Product> products = new ArrayList<>();
-        products.add(new Product("Produkt A", "Opis A", 2, 100.0));
+        final ArrayList<Order> orders = new ArrayList<>();
+        orders.add(new Order("Produkt A", "Opis A", 2, 100.0));
         //when
 
-        final double sumNet = products.stream()
-                                      .mapToDouble(p -> p.getPrice() * p.getQuantity())
-                                      .sum();
-        final double sumVat = products.stream()
-                                      .mapToDouble(p -> (p.getVAT()) * p.getQuantity())
-                                      .sum();
+        final double sumNet = orders.stream()
+                                    .mapToDouble(p -> p.getPrice() * p.getQuantity())
+                                    .sum();
+        final double sumVat = orders.stream()
+                                    .mapToDouble(p -> (p.getVAT()) * p.getQuantity())
+                                    .sum();
         //then
         assertEquals(200.0, sumNet);
         assertEquals(46.0, sumVat);
@@ -71,8 +71,8 @@ public class PdfGeneratorServiceTest {
         final String buyerEmail = "buyer@example.com";
         final String buyerNip = "0987654321";
 
-        final ArrayList<Product> products = new ArrayList<>();
-        products.add(new Product("Produkt A", "Opis A", 2, 100.0));
+        final ArrayList<Order> orders = new ArrayList<>();
+        orders.add(new Order("Produkt A", "Opis A", 2, 100.0));
 
         final PdfGeneratorService pdfGeneratorService = new PdfGeneratorService();
         final ByteArrayOutputStream pdfOutput = pdfGeneratorService.generateInvoicePdf(invoiceNumber,
@@ -80,13 +80,13 @@ public class PdfGeneratorServiceTest {
                                                                                        buyerAddress,
                                                                                        buyerEmail,
                                                                                        buyerNip,
-                                                                                       products);
+                                                                                       orders);
 
 
         //when
-        final double sumNet = products.stream()
-                                      .mapToDouble(p -> p.getPrice() * p.getQuantity())
-                                      .sum();
+        final double sumNet = orders.stream()
+                                    .mapToDouble(p -> p.getPrice() * p.getQuantity())
+                                    .sum();
 
         //then
         assertNotNull(pdfOutput);
@@ -103,9 +103,9 @@ public class PdfGeneratorServiceTest {
         final String buyerEmail = "buyer@example.com";
         final String buyerNip = "0987654321";
 
-        final ArrayList<Product> products = new ArrayList<>();
+        final ArrayList<Order> orders = new ArrayList<>();
         for (int i = 0; i < 1000; i++) {
-            products.add(new Product("Produkt " + i, "Opis " + i, 2, 100.0));
+            orders.add(new Order("Produkt " + i, "Opis " + i, 2, 100.0));
         }
 
         final PdfGeneratorService pdfGeneratorService = new PdfGeneratorService();
@@ -116,7 +116,7 @@ public class PdfGeneratorServiceTest {
                                                                                        buyerAddress,
                                                                                        buyerEmail,
                                                                                        buyerNip,
-                                                                                       products);
+                                                                                       orders);
         //then
         assertNotNull(pdfOutput);
         assertTrue(pdfOutput.size() > 0);
@@ -131,8 +131,8 @@ public class PdfGeneratorServiceTest {
         final String buyerEmail = "buyer@example.com";
         final String buyerNip = "0987654321";
 
-        final ArrayList<Product> products = new ArrayList<>();
-        products.add(new Product("Produkt A", "Opis A", 2, 100.0));
+        final ArrayList<Order> orders = new ArrayList<>();
+        orders.add(new Order("Produkt A", "Opis A", 2, 100.0));
 
         final PdfGeneratorService pdfGeneratorService = new PdfGeneratorService();
 
@@ -142,15 +142,15 @@ public class PdfGeneratorServiceTest {
                                                                                        buyerAddress,
                                                                                        buyerEmail,
                                                                                        buyerNip,
-                                                                                       products);
+                                                                                       orders);
 
         //then
         assertNotNull(pdfOutput);
         assertTrue(pdfOutput.size() > 0);
         assertEquals(46.0,
-                     products.stream()
-                             .mapToDouble(p -> (p.getPriceWithVAT() - p.getPrice()) * p.getQuantity())
-                             .sum());
+                     orders.stream()
+                           .mapToDouble(p -> (p.getPriceWithVAT() - p.getPrice()) * p.getQuantity())
+                           .sum());
     }
 
     @Test
@@ -162,11 +162,11 @@ public class PdfGeneratorServiceTest {
         final String buyerEmail = "buyer@example.com";
         final String buyerNip = "0987654321";
 
-        final ArrayList<Product> products = new ArrayList<>();
+        final ArrayList<Order> orders = new ArrayList<>();
 
         assertThrows(IllegalArgumentException.class, () -> {
             PdfGeneratorService pdfGeneratorService = new PdfGeneratorService();
-            pdfGeneratorService.generateInvoicePdf(invoiceNumber, buyerName, buyerAddress, buyerEmail, buyerNip, products);
+            pdfGeneratorService.generateInvoicePdf(invoiceNumber, buyerName, buyerAddress, buyerEmail, buyerNip, orders);
         });
     }
 }

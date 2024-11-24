@@ -1,6 +1,6 @@
 package com.example.InvoiceMailer.RestControler;
 
-import com.example.InvoiceMailer.model.Product;
+import com.example.InvoiceMailer.model.Order;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ public class InvoiceRequest {
     private String buyerAddressEmail;
     private String buyerAddress;
     private String buyerNip;
-    private List<Product> products;
+    private List<Order> orders;
 
     public void setBuyerName(String buyerName) {
         this.buyerName = buyerName;
@@ -27,8 +27,8 @@ public class InvoiceRequest {
         this.buyerNip = buyerNip;
     }
 
-    public void setProducts(List<Product> products) {
-        this.products = products;
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 
     public String getBuyerName() {
@@ -47,8 +47,8 @@ public class InvoiceRequest {
         return buyerNip;
     }
 
-    public List<Product> getProducts() {
-        return products;
+    public List<Order> getOrders() {
+        return orders;
     }
 
 }
