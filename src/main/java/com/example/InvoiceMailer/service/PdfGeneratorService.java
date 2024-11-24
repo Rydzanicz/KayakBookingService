@@ -1,11 +1,13 @@
 package com.example.InvoiceMailer.service;
 
 import com.example.InvoiceMailer.model.Product;
+import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.TextAlignment;
@@ -26,6 +28,7 @@ public class PdfGeneratorService {
                                                    .toOffsetDateTime()
                                                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     private static final String FONT_PATH = "src/main/resources/fonts/arial.ttf";
+    private static final String LOGO_PATH = "src/main/resources/images/Logo.png";
 
     final static private String SELLER_FIRMA_NAME = "Viggo-Programer";
     final static private String SELLER_NAME = "Michał Rydzanicz";
@@ -62,8 +65,12 @@ public class PdfGeneratorService {
         document.showTextAligned(new Paragraph("Data sprzedaży: " + NOW), 320, 720, TextAlignment.LEFT);
 
         document.showTextAligned(new Paragraph("________________________________________"), 50, 700, TextAlignment.LEFT);
-
         document.showTextAligned(new Paragraph("________________________________________"), 50, 690, TextAlignment.LEFT);
+
+        final Image logo = new Image(ImageDataFactory.create(LOGO_PATH));
+        logo.setFixedPosition(36, 700);
+        logo.scaleToFit(100, 80);
+        document.add(logo);
 
         document.showTextAligned(new Paragraph("SPRZEDAWCA"), 50, 690, TextAlignment.LEFT);
         document.showTextAligned(new Paragraph(SELLER_FIRMA_NAME), 50, 670, TextAlignment.LEFT);
