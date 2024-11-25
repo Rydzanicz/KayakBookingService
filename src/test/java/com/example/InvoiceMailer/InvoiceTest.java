@@ -25,7 +25,7 @@ public class InvoiceTest {
         final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
 
         //when
-        final Invoice invoice = new Invoice(1, "Jan Kowalski", "popowicka 68", "jan.kowalski@example.com", null, ordersDate, orders);
+        final Invoice invoice = new Invoice(1, "Jan Kowalski", "popowicka 68", "jan.kowalski@example.com", null, ordersDate, false, orders);
 
         //then
         assertNotNull(invoice);
@@ -49,7 +49,7 @@ public class InvoiceTest {
         //when
         //then
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-            new Invoice(invoiceNumber, buyerName, buyerAddress, buyerEmail, null, ordersDate, orders);
+            new Invoice(invoiceNumber, buyerName, buyerAddress, buyerEmail, null, ordersDate, false, orders);
         });
         assertEquals("Invoice ID cannot be 0 or less than 0.", thrown.getMessage());
     }
@@ -67,7 +67,7 @@ public class InvoiceTest {
         //when
         //then
         assertThrows(IllegalArgumentException.class,
-                     () -> new Invoice(invoiceNumber, null, buyerAddress, buyerEmail, null, ordersDate, orders),
+                     () -> new Invoice(invoiceNumber, null, buyerAddress, buyerEmail, null, ordersDate, false, orders),
                      "Name cannot be null or empty.");
     }
 
@@ -84,7 +84,7 @@ public class InvoiceTest {
         //when
         //then
         assertThrows(IllegalArgumentException.class,
-                     () -> new Invoice(invoiceNumber, buyerName, null, buyerEmail, null, ordersDate, orders),
+                     () -> new Invoice(invoiceNumber, buyerName, null, buyerEmail, null, ordersDate, false, orders),
                      "Name cannot be null or empty.");
     }
 
@@ -101,7 +101,7 @@ public class InvoiceTest {
         //when
         //then
         assertThrows(IllegalArgumentException.class,
-                     () -> new Invoice(invoiceNumber, buyerName, buyerAddress, null, null, ordersDate, orders),
+                     () -> new Invoice(invoiceNumber, buyerName, buyerAddress, null, null, ordersDate, false, orders),
                      "Email cannot be null or empty.");
     }
 
@@ -118,7 +118,7 @@ public class InvoiceTest {
         //when
         //then
         assertThrows(IllegalArgumentException.class,
-                     () -> new Invoice(invoiceNumber, buyerName, buyerAddress, buyerEmail, null, "", orders),
+                     () -> new Invoice(invoiceNumber, buyerName, buyerAddress, buyerEmail, null, "", false, orders),
                      "List of Order cannot be null or empty.");
     }
 
@@ -135,7 +135,7 @@ public class InvoiceTest {
         //when
         //then
         assertThrows(IllegalArgumentException.class,
-                     () -> new Invoice(invoiceNumber, buyerName, buyerAddress, buyerEmail, null, ordersDate, orders),
+                     () -> new Invoice(invoiceNumber, buyerName, buyerAddress, buyerEmail, null, ordersDate, false, orders),
                      "List of Order cannot be null or empty.");
     }
 
@@ -187,6 +187,7 @@ public class InvoiceTest {
                                             "jan.kowalski@example.com",
                                             null,
                                             ordersDate,
+                                            false,
                                             orders);
 
         // when

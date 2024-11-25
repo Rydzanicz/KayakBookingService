@@ -33,7 +33,7 @@ public class PdfGeneratorServiceTest {
         final ArrayList<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 2, 100.0));
 
-        final Invoice invoice = new Invoice(1, buyerName, buyerAddress, buyerEmail, buyerNip, ordersDate, orders);
+        final Invoice invoice = new Invoice(1, buyerName, buyerAddress, buyerEmail, buyerNip, ordersDate, false, orders);
         final PdfGeneratorService pdfGeneratorService = Mockito.spy(PdfGeneratorService.class);
 
         //when
@@ -72,7 +72,7 @@ public class PdfGeneratorServiceTest {
         final ArrayList<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 2, 100.0));
 
-        final Invoice invoice = new Invoice(1, buyerName, buyerAddress, buyerEmail, buyerNip, ordersDate, orders);
+        final Invoice invoice = new Invoice(1, buyerName, buyerAddress, buyerEmail, buyerNip, ordersDate, false, orders);
 
         final PdfGeneratorService pdfGeneratorService = new PdfGeneratorService();
         final ByteArrayOutputStream pdfOutput = pdfGeneratorService.generateInvoicePdf(invoice);
@@ -102,7 +102,7 @@ public class PdfGeneratorServiceTest {
             orders.add(new Order("Produkt " + i, "Opis " + i, 2, 100.0));
         }
 
-        final Invoice invoice = new Invoice(1, buyerName, buyerAddress, buyerEmail, buyerNip, ordersDate, orders);
+        final Invoice invoice = new Invoice(1, buyerName, buyerAddress, buyerEmail, buyerNip, ordersDate, false, orders);
 
         final PdfGeneratorService pdfGeneratorService = new PdfGeneratorService();
 
@@ -124,7 +124,7 @@ public class PdfGeneratorServiceTest {
         final ArrayList<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 2, 100.0));
 
-        final Invoice invoice = new Invoice(1, buyerName, buyerAddress, buyerEmail, buyerNip, ordersDate, orders);
+        final Invoice invoice = new Invoice(1, buyerName, buyerAddress, buyerEmail, buyerNip, ordersDate, false, orders);
 
         final PdfGeneratorService pdfGeneratorService = new PdfGeneratorService();
 
@@ -151,7 +151,7 @@ public class PdfGeneratorServiceTest {
         final ArrayList<Order> orders = new ArrayList<>();
 
         assertThrows(IllegalArgumentException.class,
-                     () ->  new Invoice(1, buyerName, buyerAddress, buyerEmail, buyerNip, ordersDate, orders),
+                     () -> new Invoice(1, buyerName, buyerAddress, buyerEmail, buyerNip, ordersDate, false, orders),
                      "List of Order cannot be null or empty.");
     }
 }

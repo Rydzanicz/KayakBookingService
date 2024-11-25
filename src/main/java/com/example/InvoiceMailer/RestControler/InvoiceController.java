@@ -46,6 +46,7 @@ public class InvoiceController {
                                                    invoiceRequest.getBuyerAddressEmail(),
                                                    invoiceRequest.getBuyerNip(),
                                                    LocalDateTime.now(),
+                                                   false,
                                                    invoiceRequest.getOrders());
 
             final byte[] out = pdfGeneratorService.generateInvoicePdf(newInvoice)
@@ -56,7 +57,7 @@ public class InvoiceController {
             final String fileName = "Faktura-" + newInvoice.getInvoiceId() + ".pdf";
 
             emailService.sendEmails(invoiceRequest.getBuyerAddressEmail(), out, fileName);
-
+            invoiceService.updateEmailSendStatus(newInvoice.getInvoiceId(), true);
 
             final Map<String, Object> response = new HashMap<>();
             response.put("fileName", fileName);

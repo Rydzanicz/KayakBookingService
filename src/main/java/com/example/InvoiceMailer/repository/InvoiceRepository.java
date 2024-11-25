@@ -2,7 +2,9 @@ package com.example.InvoiceMailer.repository;
 
 
 import com.example.InvoiceMailer.model.InvoiceEntity;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -21,4 +23,9 @@ public interface InvoiceRepository extends JpaRepository<InvoiceEntity, Long> {
 
     @Query(value = "SELECT DISTINCT email FROM invoices", nativeQuery = true)
     List<String> findUniqueEmails();
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE InvoiceEntity i SET i.isEmailSend = :status WHERE i.invoiceId = :invoiceId")
+    void updateEmailSendStatus(String invoiceId, boolean status);
 }

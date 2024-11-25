@@ -12,7 +12,8 @@ CREATE TABLE invoices (
     address VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     nip VARCHAR(20),
-    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_email_send BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE orders (
@@ -25,8 +26,8 @@ CREATE TABLE orders (
     CONSTRAINT orders_invoice_id_fkey FOREIGN KEY (invoice_id) REFERENCES invoices (invoice_id)
 );
 
-INSERT INTO invoices (invoice_id, name, address, email, nip, order_date)
-VALUES ('FV/000000001/2024', 'Jan Kowalski', 'ul. Testowa 10, 00-001 Warszawa', 'jan.kowalski@example.com', '1234567890', '2024-01-01 14:30:00');
+INSERT INTO invoices (invoice_id, name, address, email, nip, order_date, is_email_send)
+VALUES ('FV/000000001/2024', 'Jan Kowalski', 'ul. Testowa 10, 00-001 Warszawa', 'jan.kowalski@example.com', '1234567890', '2024-01-01 14:30:00', false);
 
 INSERT INTO orders (invoice_id, product_name, product_description, quantity, price)
 VALUES

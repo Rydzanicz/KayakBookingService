@@ -16,6 +16,7 @@ public class Invoice {
     private final String buyerAddressEmail;
     private final String buyerNIP;
     private final LocalDateTime orderDate;
+    private final boolean isEmailSend;
     private final List<Order> order;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -26,6 +27,7 @@ public class Invoice {
                    final String buyerAddressEmail,
                    final String buyerNIP,
                    final LocalDateTime orderDate,
+                   final boolean isEmailSend,
                    final List<Order> order) {
         if (buyerName == null || buyerName.isEmpty()) {
             throw new IllegalArgumentException("Name cannot be null or empty.");
@@ -49,6 +51,7 @@ public class Invoice {
         this.buyerAddressEmail = buyerAddressEmail;
         this.buyerNIP = buyerNIP;
         this.orderDate = orderDate;
+        this.isEmailSend = isEmailSend;
         this.order = order;
     }
 
@@ -58,6 +61,7 @@ public class Invoice {
                    final String buyerAddressEmail,
                    final String buyerNIP,
                    final String orderDate,
+                   final boolean isEmailSend,
                    final List<Order> order) {
         if (buyerName == null || buyerName.isEmpty()) {
             throw new IllegalArgumentException("Name cannot be null or empty.");
@@ -81,6 +85,7 @@ public class Invoice {
         this.buyerAddressEmail = buyerAddressEmail;
         this.buyerNIP = buyerNIP;
         this.orderDate = LocalDateTime.parse(orderDate, formatter);
+        this.isEmailSend = isEmailSend;
         this.order = order;
     }
 
@@ -93,6 +98,7 @@ public class Invoice {
         this.buyerAddressEmail = invoice.getEmail();
         this.buyerNIP = invoice.getNip();
         this.orderDate = LocalDateTime.parse(invoice.getOrderDate(), formatter);
+        this.isEmailSend = invoice.isEmailSend();
         this.order = invoice.getOrders()
                             .stream()
                             .map(Order::new)
@@ -110,7 +116,7 @@ public class Invoice {
 
     public static boolean validateInvoiceId(String invoiceId) {
         if (invoiceId == null || invoiceId.isEmpty()) {
-            throw new IllegalArgumentException("InvoiceEntity cannot be null.");
+            throw new IllegalArgumentException("invoiceId cannot be null.");
         }
 
         if (!Pattern.matches(INVOICE_ID_PATTERN, invoiceId)) {
@@ -164,5 +170,13 @@ public class Invoice {
 
     public LocalDateTime getOrderDate() {
         return orderDate;
+    }
+
+    public boolean isEmailSend() {
+        return isEmailSend;
+    }
+
+    public DateTimeFormatter getFormatter() {
+        return formatter;
     }
 }

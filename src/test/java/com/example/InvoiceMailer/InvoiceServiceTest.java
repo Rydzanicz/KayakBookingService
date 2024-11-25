@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -51,9 +52,17 @@ public class InvoiceServiceTest {
                                                    "jan.kowalski@example.com",
                                                    null,
                                                    ordersDate,
+                                                   false,
                                                    orders)));
 
-        entities.add(new InvoiceEntity(new Invoice(2, "Anna Nowak", "Kwiatowa 12", "anna.nowak@example.com", null, ordersDate, orders)));
+        entities.add(new InvoiceEntity(new Invoice(2,
+                                                   "Anna Nowak",
+                                                   "Kwiatowa 12",
+                                                   "anna.nowak@example.com",
+                                                   null,
+                                                   ordersDate,
+                                                   false,
+                                                   orders)));
         when(invoiceRepository.findAll()).thenReturn(entities);
 
         // when
@@ -102,6 +111,7 @@ public class InvoiceServiceTest {
                                                                                    "jan.kowalski@example.com",
                                                                                    null,
                                                                                    ordersDate,
+                                                                                   false,
                                                                                    orders)));
         when(invoiceRepository.findInvoicesByInvoiceId(invoiceId)).thenReturn(entities);
 
@@ -130,6 +140,7 @@ public class InvoiceServiceTest {
                                                                               "anna.nowak@example.com",
                                                                               null,
                                                                               ordersDate,
+                                                                              false,
                                                                               orders));
         when(invoiceRepository.getLastInvoices()).thenReturn(lastInvoiceEntity);
 
@@ -159,6 +170,7 @@ public class InvoiceServiceTest {
                                                                                    email,
                                                                                    null,
                                                                                    ordersDate,
+                                                                                   false,
                                                                                    orders)));
         when(invoiceRepository.findInvoicesByEmail(email)).thenReturn(entities);
 
@@ -181,7 +193,7 @@ public class InvoiceServiceTest {
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
         final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
 
-        final Invoice invoice = new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, ordersDate, orders);
+        final Invoice invoice = new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, ordersDate, false, orders);
         final InvoiceEntity savedEntity = new InvoiceEntity(invoice);
         when(invoiceRepository.save(any(InvoiceEntity.class))).thenReturn(savedEntity);
 
@@ -200,5 +212,48 @@ public class InvoiceServiceTest {
         // when
         // then
         assertThrows(IllegalArgumentException.class, () -> invoiceService.saveInvoiceWithOrders(null, null));
+    }
+
+    @Test
+    void testUpdateEmailSendStatusToTrue() {
+        // Given
+        final String invoiceId = "FV/001/2024";
+        final boolean status = true;
+
+        // When
+        invoiceService.updateEmailSendStatus(invoiceId, status);
+
+        // Then
+        verify(invoiceRepository, times(1)).updateEmailSendStatus(invoiceId, status);
+    }
+
+    @Test
+    void testUpdateEmailSendStatusToFalse() {
+        // Given
+        final String invoiceId = "FV/002/2024";
+        final boolean status = false;
+
+        // When
+        invoiceService.updateEmailSendStatus(invoiceId, status);
+
+        // Then
+        verify(invoiceRepository, times(1)).updateEmailSendStatus(invoiceId, status);
+    }
+
+    @Test
+    void testUpdateEmailSendStatusForNonExistingInvoiceId() {
+        // Given
+        final String invoiceId = "FV/999/2024"; // Non-existing invoice ID
+        final boolean status = true;
+
+        doThrow(new IllegalArgumentException("Invoice not found")).when(invoiceRepository)
+                                                                  .updateEmailSendStatus(invoiceId, status);
+
+        // When / Then
+        assertThrows(IllegalArgumentException.class, () -> {
+            invoiceService.updateEmailSendStatus(invoiceId, status);
+        });
+
+        verify(invoiceRepository, times(1)).updateEmailSendStatus(invoiceId, status);
     }
 }

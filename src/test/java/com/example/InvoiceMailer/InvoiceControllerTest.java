@@ -62,12 +62,19 @@ public class InvoiceControllerTest {
         invoiceRequest.setBuyerAddressEmail("jan.kowalski@example.com");
         invoiceRequest.setBuyerNip("1234567890");
 
-        final LocalDateTime localDateTime = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
+        final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
         final List<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
         invoiceRequest.setOrders(orders);
 
-        final Invoice mockInvoice = new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, localDateTime, orders);
+        final Invoice mockInvoice = new Invoice(1,
+                                                "Jan Kowalski",
+                                                "Popowicka 68",
+                                                "jan.kowalski@example.com",
+                                                null,
+                                                ordersDate,
+                                                false,
+                                                orders);
         final InvoiceEntity savedEntity = new InvoiceEntity(mockInvoice);
 
         when(invoiceService.getLastInvoices()).thenReturn(mockInvoice);
@@ -91,7 +98,7 @@ public class InvoiceControllerTest {
         invoiceRequest.setBuyerAddress("Test Address");
         invoiceRequest.setBuyerAddressEmail("test@example.com");
         invoiceRequest.setBuyerNip("1234567890");
-        final LocalDateTime localDateTime = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
+        final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
 
         final List<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
@@ -105,7 +112,8 @@ public class InvoiceControllerTest {
                                                                       "Last Address",
                                                                       "last@example.com",
                                                                       null,
-                                                                      localDateTime,
+                                                                      ordersDate,
+                                                                      false,
                                                                       orders));
 
         // when
@@ -124,11 +132,11 @@ public class InvoiceControllerTest {
     @Test
     public void testGetInvoicesByInvoiceId() {
         // given
-        final LocalDateTime localDateTime = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
+        final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
         final List<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
         final List<Invoice> invoices = new ArrayList<>();
-        invoices.add(new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, localDateTime, orders));
+        invoices.add(new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, ordersDate, false, orders));
         when(invoiceService.getInvoicesByInvoiceId("FV/001/2024")).thenReturn(invoices);
 
         // when
@@ -146,11 +154,11 @@ public class InvoiceControllerTest {
     @Test
     public void testGetInvoicesByEmail() {
         // given
-        final LocalDateTime localDateTime = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
+        final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
         final List<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
         final List<Invoice> invoices = new ArrayList<>();
-        invoices.add(new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, localDateTime, orders));
+        invoices.add(new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, ordersDate, false, orders));
         when(invoiceService.getInvoicesByAddressEmail("jan.kowalski@example.com")).thenReturn(invoices);
 
         // when
@@ -168,13 +176,13 @@ public class InvoiceControllerTest {
     @Test
     public void testGetAllInvoices() {
         // given
-        final LocalDateTime localDateTime = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
+        final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
 
         final List<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
         final List<Invoice> invoices = new ArrayList<>();
-        invoices.add(new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, localDateTime, orders));
-        invoices.add(new Invoice(2, "Anna Nowak", "Kwiatowa 12", "anna.nowak@example.com", null, localDateTime, orders));
+        invoices.add(new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, ordersDate, false, orders));
+        invoices.add(new Invoice(2, "Anna Nowak", "Kwiatowa 12", "anna.nowak@example.com", null, ordersDate, false, orders));
         when(invoiceService.getAllInvoices()).thenReturn(invoices);
 
         // when

@@ -32,6 +32,10 @@ public class InvoiceService {
         return new Invoice(invoiceRepository.getLastInvoices());
     }
 
+    public void updateEmailSendStatus(final String invoiceId, final boolean status) {
+        invoiceRepository.updateEmailSendStatus(invoiceId, status);
+    }
+
     public List<Invoice> getInvoicesByInvoiceId(String invoiceId) {
         final List<InvoiceEntity> entities = invoiceRepository.findInvoicesByInvoiceId(invoiceId);
         return entities.stream()
@@ -54,6 +58,7 @@ public class InvoiceService {
                            entity.getEmail(),
                            entity.getNip(),
                            entity.getOrderDate(),
+                           entity.isEmailSend(),
                            entity.getOrders()
                                  .stream()
                                  .map(Order::new)

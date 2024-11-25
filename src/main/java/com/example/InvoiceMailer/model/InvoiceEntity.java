@@ -8,7 +8,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,8 +31,11 @@ public class InvoiceEntity {
     @Column(name = "nip")
     private String nip;
 
-    @Column(name = "order_date")
+    @Column(name = "order_date", nullable = false)
     private String orderDate;
+
+    @Column(name = "is_email_send", nullable = false)
+    private final boolean isEmailSend;
 
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderEntity> orders;
@@ -45,6 +47,7 @@ public class InvoiceEntity {
         this.email = null;
         this.nip = null;
         this.orderDate = null;
+        this.isEmailSend = false;
         this.orders = new ArrayList<>();
     }
 
@@ -55,7 +58,8 @@ public class InvoiceEntity {
         this.email = invoice.getBuyerAddressEmail();
         this.nip = invoice.getBuyerNIP();
         this.orderDate = invoice.getOrderDate()
-                                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                                .format(invoice.getFormatter());
+        this.isEmailSend = invoice.isEmailSend();
         this.orders = invoice.getOrder()
                              .stream()
                              .map(OrderEntity::new)
@@ -104,6 +108,10 @@ public class InvoiceEntity {
 
     public void setOrderDate(String orderDate) {
         this.orderDate = orderDate;
+    }
+
+    public boolean isEmailSend() {
+        return isEmailSend;
     }
 
     public void setNip(String nip) {
