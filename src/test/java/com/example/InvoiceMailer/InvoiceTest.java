@@ -4,6 +4,8 @@ import com.example.InvoiceMailer.model.Invoice;
 import com.example.InvoiceMailer.model.Order;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class InvoiceTest {
+    final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 
     @Test
@@ -19,8 +22,10 @@ public class InvoiceTest {
         //given
         final List<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
+        final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
+
         //when
-        final Invoice invoice = new Invoice(1, "Jan Kowalski", "popowicka 68", "jan.kowalski@example.com", null, orders);
+        final Invoice invoice = new Invoice(1, "Jan Kowalski", "popowicka 68", "jan.kowalski@example.com", null, ordersDate, orders);
 
         //then
         assertNotNull(invoice);
@@ -33,16 +38,18 @@ public class InvoiceTest {
     @Test
     public void testShouldThrowExceptionForInvalidInvoiceNumber() {
         // given
-        int invoiceNumber = 0;
-        String buyerName = "Jan Kowalski";
-        String buyerAddress = "popowicka 68";
-        String buyerEmail = "jan.kowalski@example.com";
+        final int invoiceNumber = 0;
+        final String buyerName = "Jan Kowalski";
+        final String buyerAddress = "popowicka 68";
+        final String buyerEmail = "jan.kowalski@example.com";
+        final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
         final List<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
+
         //when
         //then
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-            new Invoice(invoiceNumber, buyerName, buyerAddress, buyerEmail, null, orders);
+            new Invoice(invoiceNumber, buyerName, buyerAddress, buyerEmail, null, ordersDate, orders);
         });
         assertEquals("Invoice ID cannot be 0 or less than 0.", thrown.getMessage());
     }
@@ -50,35 +57,86 @@ public class InvoiceTest {
     @Test
     public void testThrowWhenNameIsNull() {
         //given
+        final int invoiceNumber = 1;
+        final String buyerAddress = "popowicka 68";
+        final String buyerEmail = "jan.kowalski@example.com";
+        final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
         final List<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
+
         //when
         //then
         assertThrows(IllegalArgumentException.class,
-                     () -> new Invoice(1, null, "popowicka 68", "jan.kowalski@example.com", null, orders),
+                     () -> new Invoice(invoiceNumber, null, buyerAddress, buyerEmail, null, ordersDate, orders),
+                     "Name cannot be null or empty.");
+    }
+
+    @Test
+    public void testThrowWhenAddressIsNull() {
+        //given
+        final int invoiceNumber = 1;
+        final String buyerName = "Jan Kowalski";
+        final String buyerEmail = "jan.kowalski@example.com";
+        final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
+        final List<Order> orders = new ArrayList<>();
+        orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
+
+        //when
+        //then
+        assertThrows(IllegalArgumentException.class,
+                     () -> new Invoice(invoiceNumber, buyerName, null, buyerEmail, null, ordersDate, orders),
                      "Name cannot be null or empty.");
     }
 
     @Test
     public void testThrowWhenEmailIsNull() {
         //given
+        final int invoiceNumber = 1;
+        final String buyerName = "Jan Kowalski";
+        final String buyerAddress = "popowicka 68";
+        final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
         final List<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
+
         //when
         //then
         assertThrows(IllegalArgumentException.class,
-                     () -> new Invoice(1, null, "popowicka 68", "jan.kowalski@example.com", null, orders),
+                     () -> new Invoice(invoiceNumber, buyerName, buyerAddress, null, null, ordersDate, orders),
                      "Email cannot be null or empty.");
     }
 
     @Test
-    public void testThrowWhenProductIsNull() {
+    public void testThrowWhenOrdersDateIsNull() {
         //given
+        final int invoiceNumber = 1;
+        final String buyerName = "Jan Kowalski";
+        final String buyerAddress = "popowicka 68";
+        final String buyerEmail = "jan.kowalski@example.com";
+        final List<Order> orders = new ArrayList<>();
+        orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
+
         //when
         //then
         assertThrows(IllegalArgumentException.class,
-                     () -> new Invoice(1, null, "popowicka 68", "jan.kowalski@example.com", null, null),
-                     "Email cannot be null or empty.");
+                     () -> new Invoice(invoiceNumber, buyerName, buyerAddress, buyerEmail, null, "", orders),
+                     "List of Order cannot be null or empty.");
+    }
+
+    @Test
+    public void testThrowWhenOrderIsEmpty() {
+        //given
+        final int invoiceNumber = 1;
+        final String buyerName = "Jan Kowalski";
+        final String buyerAddress = "popowicka 68";
+        final String buyerEmail = "jan.kowalski@example.com";
+        final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
+        final List<Order> orders = new ArrayList<>();
+
+        //when
+        //then
+        assertThrows(IllegalArgumentException.class,
+                     () -> new Invoice(invoiceNumber, buyerName, buyerAddress, buyerEmail, null, ordersDate, orders),
+                     "List of Order cannot be null or empty.");
     }
 
 
@@ -121,7 +179,15 @@ public class InvoiceTest {
         // given
         final List<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
-        final Invoice invoice = new Invoice(900000000, "Jan Kowalski", "popowicka 68", "jan.kowalski@example.com", null, orders);
+        final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
+
+        final Invoice invoice = new Invoice(900000000,
+                                            "Jan Kowalski",
+                                            "popowicka 68",
+                                            "jan.kowalski@example.com",
+                                            null,
+                                            ordersDate,
+                                            orders);
 
         // when
         int extractedInvoiceNumber = invoice.extractAndIncreaseInvoiceNumber();

@@ -3,31 +3,30 @@ CREATE DATABASE invoiceMailer_database;
 CREATE USER Viggo WITH PASSWORD 'Viggo123Password';
 GRANT ALL PRIVILEGES ON DATABASE invoiceMailer_database TO Viggo;
 
-DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS invoices;
+DROP TABLE IF EXISTS orders;
 
 CREATE TABLE invoices (
     invoice_id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     address VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
-    nip VARCHAR(20)
+    nip VARCHAR(20),
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE orders (
-    order_id SERIAL PRIMARY KEY,
-    invoice_id VARCHAR(255) NOT NULL,
+    id SERIAL PRIMARY KEY,
+    invoice_id VARCHAR(255),
     product_name VARCHAR(255) NOT NULL,
-    product_description TEXT,
+    product_description VARCHAR(255),
     quantity INT NOT NULL,
-    price NUMERIC(10, 2) NOT NULL,
-    FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id)
-    ON DELETE CASCADE
+    price DECIMAL(10, 2) NOT NULL,
+    CONSTRAINT orders_invoice_id_fkey FOREIGN KEY (invoice_id) REFERENCES invoices (invoice_id)
 );
 
-INSERT INTO invoices (invoice_id, name, address, email,nip)
-VALUES
-('FV/000000111/2024', 'Jan Kowalski','popowicka 68, 54-237 Wroclaw', 'jan.kowalski@example.com',2);
+INSERT INTO invoices (invoice_id, name, address, email, nip, order_date)
+VALUES ('FV/000000001/2024', 'Jan Kowalski', 'ul. Testowa 10, 00-001 Warszawa', 'jan.kowalski@example.com', '1234567890', '2024-01-01 14:30:00');
 
 INSERT INTO orders (invoice_id, product_name, product_description, quantity, price)
 VALUES

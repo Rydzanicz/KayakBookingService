@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +32,9 @@ public class InvoiceEntity {
     @Column(name = "nip")
     private String nip;
 
+    @Column(name = "order_date")
+    private String orderDate;
+
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderEntity> orders;
 
@@ -40,6 +44,7 @@ public class InvoiceEntity {
         this.address = null;
         this.email = null;
         this.nip = null;
+        this.orderDate = null;
         this.orders = new ArrayList<>();
     }
 
@@ -49,7 +54,9 @@ public class InvoiceEntity {
         this.address = invoice.getBuyerAddress();
         this.email = invoice.getBuyerAddressEmail();
         this.nip = invoice.getBuyerNIP();
-        this.orders = invoice.getProduct()
+        this.orderDate = invoice.getOrderDate()
+                                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        this.orders = invoice.getOrder()
                              .stream()
                              .map(OrderEntity::new)
                              .toList();
@@ -89,6 +96,14 @@ public class InvoiceEntity {
 
     public String getNip() {
         return nip;
+    }
+
+    public String getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(String orderDate) {
+        this.orderDate = orderDate;
     }
 
     public void setNip(String nip) {

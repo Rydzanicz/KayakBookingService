@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +30,7 @@ public class InvoiceServiceTest {
     private InvoiceRepository invoiceRepository;
 
     private InvoiceService invoiceService;
+    final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @BeforeEach
     public void setUp() {
@@ -40,10 +43,17 @@ public class InvoiceServiceTest {
         // given
         final List<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
-
+        final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
         final List<InvoiceEntity> entities = new ArrayList<>();
-        entities.add(new InvoiceEntity(new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, orders)));
-        entities.add(new InvoiceEntity(new Invoice(2, "Anna Nowak", "Kwiatowa 12", "anna.nowak@example.com", null, orders)));
+        entities.add(new InvoiceEntity(new Invoice(1,
+                                                   "Jan Kowalski",
+                                                   "Popowicka 68",
+                                                   "jan.kowalski@example.com",
+                                                   null,
+                                                   ordersDate,
+                                                   orders)));
+
+        entities.add(new InvoiceEntity(new Invoice(2, "Anna Nowak", "Kwiatowa 12", "anna.nowak@example.com", null, ordersDate, orders)));
         when(invoiceRepository.findAll()).thenReturn(entities);
 
         // when
@@ -84,11 +94,14 @@ public class InvoiceServiceTest {
         final List<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
         final String invoiceId = "FV/000000001/2024";
+        final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
+
         final List<InvoiceEntity> entities = List.of(new InvoiceEntity(new Invoice(1,
                                                                                    "Jan Kowalski",
                                                                                    "Popowicka 68",
                                                                                    "jan.kowalski@example.com",
                                                                                    null,
+                                                                                   ordersDate,
                                                                                    orders)));
         when(invoiceRepository.findInvoicesByInvoiceId(invoiceId)).thenReturn(entities);
 
@@ -109,12 +122,14 @@ public class InvoiceServiceTest {
         // given
         final List<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
+        final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
 
         final InvoiceEntity lastInvoiceEntity = new InvoiceEntity(new Invoice(5,
                                                                               "Anna Nowak",
                                                                               "Kwiatowa 12",
                                                                               "anna.nowak@example.com",
                                                                               null,
+                                                                              ordersDate,
                                                                               orders));
         when(invoiceRepository.getLastInvoices()).thenReturn(lastInvoiceEntity);
 
@@ -136,11 +151,14 @@ public class InvoiceServiceTest {
         final List<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
         final String email = "jan.kowalski@example.com";
+        final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
+
         final List<InvoiceEntity> entities = List.of(new InvoiceEntity(new Invoice(1,
                                                                                    "Jan Kowalski",
                                                                                    "Popowicka 68",
                                                                                    email,
                                                                                    null,
+                                                                                   ordersDate,
                                                                                    orders)));
         when(invoiceRepository.findInvoicesByEmail(email)).thenReturn(entities);
 
@@ -161,7 +179,9 @@ public class InvoiceServiceTest {
         // given
         final List<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
-        final Invoice invoice = new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, orders);
+        final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
+
+        final Invoice invoice = new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, ordersDate, orders);
         final InvoiceEntity savedEntity = new InvoiceEntity(invoice);
         when(invoiceRepository.save(any(InvoiceEntity.class))).thenReturn(savedEntity);
 

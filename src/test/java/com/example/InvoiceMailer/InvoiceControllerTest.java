@@ -18,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -44,6 +45,7 @@ public class InvoiceControllerTest {
     private InvoiceController invoiceController;
     @Mock
     private PdfGeneratorService pdfGeneratorService;
+    final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @BeforeEach
     public void setUp() {
@@ -60,11 +62,12 @@ public class InvoiceControllerTest {
         invoiceRequest.setBuyerAddressEmail("jan.kowalski@example.com");
         invoiceRequest.setBuyerNip("1234567890");
 
+        final LocalDateTime localDateTime = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
         final List<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
         invoiceRequest.setOrders(orders);
 
-        final Invoice mockInvoice = new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, orders);
+        final Invoice mockInvoice = new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, localDateTime, orders);
         final InvoiceEntity savedEntity = new InvoiceEntity(mockInvoice);
 
         when(invoiceService.getLastInvoices()).thenReturn(mockInvoice);
@@ -88,15 +91,22 @@ public class InvoiceControllerTest {
         invoiceRequest.setBuyerAddress("Test Address");
         invoiceRequest.setBuyerAddressEmail("test@example.com");
         invoiceRequest.setBuyerNip("1234567890");
+        final LocalDateTime localDateTime = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
+
         final List<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
         invoiceRequest.setOrders(orders);
         byte[] pdfBytes = "PDF content".getBytes();
-        when(pdfGeneratorService.generateInvoicePdf(anyString(), anyString(), anyString(), anyString(), anyString(), anyList())).thenReturn(
-                new ByteArrayOutputStream() {{
-                    write(pdfBytes);
-                }});
-        when(invoiceService.getLastInvoices()).thenReturn(new Invoice(1, "Last Buyer", "Last Address", "last@example.com", null, orders));
+        when(pdfGeneratorService.generateInvoicePdf(any(Invoice.class))).thenReturn(new ByteArrayOutputStream() {{
+            write(pdfBytes);
+        }});
+        when(invoiceService.getLastInvoices()).thenReturn(new Invoice(1,
+                                                                      "Last Buyer",
+                                                                      "Last Address",
+                                                                      "last@example.com",
+                                                                      null,
+                                                                      localDateTime,
+                                                                      orders));
 
         // when
         ResponseEntity<?> response = invoiceController.generateInvoice(invoiceRequest);
@@ -114,10 +124,11 @@ public class InvoiceControllerTest {
     @Test
     public void testGetInvoicesByInvoiceId() {
         // given
+        final LocalDateTime localDateTime = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
         final List<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
         final List<Invoice> invoices = new ArrayList<>();
-        invoices.add(new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, orders));
+        invoices.add(new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, localDateTime, orders));
         when(invoiceService.getInvoicesByInvoiceId("FV/001/2024")).thenReturn(invoices);
 
         // when
@@ -135,10 +146,11 @@ public class InvoiceControllerTest {
     @Test
     public void testGetInvoicesByEmail() {
         // given
+        final LocalDateTime localDateTime = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
         final List<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
         final List<Invoice> invoices = new ArrayList<>();
-        invoices.add(new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, orders));
+        invoices.add(new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, localDateTime, orders));
         when(invoiceService.getInvoicesByAddressEmail("jan.kowalski@example.com")).thenReturn(invoices);
 
         // when
@@ -156,11 +168,13 @@ public class InvoiceControllerTest {
     @Test
     public void testGetAllInvoices() {
         // given
+        final LocalDateTime localDateTime = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
+
         final List<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
         final List<Invoice> invoices = new ArrayList<>();
-        invoices.add(new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, orders));
-        invoices.add(new Invoice(2, "Anna Nowak", "Kwiatowa 12", "anna.nowak@example.com", null, orders));
+        invoices.add(new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, localDateTime, orders));
+        invoices.add(new Invoice(2, "Anna Nowak", "Kwiatowa 12", "anna.nowak@example.com", null, localDateTime, orders));
         when(invoiceService.getAllInvoices()).thenReturn(invoices);
 
         // when

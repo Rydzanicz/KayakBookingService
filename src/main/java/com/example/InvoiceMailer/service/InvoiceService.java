@@ -2,8 +2,8 @@ package com.example.InvoiceMailer.service;
 
 import com.example.InvoiceMailer.model.Invoice;
 import com.example.InvoiceMailer.model.InvoiceEntity;
-import com.example.InvoiceMailer.model.OrderEntity;
 import com.example.InvoiceMailer.model.Order;
+import com.example.InvoiceMailer.model.OrderEntity;
 import com.example.InvoiceMailer.repository.InvoiceRepository;
 import org.springframework.stereotype.Service;
 
@@ -53,6 +53,7 @@ public class InvoiceService {
                            entity.getAddress(),
                            entity.getEmail(),
                            entity.getNip(),
+                           entity.getOrderDate(),
                            entity.getOrders()
                                  .stream()
                                  .map(Order::new)
@@ -67,10 +68,10 @@ public class InvoiceService {
 
         final List<OrderEntity> ordersEntity = orders.stream()
                                                      .map(order -> {
-                                                           OrderEntity orderEntity = new OrderEntity(order);
-                                                           orderEntity.setInvoice(invoiceEntity);
-                                                           return orderEntity;
-                                                       })
+                                                         OrderEntity orderEntity = new OrderEntity(order);
+                                                         orderEntity.setInvoice(invoiceEntity);
+                                                         return orderEntity;
+                                                     })
                                                      .toList();
 
         invoiceEntity.setOrders(ordersEntity);

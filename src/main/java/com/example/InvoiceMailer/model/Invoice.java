@@ -1,6 +1,8 @@
 package com.example.InvoiceMailer.model;
 
+import java.time.LocalDateTime;
 import java.time.Year;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,13 +15,17 @@ public class Invoice {
     private final String buyerAddress;
     private final String buyerAddressEmail;
     private final String buyerNIP;
+    private final LocalDateTime orderDate;
     private final List<Order> order;
+
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public Invoice(final int invoiceNR,
                    final String buyerName,
                    final String buyerAddress,
                    final String buyerAddressEmail,
                    final String buyerNIP,
+                   final LocalDateTime orderDate,
                    final List<Order> order) {
         if (buyerName == null || buyerName.isEmpty()) {
             throw new IllegalArgumentException("Name cannot be null or empty.");
@@ -30,8 +36,11 @@ public class Invoice {
         if (buyerAddressEmail == null || buyerAddressEmail.isEmpty()) {
             throw new IllegalArgumentException("Email cannot be null or empty.");
         }
+        if (orderDate == null) {
+            throw new IllegalArgumentException("Order date cannot be null or empty.");
+        }
         if (order.isEmpty()) {
-            throw new IllegalArgumentException("List of Product cannot be null or empty.");
+            throw new IllegalArgumentException("List of Order cannot be null or empty.");
         }
 
         this.invoiceId = generateInvoiceId(invoiceNR);
@@ -39,6 +48,39 @@ public class Invoice {
         this.buyerAddress = buyerAddress;
         this.buyerAddressEmail = buyerAddressEmail;
         this.buyerNIP = buyerNIP;
+        this.orderDate = orderDate;
+        this.order = order;
+    }
+
+    public Invoice(final int invoiceNR,
+                   final String buyerName,
+                   final String buyerAddress,
+                   final String buyerAddressEmail,
+                   final String buyerNIP,
+                   final String orderDate,
+                   final List<Order> order) {
+        if (buyerName == null || buyerName.isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty.");
+        }
+        if (buyerAddress == null || buyerAddress.isEmpty()) {
+            throw new IllegalArgumentException("Address cannot be null or empty.");
+        }
+        if (buyerAddressEmail == null || buyerAddressEmail.isEmpty()) {
+            throw new IllegalArgumentException("Email cannot be null or empty.");
+        }
+        if (orderDate == null || orderDate == "") {
+            throw new IllegalArgumentException("Order date cannot be null or empty.");
+        }
+        if (order.isEmpty()) {
+            throw new IllegalArgumentException("List of Order cannot be null or empty.");
+        }
+
+        this.invoiceId = generateInvoiceId(invoiceNR);
+        this.buyerName = buyerName;
+        this.buyerAddress = buyerAddress;
+        this.buyerAddressEmail = buyerAddressEmail;
+        this.buyerNIP = buyerNIP;
+        this.orderDate = LocalDateTime.parse(orderDate, formatter);
         this.order = order;
     }
 
@@ -50,6 +92,7 @@ public class Invoice {
         this.buyerAddress = invoice.getAddress();
         this.buyerAddressEmail = invoice.getEmail();
         this.buyerNIP = invoice.getNip();
+        this.orderDate = LocalDateTime.parse(invoice.getOrderDate(), formatter);
         this.order = invoice.getOrders()
                             .stream()
                             .map(Order::new)
@@ -111,11 +154,15 @@ public class Invoice {
         return buyerAddressEmail;
     }
 
-    public List<Order> getProduct() {
+    public List<Order> getOrder() {
         return order;
     }
 
     public String getBuyerNIP() {
         return buyerNIP;
+    }
+
+    public LocalDateTime getOrderDate() {
+        return orderDate;
     }
 }
