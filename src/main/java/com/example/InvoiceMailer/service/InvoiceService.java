@@ -36,11 +36,9 @@ public class InvoiceService {
         invoiceRepository.updateEmailSendStatus(invoiceId, status);
     }
 
-    public List<Invoice> getInvoicesByInvoiceId(String invoiceId) {
-        final List<InvoiceEntity> entities = invoiceRepository.findInvoicesByInvoiceId(invoiceId);
-        return entities.stream()
-                       .map(this::mapToInvoice)
-                       .toList();
+    public Invoice getInvoicesByInvoiceId(String invoiceId) {
+        final InvoiceEntity entities = invoiceRepository.findInvoicesByInvoiceId(invoiceId);
+        return new Invoice(entities);
     }
 
     public List<Invoice> getInvoicesByAddressEmail(String addressEmail) {
@@ -65,7 +63,7 @@ public class InvoiceService {
                                  .toList());
     }
 
-    public InvoiceEntity saveInvoiceWithOrders(final Invoice invoice, final List<Order> orders) {
+    public void saveInvoiceWithOrders(final Invoice invoice, final List<Order> orders) {
         if (orders == null || orders.isEmpty()) {
             throw new IllegalArgumentException("List of Product cannot be null or empty.");
         }
@@ -81,6 +79,6 @@ public class InvoiceService {
 
         invoiceEntity.setOrders(ordersEntity);
 
-        return invoiceRepository.save(invoiceEntity);
+        invoiceRepository.save(invoiceEntity);
     }
 }

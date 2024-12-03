@@ -14,44 +14,51 @@ app.get('/', (req, res) => {
   res.render('form');
 });
 
-app.post('/generate-invoice', async (req, res) => {
+app.post('/save-invoice', async (req, res) => {
   try {
     const { buyerName, buyerAddressEmail, buyerAddress, buyerNip, orders } = req.body;
 
+    const response = await axios.post('http://localhost:8080/save-invoice', {
+      buyerName,
+      buyerAddressEmail,
+      buyerAddress,
+      buyerNip,
+      orders
+    });
+
+    if (response.status === 200) {
+      res.status(200).send('Faktura została zapisana pomyślnie.');
+    } else {
+      res.status(response.status).send(response.data || 'Wystąpił błąd podczas zapisywania faktury.');
+    }
+  } catch (error) {
+    console.error('Błąd podczas komunikacji z backendem:', error);
+    res.status(500).send('Wystąpił błąd przy zapisie faktury.');
+  }
+});
+
+app.post('/generate-invoice', async (req, res) => {
+  try {
+    const { invoiceId, addressEmail } = req.body;
+
     const response = await axios.post(
-      'http://localhost:8080/generate-invoice',
-      { buyerName, buyerAddressEmail, buyerAddress, buyerNip, orders },
+      `http://localhost:8080/generate-invoice?invoiceId=${invoiceId || ''}`,
+      {},
       { responseType: 'arraybuffer' }
     );
 
     const contentDisposition = response.headers['content-disposition'];
     const fileName = contentDisposition.split('filename=')[1].replace(/"/g, '');
 
-    const [invoiceId, year] = fileName.split('/').slice(0, -1);
-    const invoiceNumber = invoiceId.split('-')[1];
-
-    const filePath = path.join(__dirname, 'Faktura-FV', invoiceNumber, year, fileName);
-
-    const dirPath = path.dirname(filePath);
-    if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath, { recursive: true });
-    }
-
-    fs.writeFileSync(filePath, response.data);
-
-    res.download(filePath, fileName, (err) => {
-      if (err) {
-        console.error('Błąd przy pobieraniu pliku:', err);
-      }
-      fs.unlinkSync(filePath);
-    });
-
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.status(200).send(response.data);
   } catch (error) {
-    console.error('Błąd przy komunikacji z backendem:', error);
-    res.status(500).send('Wystąpił błąd przy generowaniu PDF.');
+    console.error('Błąd przy generowaniu faktury:', error.message);
+    res.status(500).send('Błąd generowania faktury.');
   }
 });
 
 app.listen(3000, () => {
-  console.log('Server is running on http://localhost:3000');
+  console.log('Serwer działa na porcie 3000');
 });

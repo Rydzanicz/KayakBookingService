@@ -1,7 +1,6 @@
 package com.example.InvoiceMailer.RestControler;
 
 import com.example.InvoiceMailer.model.Invoice;
-import com.example.InvoiceMailer.service.EmailService;
 import com.example.InvoiceMailer.service.InvoiceService;
 import com.example.InvoiceMailer.service.PdfGeneratorService;
 import org.springframework.http.HttpHeaders;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,24 +23,20 @@ import java.util.Map;
 @RestController
 public class InvoiceController {
     private final InvoiceService invoiceService;
-    private final EmailService emailService;
 
-    public InvoiceController(final InvoiceService invoiceService, final EmailService emailService) {
+    public InvoiceController(final InvoiceService invoiceService) {
         this.invoiceService = invoiceService;
-        this.emailService = emailService;
     }
 
-    @PostMapping(value = "/generate-invoice", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> generateInvoice(@RequestBody InvoiceRequest invoiceRequest) {
+    @PostMapping(value = "/save-invoice", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> saveInvoice(@RequestBody InvoiceRequest invoiceRequest) {
         if (invoiceRequest == null || invoiceRequest.getBuyerName() == null || invoiceRequest.getOrders() == null) {
-            return ResponseEntity.badRequest()
-                                 .body("Invalid request payload");
+            throw new IllegalArgumentException("Invalid request payload");
         }
 
         try {
-            final PdfGeneratorService pdfGeneratorService = new PdfGeneratorService();
-            final Invoice invoice = invoiceService.getLastInvoices();
-            final Invoice newInvoice = new Invoice(invoice.extractAndIncreaseInvoiceNumber(),
+            final Invoice lastInvoice = invoiceService.getLastInvoices();
+            final Invoice newInvoice = new Invoice(lastInvoice.extractAndIncreaseInvoiceNumber(),
                                                    invoiceRequest.getBuyerName(),
                                                    invoiceRequest.getBuyerAddress(),
                                                    invoiceRequest.getBuyerAddressEmail(),
@@ -49,15 +45,32 @@ public class InvoiceController {
                                                    false,
                                                    invoiceRequest.getOrders());
 
-            final byte[] out = pdfGeneratorService.generateInvoicePdf(newInvoice)
+            invoiceService.saveInvoiceWithOrders(newInvoice, invoiceRequest.getOrders());
+
+            return ResponseEntity.ok("Invoice saved successfully");
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body("Error saving invoice");
+        }
+    }
+
+    @PostMapping(value = "/generate-invoice", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> generateInvoice(@RequestParam() String invoiceId) {
+        if (invoiceId == null) {
+            throw new IllegalArgumentException("Invalid request payload");
+        }
+
+        try {
+            final PdfGeneratorService pdfGeneratorService = new PdfGeneratorService();
+            final Invoice invoice = invoiceService.getInvoicesByInvoiceId(invoiceId);
+
+            final byte[] out = pdfGeneratorService.generateInvoicePdf(invoice)
                                                   .toByteArray();
 
 
-            invoiceService.saveInvoiceWithOrders(newInvoice, invoiceRequest.getOrders());
-            final String fileName = "Faktura-" + newInvoice.getInvoiceId() + ".pdf";
+            final String fileName = "Faktura-" + invoiceId + ".pdf";
 
-            emailService.sendEmails(invoiceRequest.getBuyerAddressEmail(), out, fileName);
-            invoiceService.updateEmailSendStatus(newInvoice.getInvoiceId(), true);
 
             final Map<String, Object> response = new HashMap<>();
             response.put("fileName", fileName);
@@ -77,10 +90,10 @@ public class InvoiceController {
                                                      @RequestParam(required = false) String addressEmail) {
 
         try {
-            List<Invoice> invoices;
+            List<Invoice> invoices = new ArrayList<>();
 
             if (invoiceId != null && !invoiceId.isEmpty()) {
-                invoices = invoiceService.getInvoicesByInvoiceId(invoiceId);
+                invoices.add(invoiceService.getInvoicesByInvoiceId(invoiceId));
             } else {
                 if (addressEmail != null && !addressEmail.isEmpty()) {
                     invoices = invoiceService.getInvoicesByAddressEmail(addressEmail);
@@ -90,14 +103,13 @@ public class InvoiceController {
             }
 
             if (invoices == null || invoices.isEmpty()) {
-                return ResponseEntity.noContent()
+                return ResponseEntity.notFound()
                                      .build();
             }
 
             return ResponseEntity.ok(invoices);
 
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                                  .build();
         }
@@ -107,7 +119,7 @@ public class InvoiceController {
     public ResponseEntity<List<String>> getUniqueEmail() {
 
         try {
-            List<String> invoices = invoiceService.getUniqueEmail();
+            final List<String> invoices = invoiceService.getUniqueEmail();
 
             return ResponseEntity.ok(invoices);
 

@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Formularz Faktury</title>
+  <title>Formularz Faktury VAT</title>
 </head>
 <body>
   <h1>Formularz Faktury VAT</h1>
 
-  <form id="invoice-form" action="/generate-invoice" method="POST">
-    <h2>Dane nabywcy</h2>
+  <form id="invoice-form">
+    <h2>Dodaj nową fakturę</h2>
     <label for="buyerName">Nazwa firmy:</label><br>
     <input type="text" id="buyerName" name="buyerName" required><br><br>
 
@@ -24,7 +24,7 @@
 
     <h2>Pozycje na fakturze</h2>
     <div id="orders">
-      <div class="product">
+      <div class="order">
         <label for="name">Nazwa:</label><br>
         <input type="text" name="orders[0].name" required><br><br>
 
@@ -38,43 +38,51 @@
         <input type="number" name="orders[0].price" required><br><br>
       </div>
     </div>
-    <button type="button" id="add-product">Dodaj produkt</button><br><br>
-    <button type="submit">Generuj PDF</button>
+    <button type="button" id="add-order">Dodaj produkt</button><br><br>
+    <button type="button" id="save-invoice">Zapisz fakturę</button>
+  </form>
+
+  <hr>
+
+  <form id="retrieve-invoice-form">
+    <h2>Pobierz fakturę PDF</h2>
+    <label for="invoiceId">ID Faktury:</label><br>
+    <input type="text" id="invoiceId" name="invoiceId" required><br><br>
+    <button type="button" id="generate-invoice">Generuj fakturę PDF</button>
   </form>
 
   <script>
-    let productCount = 1;
+    let orderCount = 1;
 
-    document.getElementById('add-product').addEventListener('click', function () {
-      const productDiv = document.createElement('div');
-      productDiv.classList.add('product');
-      productDiv.innerHTML = `
+    document.getElementById('add-order').addEventListener('click', function () {
+      const orderDiv = document.createElement('div');
+      orderDiv.classList.add('order');
+      orderDiv.innerHTML = `
         <label for="name">Nazwa:</label><br>
-        <input type="text" name="orders[${productCount}].name" required><br><br>
+        <input type="text" name="orders[${orderCount}].name" required><br><br>
 
         <label for="description">Opis:</label><br>
-        <input type="text" name="orders[${productCount}].description" required><br><br>
+        <input type="text" name="orders[${orderCount}].description" required><br><br>
 
         <label for="quantity">Ilość:</label><br>
-        <input type="number" name="orders[${productCount}].quantity" required><br><br>
+        <input type="number" name="orders[${orderCount}].quantity" required><br><br>
 
         <label for="price">Cena netto:</label><br>
-        <input type="number" name="orders[${productCount}].price" required><br><br>
+        <input type="number" name="orders[${orderCount}].price" required><br><br>
       `;
-      document.getElementById('orders').appendChild(productDiv);
-      productCount++;
+      document.getElementById('orders').appendChild(orderDiv);
+      orderCount++;
     });
-  document.getElementById('invoice-form').addEventListener('submit', function (event) {
-      event.preventDefault();
 
-      const formData = new FormData(this);
+    document.getElementById('save-invoice').addEventListener('click', function () {
+      const formData = new FormData(document.getElementById('invoice-form'));
       const buyerName = formData.get('buyerName');
       const buyerAddressEmail = formData.get('buyerAddressEmail');
       const buyerAddress = formData.get('buyerAddress');
       const buyerNip = formData.get('buyerNip');
 
       const orders = [];
-      for (let i = 0; i < productCount; i++) {
+      for (let i = 0; i < orderCount; i++) {
         orders.push({
           name: formData.get(`orders[${i}].name`),
           description: formData.get(`orders[${i}].description`),
@@ -91,7 +99,7 @@
         orders
       };
 
-        fetch('/generate-invoice', {
+      fetch('/save-invoice', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -99,6 +107,39 @@
         body: JSON.stringify(data)
       })
       .then(response => {
+        if (!response.ok) {
+          throw new Error('Błąd zapisu faktury.');
+        }
+        return response.text();
+      })
+      .then(message => {
+        alert(message || 'Faktura została zapisana.');
+      })
+      .catch(error => {
+        console.error('Błąd przy zapisie faktury:', error);
+        alert('Wystąpił problem podczas zapisu faktury.');
+      });
+    });
+
+    document.getElementById('generate-invoice').addEventListener('click', function () {
+      const invoiceId = document.getElementById('invoiceId').value;
+
+      if (!invoiceId) {
+        alert('Podaj ID faktury.');
+        return;
+      }
+
+      fetch('/generate-invoice', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ invoiceId })
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Błąd generowania faktury PDF.');
+        }
         const contentDisposition = response.headers.get('content-disposition');
         const fileName = contentDisposition ? contentDisposition.split('filename=')[1].replace(/"/g, '') : 'invoice.pdf';
         return response.blob().then(blob => {
@@ -108,7 +149,10 @@
           link.click();
         });
       })
-      .catch(error => console.error('Błąd podczas generowania PDF:', error));
+      .catch(error => {
+        console.error('Błąd przy generowaniu PDF:', error);
+        alert('Wystąpił problem podczas generowania faktury PDF.');
+      });
     });
   </script>
 </body>

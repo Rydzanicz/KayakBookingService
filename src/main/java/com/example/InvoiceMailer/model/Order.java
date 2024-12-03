@@ -9,6 +9,18 @@ public class Order {
 
 
     public Order(final String name, final String description, final int quantity, final double price) {
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty.");
+        }
+        if (description == null || description.isEmpty()) {
+            throw new IllegalArgumentException("Description cannot be null or empty.");
+        }
+        if (quantity == 0) {
+            throw new IllegalArgumentException("Quantity cannot be zero.");
+        }
+        if (price == 0) {
+            throw new IllegalArgumentException("Price date cannot be zero.");
+        }
         this.name = name;
         this.description = description;
         this.quantity = quantity;

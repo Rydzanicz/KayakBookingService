@@ -23,7 +23,7 @@ import java.time.format.DateTimeFormatter;
 
 @Service
 public class PdfGeneratorService {
-    private static final DateTimeFormatter formatter =DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     final static private String NOW = ZonedDateTime.now()
                                                    .toLocalDateTime()
@@ -62,7 +62,8 @@ public class PdfGeneratorService {
                                  TextAlignment.LEFT);
 
         document.showTextAligned(new Paragraph("Faktura VAT nr: " + invoice.getInvoiceId()), 320, 760, TextAlignment.LEFT);
-        document.showTextAligned(new Paragraph("Data wystawienia: " + invoice.getOrderDate().format(formatter)), 320, 740, TextAlignment.LEFT);
+        document.showTextAligned(new Paragraph("Data wystawienia: " + invoice.getOrderDate()
+                                                                             .format(formatter)), 320, 740, TextAlignment.LEFT);
         document.showTextAligned(new Paragraph("Data sprzedaży: " + NOW), 320, 720, TextAlignment.LEFT);
 
         document.showTextAligned(new Paragraph("________________________________________"), 50, 700, TextAlignment.LEFT);

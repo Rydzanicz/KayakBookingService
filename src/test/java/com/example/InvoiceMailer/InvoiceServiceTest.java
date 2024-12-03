@@ -105,25 +105,22 @@ public class InvoiceServiceTest {
         final String invoiceId = "FV/000000001/2024";
         final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
 
-        final List<InvoiceEntity> entities = List.of(new InvoiceEntity(new Invoice(1,
-                                                                                   "Jan Kowalski",
-                                                                                   "Popowicka 68",
-                                                                                   "jan.kowalski@example.com",
-                                                                                   null,
-                                                                                   ordersDate,
-                                                                                   false,
-                                                                                   orders)));
+        final InvoiceEntity entities = new InvoiceEntity(new Invoice(1,
+                                                                     "Jan Kowalski",
+                                                                     "Popowicka 68",
+                                                                     "jan.kowalski@example.com",
+                                                                     null,
+                                                                     ordersDate,
+                                                                     false,
+                                                                     orders));
         when(invoiceRepository.findInvoicesByInvoiceId(invoiceId)).thenReturn(entities);
 
         // when
-        final List<Invoice> invoices = invoiceService.getInvoicesByInvoiceId(invoiceId);
+        final Invoice invoices = invoiceService.getInvoicesByInvoiceId(invoiceId);
 
         // then
         assertNotNull(invoices);
-        assertEquals(1, invoices.size());
-        assertEquals("FV/000000001/2024",
-                     invoices.get(0)
-                             .getInvoiceId());
+        assertEquals("FV/000000001/2024", invoices.getInvoiceId());
         verify(invoiceRepository, times(1)).findInvoicesByInvoiceId(invoiceId);
     }
 
@@ -198,11 +195,9 @@ public class InvoiceServiceTest {
         when(invoiceRepository.save(any(InvoiceEntity.class))).thenReturn(savedEntity);
 
         // when
-        final InvoiceEntity result = invoiceService.saveInvoiceWithOrders(invoice, orders);
+        invoiceService.saveInvoiceWithOrders(invoice, orders);
 
         // then
-        assertNotNull(result);
-        assertEquals("Jan Kowalski", result.getName());
         verify(invoiceRepository, times(1)).save(any(InvoiceEntity.class));
     }
 

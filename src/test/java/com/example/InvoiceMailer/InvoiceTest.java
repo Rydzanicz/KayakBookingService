@@ -139,6 +139,37 @@ public class InvoiceTest {
                      "List of Order cannot be null or empty.");
     }
 
+    @Test
+    public void testThrowWhenOrderNameIsNull() {
+        //given
+        //when
+        //then
+        assertThrows(IllegalArgumentException.class, () -> new Order(null, "Opis A", 1, 100.0), "Name cannot be null or empty.");
+    }
+
+    @Test
+    public void testThrowWhenDescriptionIsNull() {
+        //given
+        //when
+        //then
+        assertThrows(IllegalArgumentException.class, () -> new Order("Name", null, 1, 100.0), "Description cannot be null or empty.");
+    }
+
+    @Test
+    public void testThrowWhenQuantityIsZero() {
+        //given
+        //when
+        //then
+        assertThrows(IllegalArgumentException.class, () -> new Order("Name", "Opis A", 0, 100.0), "Quantity cannot be zero.");
+    }
+
+    @Test
+    public void testThrowWhenPriceIsZero() {
+        //given
+        //when
+        //then
+        assertThrows(IllegalArgumentException.class, () -> new Order("Name", "Opis A", 1, 0.0), "Price cannot be zero.");
+    }
 
     @Test
     public void testThrowWhenInvoiceEntityIsNull() {
