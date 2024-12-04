@@ -10,6 +10,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class InvoiceTest {
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -201,6 +202,31 @@ public class InvoiceTest {
             Invoice.validateInvoiceId(invalidInvoiceId);
         });
         assertEquals("Invalid Invoice ID format. Correct format: FV/{number}/{year}, e.g., FV/001/2024", thrown.getMessage());
+    }
+
+    @Test
+    public void testShouldThrowWhenInvoiceIdIsNull() {
+        // given
+
+
+        //when
+        //then
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+            Invoice.validateInvoiceId(null);
+        });
+        assertEquals("InvoiceId cannot be null.", thrown.getMessage());
+    }
+
+    @Test
+    void validateInvoiceId_ShouldReturnTrueForValidInvoiceId() {
+        // Arrange
+        String validInvoiceId = "FV/001/2024";
+
+        // Act
+        boolean result = Invoice.validateInvoiceId(validInvoiceId);
+
+        // Assert
+        assertTrue(result, "The validation should return true for a valid invoice ID.");
     }
 
     @Test

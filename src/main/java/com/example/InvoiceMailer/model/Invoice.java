@@ -72,7 +72,7 @@ public class Invoice {
         if (buyerAddressEmail == null || buyerAddressEmail.isEmpty()) {
             throw new IllegalArgumentException("Email cannot be null or empty.");
         }
-        if (orderDate == null || orderDate == "") {
+        if (orderDate == null || orderDate.equals("")) {
             throw new IllegalArgumentException("Order date cannot be null or empty.");
         }
         if (order.isEmpty()) {
@@ -116,7 +116,7 @@ public class Invoice {
 
     public static boolean validateInvoiceId(String invoiceId) {
         if (invoiceId == null || invoiceId.isEmpty()) {
-            throw new IllegalArgumentException("invoiceId cannot be null.");
+            throw new IllegalArgumentException("InvoiceId cannot be null.");
         }
 
         if (!Pattern.matches(INVOICE_ID_PATTERN, invoiceId)) {

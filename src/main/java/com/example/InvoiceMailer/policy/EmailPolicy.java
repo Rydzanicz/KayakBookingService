@@ -65,5 +65,4 @@ public class EmailPolicy {
         return pdfGeneratorService.generateInvoicePdf(invoice)
                                   .toByteArray();
     }
-
 }
