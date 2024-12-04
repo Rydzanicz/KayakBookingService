@@ -1,7 +1,5 @@
-package com.example.InvoiceMailer;
+package com.example.InvoiceMailer.model;
 
-import com.example.InvoiceMailer.model.Invoice;
-import com.example.InvoiceMailer.model.Order;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;

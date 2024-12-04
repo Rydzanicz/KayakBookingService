@@ -1,7 +1,6 @@
-package com.example.InvoiceMailer;
+package com.example.InvoiceMailer.service;
 
 
-import com.example.InvoiceMailer.service.EmailService;
 import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -12,7 +12,6 @@ import java.util.List;
 
 @Repository
 public interface InvoiceRepository extends JpaRepository<InvoiceEntity, Long> {
-    InvoiceEntity findByInvoiceId(String invoiceId);
 
     InvoiceEntity findInvoicesByInvoiceId(String invoiceId);
 
@@ -28,4 +27,7 @@ public interface InvoiceRepository extends JpaRepository<InvoiceEntity, Long> {
     @Transactional
     @Query("UPDATE InvoiceEntity i SET i.isEmailSend = :status WHERE i.invoiceId = :invoiceId")
     void updateEmailSendStatus(String invoiceId, boolean status);
+
+    @Query("SELECT i FROM InvoiceEntity i WHERE i.isEmailSend = false")
+    List<InvoiceEntity> findNoSendInvoices();
 }

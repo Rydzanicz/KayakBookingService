@@ -5,6 +5,7 @@ GRANT ALL PRIVILEGES ON DATABASE invoiceMailer_database TO Viggo;
 
 DROP TABLE IF EXISTS invoices;
 DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS failedProcessedPolicy;
 
 CREATE TABLE invoices (
     invoice_id VARCHAR(255) PRIMARY KEY,
@@ -18,13 +19,22 @@ CREATE TABLE invoices (
 
 CREATE TABLE orders (
     id SERIAL PRIMARY KEY,
-    invoice_id VARCHAR(255),
     product_name VARCHAR(255) NOT NULL,
     product_description VARCHAR(255),
     quantity INT NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
     CONSTRAINT orders_invoice_id_fkey FOREIGN KEY (invoice_id) REFERENCES invoices (invoice_id)
 );
+
+CREATE TABLE failedProcessedPolicy (
+    id SERIAL PRIMARY KEY,
+    invoice_id VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    retry_count INTEGER DEFAULT 0,
+    message VARCHAR(512) NOT NULL
+);
+
 
 INSERT INTO invoices (invoice_id, name, address, email, nip, order_date, is_email_send)
 VALUES ('FV/000000001/2024', 'Jan Kowalski', 'ul. Testowa 10, 00-001 Warszawa', 'jan.kowalski@example.com', '1234567890', '2024-01-01 14:30:00', false);
@@ -34,8 +44,14 @@ VALUES
 ('FV/000000001/2024', 'AdresLuks', 'Milka', 1, 130.00),
 ('FV/000000001/2024', 'AdresLuks', 'Abi', 2, 260.00);
 
+
+INSERT INTO failedProcessedPolicy (invoice_id, name, retry_count, message)
+VALUES
+  ('FV/000000009/2024', 'EmailPolicy', 1, 'Failed to send email due to connection timeout');
+
 SELECT * FROM invoices;
 SELECT * FROM orders;
+SELECT * FROM failedProcessedPolicy;
 
 psql -U postgres -d invoicemailer_database
 Viggo123Password
@@ -45,3 +61,5 @@ Viggo123Password
 http://localhost:8080/get-invoices-data?invoiceId=FV/000000001/2024
 http://localhost:8080/get-invoices-data?addressEmail=Viggo@wp.pl
 http://localhost:8080/get-all-unique-email
+
+    UPDATE invoices  SET is_email_send = true WHERE invoice_id = 'FV/000000011/2024';

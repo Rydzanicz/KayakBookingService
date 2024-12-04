@@ -47,6 +47,12 @@ public class InvoiceService {
                        .map(this::mapToInvoice)
                        .toList();
     }
+    public List<Invoice> getNoSendInvoices() {
+        final List<InvoiceEntity> entities = invoiceRepository.findNoSendInvoices();
+        return entities.stream()
+                       .map(this::mapToInvoice)
+                       .toList();
+    }
 
     private Invoice mapToInvoice(final InvoiceEntity entity) {
         return new Invoice(Integer.parseInt(entity.getInvoiceId()

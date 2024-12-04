@@ -1,10 +1,9 @@
-package com.example.InvoiceMailer;
+package com.example.InvoiceMailer.service;
 
 import com.example.InvoiceMailer.model.Invoice;
 import com.example.InvoiceMailer.model.InvoiceEntity;
 import com.example.InvoiceMailer.model.Order;
 import com.example.InvoiceMailer.repository.InvoiceRepository;
-import com.example.InvoiceMailer.service.InvoiceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;

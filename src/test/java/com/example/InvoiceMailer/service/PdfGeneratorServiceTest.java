@@ -1,8 +1,7 @@
-package com.example.InvoiceMailer;
+package com.example.InvoiceMailer.service;
 
 import com.example.InvoiceMailer.model.Invoice;
 import com.example.InvoiceMailer.model.Order;
-import com.example.InvoiceMailer.service.PdfGeneratorService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
