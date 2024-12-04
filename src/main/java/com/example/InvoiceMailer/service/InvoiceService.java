@@ -47,8 +47,16 @@ public class InvoiceService {
                        .map(this::mapToInvoice)
                        .toList();
     }
-    public List<Invoice> getNoSendInvoices() {
-        final List<InvoiceEntity> entities = invoiceRepository.findNoSendInvoices();
+
+    public List<Invoice> getNoSendInvoicesWithExcluding(final List<Invoice> processedFailed) {
+        final List<InvoiceEntity> entities;
+        if (processedFailed.isEmpty()) {
+            entities = invoiceRepository.findNoSendInvoices();
+        } else {
+            entities = invoiceRepository.findUnsentInvoicesExcluding(processedFailed.stream()
+                                                                                    .map(Invoice::getInvoiceId)
+                                                                                    .toList());
+        }
         return entities.stream()
                        .map(this::mapToInvoice)
                        .toList();

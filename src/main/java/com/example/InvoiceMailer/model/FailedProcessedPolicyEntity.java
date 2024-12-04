@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Entity
-@Table(name = "failedProcessedPolicy")
+@Table(name = "failed_processed_policy")
 public class FailedProcessedPolicyEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

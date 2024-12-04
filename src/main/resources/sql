@@ -5,7 +5,7 @@ GRANT ALL PRIVILEGES ON DATABASE invoiceMailer_database TO Viggo;
 
 DROP TABLE IF EXISTS invoices;
 DROP TABLE IF EXISTS orders;
-DROP TABLE IF EXISTS failedProcessedPolicy;
+DROP TABLE IF EXISTS failed_processed_policy;
 
 CREATE TABLE invoices (
     invoice_id VARCHAR(255) PRIMARY KEY,
@@ -26,7 +26,7 @@ CREATE TABLE orders (
     CONSTRAINT orders_invoice_id_fkey FOREIGN KEY (invoice_id) REFERENCES invoices (invoice_id)
 );
 
-CREATE TABLE failedProcessedPolicy (
+CREATE TABLE failed_processed_policy (
     id SERIAL PRIMARY KEY,
     invoice_id VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
@@ -45,13 +45,13 @@ VALUES
 ('FV/000000001/2024', 'AdresLuks', 'Abi', 2, 260.00);
 
 
-INSERT INTO failedProcessedPolicy (invoice_id, name, retry_count, message)
+INSERT INTO failed_processed_policy (invoice_id, name, retry_count, message)
 VALUES
   ('FV/000000009/2024', 'EmailPolicy', 1, 'Failed to send email due to connection timeout');
 
 SELECT * FROM invoices;
 SELECT * FROM orders;
-SELECT * FROM failedProcessedPolicy;
+SELECT * FROM failed_processed_policy;
 
 psql -U postgres -d invoicemailer_database
 Viggo123Password
@@ -62,4 +62,5 @@ http://localhost:8080/get-invoices-data?invoiceId=FV/000000001/2024
 http://localhost:8080/get-invoices-data?addressEmail=Viggo@wp.pl
 http://localhost:8080/get-all-unique-email
 
-    UPDATE invoices  SET is_email_send = true WHERE invoice_id = 'FV/000000011/2024';
+    UPDATE invoices  SET is_email_send = false WHERE invoice_id = 'FV/000000011/2024';
+      UPDATE failed_processed_policy  SET retry_count  = 2 WHERE invoice_id = 'FV/000000011/2024';

@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +20,7 @@ public class EmailPolicy {
     private final InvoiceService invoiceService;
     private final EmailService emailService;
     private final FailedProcessedPolicyService failedProcessedPolicyService;
+    final List<Invoice> processedFailed = new ArrayList<>();
 
     public EmailPolicy(final InvoiceService invoiceService,
                        final EmailService emailService,
@@ -30,7 +32,7 @@ public class EmailPolicy {
 
     @Scheduled(cron = "${email.policy.cron}")
     public void executeEmailPolicy() {
-        final List<Invoice> unsentInvoices = invoiceService.getNoSendInvoices();
+        final List<Invoice> unsentInvoices = invoiceService.getNoSendInvoicesWithExcluding(processedFailed);
         if (unsentInvoices.isEmpty()) {
             return;
         }
@@ -39,6 +41,7 @@ public class EmailPolicy {
             final Optional<FailedProcessedPolicyEntity> failedProcessed = failedProcessedPolicyService.findInvoicesByInvoiceId(invoice.getInvoiceId());
             if (failedProcessed.isPresent() && failedProcessed.get()
                                                               .getRetryCount() > 10) {
+                processedFailed.add(invoice);
                 return;
             }
 
@@ -47,13 +50,12 @@ public class EmailPolicy {
                 emailService.sendEmails(invoice.getBuyerAddressEmail(), pdfAttachment, "Faktura-" + invoice.getInvoiceId() + ".pdf");
                 invoiceService.updateEmailSendStatus(invoice.getInvoiceId(), true);
             } catch (Exception e) {
+              final   String errorMessage = e.getCause() != null ? e.getCause().getLocalizedMessage() : e.getMessage();
                 failedProcessedPolicyService.logError(POLICY_NAME,
-                                                      e.getCause()
-                                                       .getLocalizedMessage(),
+                                                      errorMessage,
                                                       invoice.getInvoiceId(),
                                                       failedProcessed);
-
-                throw new IllegalStateException("Failed to send email.", e);
+                processedFailed.add(invoice);
             }
         }
     }

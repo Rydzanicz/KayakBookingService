@@ -32,7 +32,6 @@ public class FailedProcessedPolicyService {
             failedProcessedPolicy.setMessage(message);
 
             updateRetryCount(failedProcessedPolicy);
-            Optional<FailedProcessedPolicyEntity> policies = repository.findInvoicesById(failedProcessedPolicy.getId());
             return;
         }
 
@@ -46,8 +45,10 @@ public class FailedProcessedPolicyService {
     }
 
     @Transactional
-    private int updateRetryCount(FailedProcessedPolicyEntity failedProcessedPolicyEntity) {
-        return repository.updateFailedPolicy(failedProcessedPolicyEntity.getInvoiceId(), failedProcessedPolicyEntity.getId());
+    private void updateRetryCount(final FailedProcessedPolicyEntity failedProcessedPolicyEntity) {
+        repository.updateFailedPolicy(failedProcessedPolicyEntity.getInvoiceId(),
+                                      failedProcessedPolicyEntity.getMessage(),
+                                      failedProcessedPolicyEntity.getDate(),
+                                      failedProcessedPolicyEntity.getRetryCount());
     }
-
 }

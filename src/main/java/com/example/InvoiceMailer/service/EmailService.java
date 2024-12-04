@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailService {
 
-    private static final String EMAIL_FROM = "noreply.viggo.programer@wp.pl";
+    private static final String EMAIL_FROM = "misiekr95@wp.pl";
     private static final String MY_EMAIL = "rydzanicz.mm@gmail.com";
     private static final String SUBJECT = "Dziękujemy za zakup – Twoja faktura w załączniku";
     private final JavaMailSender mailSender;
