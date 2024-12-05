@@ -1,7 +1,7 @@
-package com.example.InvoiceMailer;
+package com.example.InvoiceMailer.controller;
 
-import com.example.InvoiceMailer.RestControler.InvoiceController;
-import com.example.InvoiceMailer.RestControler.InvoiceRequest;
+import com.example.InvoiceMailer.controler.InvoiceController;
+import com.example.InvoiceMailer.controler.InvoiceRequest;
 import com.example.InvoiceMailer.model.Invoice;
 import com.example.InvoiceMailer.model.Order;
 import com.example.InvoiceMailer.service.InvoiceService;

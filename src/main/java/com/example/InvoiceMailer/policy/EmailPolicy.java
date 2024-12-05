@@ -55,7 +55,6 @@ public class EmailPolicy {
                                                       errorMessage,
                                                       invoice.getInvoiceId(),
                                                       failedProcessed);
-                processedFailed.add(invoice);
             }
         }
     }

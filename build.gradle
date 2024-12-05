@@ -37,6 +37,8 @@ dependencies {
     implementation 'org.postgresql:postgresql:42.5.0'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     testImplementation 'org.mockito:mockito-core'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'jakarta.servlet:jakarta.servlet-api:5.0.0'
 }
 
 tasks.named('test') {

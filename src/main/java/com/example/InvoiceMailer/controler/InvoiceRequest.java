@@ -1,4 +1,4 @@
-package com.example.InvoiceMailer.RestControler;
+package com.example.InvoiceMailer.controler;
 
 import com.example.InvoiceMailer.model.Order;
 
