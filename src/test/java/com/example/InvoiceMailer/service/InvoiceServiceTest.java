@@ -44,12 +44,14 @@ public class InvoiceServiceTest {
         final List<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
         final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
+        final String buyerPhone = "987654321";
         final List<InvoiceEntity> entities = new ArrayList<>();
         entities.add(new InvoiceEntity(new Invoice(1,
                                                    "Jan Kowalski",
                                                    "Popowicka 68",
                                                    "jan.kowalski@example.com",
                                                    null,
+                                                   buyerPhone,
                                                    ordersDate,
                                                    false,
                                                    orders)));
@@ -59,6 +61,7 @@ public class InvoiceServiceTest {
                                                    "Kwiatowa 12",
                                                    "anna.nowak@example.com",
                                                    null,
+                                                   buyerPhone,
                                                    ordersDate,
                                                    false,
                                                    orders)));
@@ -101,14 +104,15 @@ public class InvoiceServiceTest {
         // given
         final List<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
-        final String invoiceId = "FV/000000001/2024";
-        final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
-
+        final String invoiceId = "FV/000000001/2025";
+        final LocalDateTime ordersDate = LocalDateTime.parse("2025-01-01 14:30:00", formatter);
+        final String buyerPhone = "987654321";
         final InvoiceEntity entities = new InvoiceEntity(new Invoice(1,
                                                                      "Jan Kowalski",
                                                                      "Popowicka 68",
                                                                      "jan.kowalski@example.com",
                                                                      null,
+                                                                     buyerPhone,
                                                                      ordersDate,
                                                                      false,
                                                                      orders));
@@ -119,7 +123,7 @@ public class InvoiceServiceTest {
 
         // then
         assertNotNull(invoices);
-        assertEquals("FV/000000001/2024", invoices.getInvoiceId());
+        assertEquals("FV/000000001/2025", invoices.getInvoiceId());
         verify(invoiceRepository, times(1)).findInvoicesByInvoiceId(invoiceId);
     }
 
@@ -129,12 +133,13 @@ public class InvoiceServiceTest {
         final List<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
         final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
-
+        final String buyerPhone = "987654321";
         final InvoiceEntity lastInvoiceEntity = new InvoiceEntity(new Invoice(5,
                                                                               "Anna Nowak",
                                                                               "Kwiatowa 12",
                                                                               "anna.nowak@example.com",
                                                                               null,
+                                                                              buyerPhone,
                                                                               ordersDate,
                                                                               false,
                                                                               orders));
@@ -145,7 +150,7 @@ public class InvoiceServiceTest {
 
         // then
         assertNotNull(lastInvoice);
-        assertEquals("FV/000000005/2024", lastInvoice.getInvoiceId());
+        assertEquals("FV/000000005/2025", lastInvoice.getInvoiceId());
         assertEquals("Anna Nowak", lastInvoice.getBuyerName());
         assertEquals("Kwiatowa 12", lastInvoice.getBuyerAddress());
         assertEquals("anna.nowak@example.com", lastInvoice.getBuyerAddressEmail());
@@ -159,12 +164,13 @@ public class InvoiceServiceTest {
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
         final String email = "jan.kowalski@example.com";
         final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
-
+        final String buyerPhone = "987654321";
         final List<InvoiceEntity> entities = List.of(new InvoiceEntity(new Invoice(1,
                                                                                    "Jan Kowalski",
                                                                                    "Popowicka 68",
                                                                                    email,
                                                                                    null,
+                                                                                   buyerPhone,
                                                                                    ordersDate,
                                                                                    false,
                                                                                    orders)));
@@ -188,8 +194,16 @@ public class InvoiceServiceTest {
         final List<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
         final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
-
-        final Invoice invoice = new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, ordersDate, false, orders);
+        final String buyerPhone = "987654321";
+        final Invoice invoice = new Invoice(1,
+                                            "Jan Kowalski",
+                                            "Popowicka 68",
+                                            "jan.kowalski@example.com",
+                                            null,
+                                            buyerPhone,
+                                            ordersDate,
+                                            false,
+                                            orders);
         final InvoiceEntity savedEntity = new InvoiceEntity(invoice);
         when(invoiceRepository.save(any(InvoiceEntity.class))).thenReturn(savedEntity);
 

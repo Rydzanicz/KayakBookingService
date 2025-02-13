@@ -15,6 +15,7 @@ public class Invoice {
     private final String buyerAddress;
     private final String buyerAddressEmail;
     private final String buyerNIP;
+    private final String buyerPhone;
     private final LocalDateTime orderDate;
     private final boolean isEmailSend;
     private final List<Order> order;
@@ -26,6 +27,7 @@ public class Invoice {
                    final String buyerAddress,
                    final String buyerAddressEmail,
                    final String buyerNIP,
+                   final String buyerPhone,
                    final LocalDateTime orderDate,
                    final boolean isEmailSend,
                    final List<Order> order) {
@@ -37,6 +39,9 @@ public class Invoice {
         }
         if (buyerAddressEmail == null || buyerAddressEmail.isEmpty()) {
             throw new IllegalArgumentException("Email cannot be null or empty.");
+        }
+        if (buyerPhone == null || buyerPhone.isEmpty()) {
+            throw new IllegalArgumentException("Phone cannot be null or empty.");
         }
         if (orderDate == null) {
             throw new IllegalArgumentException("Order date cannot be null or empty.");
@@ -50,6 +55,7 @@ public class Invoice {
         this.buyerAddress = buyerAddress;
         this.buyerAddressEmail = buyerAddressEmail;
         this.buyerNIP = buyerNIP;
+        this.buyerPhone = buyerPhone;
         this.orderDate = orderDate;
         this.isEmailSend = isEmailSend;
         this.order = order;
@@ -60,6 +66,7 @@ public class Invoice {
                    final String buyerAddress,
                    final String buyerAddressEmail,
                    final String buyerNIP,
+                   final String buyerPhone,
                    final String orderDate,
                    final boolean isEmailSend,
                    final List<Order> order) {
@@ -71,6 +78,9 @@ public class Invoice {
         }
         if (buyerAddressEmail == null || buyerAddressEmail.isEmpty()) {
             throw new IllegalArgumentException("Email cannot be null or empty.");
+        }
+        if (buyerPhone == null || buyerPhone.isEmpty()) {
+            throw new IllegalArgumentException("Phone cannot be null or empty.");
         }
         if (orderDate == null || orderDate.equals("")) {
             throw new IllegalArgumentException("Order date cannot be null or empty.");
@@ -84,6 +94,7 @@ public class Invoice {
         this.buyerAddress = buyerAddress;
         this.buyerAddressEmail = buyerAddressEmail;
         this.buyerNIP = buyerNIP;
+        this.buyerPhone = buyerPhone;
         this.orderDate = LocalDateTime.parse(orderDate, formatter);
         this.isEmailSend = isEmailSend;
         this.order = order;
@@ -97,6 +108,7 @@ public class Invoice {
         this.buyerAddress = invoice.getAddress();
         this.buyerAddressEmail = invoice.getEmail();
         this.buyerNIP = invoice.getNip();
+        this.buyerPhone = invoice.getPhone();
         this.orderDate = LocalDateTime.parse(invoice.getOrderDate(), formatter);
         this.isEmailSend = invoice.isEmailSend();
         this.order = invoice.getOrders()
@@ -166,6 +178,10 @@ public class Invoice {
 
     public String getBuyerNIP() {
         return buyerNIP;
+    }
+
+    public String getBuyerPhone() {
+        return buyerPhone;
     }
 
     public LocalDateTime getOrderDate() {

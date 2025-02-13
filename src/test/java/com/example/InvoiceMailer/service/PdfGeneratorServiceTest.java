@@ -28,11 +28,12 @@ public class PdfGeneratorServiceTest {
         final String buyerAddress = "ul. Przykładowa 2, 00-000 Warszawa";
         final String buyerEmail = "buyer@example.com";
         final String buyerNip = "0987654321";
+        final String buyerPhone = "987654321";
         final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
         final ArrayList<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 2, 100.0));
 
-        final Invoice invoice = new Invoice(1, buyerName, buyerAddress, buyerEmail, buyerNip, ordersDate, false, orders);
+        final Invoice invoice = new Invoice(1, buyerName, buyerAddress, buyerEmail, buyerNip, buyerPhone, ordersDate, false, orders);
         final PdfGeneratorService pdfGeneratorService = Mockito.spy(PdfGeneratorService.class);
 
         //when
@@ -70,8 +71,9 @@ public class PdfGeneratorServiceTest {
         final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
         final ArrayList<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 2, 100.0));
+        final String buyerPhone = "987654321";
 
-        final Invoice invoice = new Invoice(1, buyerName, buyerAddress, buyerEmail, buyerNip, ordersDate, false, orders);
+        final Invoice invoice = new Invoice(1, buyerName, buyerAddress, buyerEmail, buyerNip, buyerPhone, ordersDate, false, orders);
 
         final PdfGeneratorService pdfGeneratorService = new PdfGeneratorService();
         final ByteArrayOutputStream pdfOutput = pdfGeneratorService.generateInvoicePdf(invoice);
@@ -100,8 +102,9 @@ public class PdfGeneratorServiceTest {
         for (int i = 0; i < 1000; i++) {
             orders.add(new Order("Produkt " + i, "Opis " + i, 2, 100.0));
         }
+        final String buyerPhone = "987654321";
 
-        final Invoice invoice = new Invoice(1, buyerName, buyerAddress, buyerEmail, buyerNip, ordersDate, false, orders);
+        final Invoice invoice = new Invoice(1, buyerName, buyerAddress, buyerEmail, buyerNip, buyerPhone, ordersDate, false, orders);
 
         final PdfGeneratorService pdfGeneratorService = new PdfGeneratorService();
 
@@ -122,8 +125,9 @@ public class PdfGeneratorServiceTest {
         final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
         final ArrayList<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 2, 100.0));
+        final String buyerPhone = "987654321";
 
-        final Invoice invoice = new Invoice(1, buyerName, buyerAddress, buyerEmail, buyerNip, ordersDate, false, orders);
+        final Invoice invoice = new Invoice(1, buyerName, buyerAddress, buyerEmail, buyerNip, buyerPhone, ordersDate, false, orders);
 
         final PdfGeneratorService pdfGeneratorService = new PdfGeneratorService();
 
@@ -148,9 +152,10 @@ public class PdfGeneratorServiceTest {
         final String buyerNip = "0987654321";
         final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
         final ArrayList<Order> orders = new ArrayList<>();
+        final String buyerPhone = "987654321";
 
         assertThrows(IllegalArgumentException.class,
-                     () -> new Invoice(1, buyerName, buyerAddress, buyerEmail, buyerNip, ordersDate, false, orders),
+                     () -> new Invoice(1, buyerName, buyerAddress, buyerEmail, buyerNip, buyerPhone, ordersDate, false, orders),
                      "List of Order cannot be null or empty.");
     }
 }

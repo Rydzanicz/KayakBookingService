@@ -32,6 +32,9 @@ public class InvoiceEntity {
     @Column(name = "nip")
     private String nip;
 
+    @Column(name = "phone")
+    private final String phone;
+
     @Column(name = "order_date", nullable = false)
     private String orderDate;
 
@@ -47,6 +50,7 @@ public class InvoiceEntity {
         this.address = null;
         this.email = null;
         this.nip = null;
+        this.phone = null;
         this.orderDate = null;
         this.isEmailSend = false;
         this.orders = new ArrayList<>();
@@ -58,6 +62,7 @@ public class InvoiceEntity {
         this.address = invoice.getBuyerAddress();
         this.email = invoice.getBuyerAddressEmail();
         this.nip = invoice.getBuyerNIP();
+        this.phone = invoice.getBuyerPhone();
         this.orderDate = invoice.getOrderDate()
                                 .format(invoice.getFormatter());
         this.isEmailSend = invoice.isEmailSend();
@@ -101,6 +106,10 @@ public class InvoiceEntity {
 
     public String getNip() {
         return nip;
+    }
+
+    public String getPhone() {
+        return phone;
     }
 
     public String getOrderDate() {

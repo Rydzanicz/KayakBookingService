@@ -34,6 +34,7 @@ public class PdfGeneratorService {
     final static private String SELLER_FIRMA_NAME = "Viggo-Programer";
     final static private String SELLER_NAME = "Michał Rydzanicz";
     final static private String SELLER_Address = "Popowicka 68/17, 54-237 Wrocław";
+    final static private String SELLER_NR = "6574654654654";
     final static private String SELLER_NIP = "6574654654654";
     final static private DecimalFormat df = new DecimalFormat("#.00");
 
@@ -81,7 +82,8 @@ public class PdfGeneratorService {
         document.showTextAligned(new Paragraph("SPRZEDAWCA"), 50, 690, TextAlignment.LEFT);
         document.showTextAligned(new Paragraph(SELLER_FIRMA_NAME), 50, 670, TextAlignment.LEFT);
         document.showTextAligned(new Paragraph(SELLER_Address), 50, 650, TextAlignment.LEFT);
-        document.showTextAligned(new Paragraph("NIP " + SELLER_NIP), 50, 630, TextAlignment.LEFT);
+        document.showTextAligned(new Paragraph(SELLER_NR), 50, 630, TextAlignment.LEFT);
+        document.showTextAligned(new Paragraph("NIP " + SELLER_NIP), 50, 610, TextAlignment.LEFT);
 
         document.showTextAligned(new Paragraph("________________________________________"), 320, 700, TextAlignment.LEFT);
         document.showTextAligned(new Paragraph("________________________________________"), 320, 690, TextAlignment.LEFT);
@@ -89,10 +91,11 @@ public class PdfGeneratorService {
         document.showTextAligned(new Paragraph(invoice.getBuyerName()), 320, 670, TextAlignment.LEFT);
         document.showTextAligned(new Paragraph(invoice.getBuyerAddress()), 320, 650, TextAlignment.LEFT);
         document.showTextAligned(new Paragraph(invoice.getBuyerAddressEmail()), 320, 630, TextAlignment.LEFT);
+        document.showTextAligned(new Paragraph(invoice.getBuyerPhone()), 320, 610, TextAlignment.LEFT);
 
         if (!invoice.getBuyerNIP()
                     .isEmpty()) {
-            document.showTextAligned(new Paragraph("NIP " + invoice.getBuyerNIP()), 320, 610, TextAlignment.LEFT);
+            document.showTextAligned(new Paragraph("NIP " + invoice.getBuyerNIP()), 320, 590, TextAlignment.LEFT);
         }
         document.add(new Paragraph("\n").setMarginTop(200));
 

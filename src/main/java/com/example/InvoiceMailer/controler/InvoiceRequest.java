@@ -9,6 +9,7 @@ public class InvoiceRequest {
     private String buyerAddressEmail;
     private String buyerAddress;
     private String buyerNip;
+    private String buyerPhone;
     private List<Order> orders;
 
     public void setBuyerName(String buyerName) {
@@ -26,6 +27,11 @@ public class InvoiceRequest {
     public void setBuyerNip(String buyerNip) {
         this.buyerNip = buyerNip;
     }
+
+    public void setBuyerPhone(String buyerPhone) {
+        this.buyerPhone = buyerPhone;
+    }
+
 
     public void setOrders(List<Order> orders) {
         this.orders = orders;
@@ -45,6 +51,10 @@ public class InvoiceRequest {
 
     public String getBuyerNip() {
         return buyerNip;
+    }
+
+    public String getBuyerPhone() {
+        return buyerPhone;
     }
 
     public List<Order> getOrders() {

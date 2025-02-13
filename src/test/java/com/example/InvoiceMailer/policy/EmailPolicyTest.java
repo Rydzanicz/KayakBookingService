@@ -40,11 +40,12 @@ class EmailPolicyTest {
         final String buyerAddress = "ul. Przykładowa 2, 00-000 Warszawa";
         final String buyerEmail = "buyer@example.com";
         final String buyerNip = "0987654321";
+        final String buyerPhone = "987654321";
         final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
         final ArrayList<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 2, 100.0));
 
-        final Invoice invoice = new Invoice(1, buyerName, buyerAddress, buyerEmail, buyerNip, ordersDate, false, orders);
+        final Invoice invoice = new Invoice(1, buyerName, buyerAddress, buyerEmail, buyerNip, buyerPhone, ordersDate, false, orders);
         final List<Invoice> unsentInvoices = List.of(invoice);
 
         when(invoiceService.getNoSendInvoicesWithExcluding(anyList())).thenReturn(unsentInvoices);
@@ -69,11 +70,12 @@ class EmailPolicyTest {
         final String buyerAddress = "ul. Przykładowa 2, 00-000 Warszawa";
         final String buyerEmail = "buyer@example.com";
         final String buyerNip = "0987654321";
+        final String buyerPhone = "987654321";
         final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
         final ArrayList<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 2, 100.0));
 
-        final Invoice invoice = new Invoice(1, buyerName, buyerAddress, buyerEmail, buyerNip, ordersDate, false, orders);
+        final Invoice invoice = new Invoice(1, buyerName, buyerAddress, buyerEmail, buyerNip, buyerPhone, ordersDate, false, orders);
         final List<Invoice> unsentInvoices = List.of(invoice);
 
         when(invoiceService.getNoSendInvoicesWithExcluding(anyList())).thenReturn(unsentInvoices);
@@ -99,11 +101,12 @@ class EmailPolicyTest {
         final String buyerAddress = "ul. Przykładowa 2, 00-000 Warszawa";
         final String buyerEmail = "buyer@example.com";
         final String buyerNip = "0987654321";
+        final String buyerPhone = "987654321";
         final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
         final ArrayList<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 2, 100.0));
 
-        final Invoice invoice = new Invoice(1, buyerName, buyerAddress, buyerEmail, buyerNip, ordersDate, false, orders);
+        final Invoice invoice = new Invoice(1, buyerName, buyerAddress, buyerEmail, buyerNip, buyerPhone, ordersDate, false, orders);
         final List<Invoice> unsentInvoices = List.of(invoice);
 
         final FailedProcessedPolicyEntity failedPolicy = new FailedProcessedPolicyEntity();

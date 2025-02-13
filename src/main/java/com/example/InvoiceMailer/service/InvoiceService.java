@@ -69,6 +69,7 @@ public class InvoiceService {
                            entity.getAddress(),
                            entity.getEmail(),
                            entity.getNip(),
+                           entity.getPhone(),
                            entity.getOrderDate(),
                            entity.isEmailSend(),
                            entity.getOrders()

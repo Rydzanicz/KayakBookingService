@@ -41,13 +41,16 @@ public class InvoiceController {
                                                    invoiceRequest.getBuyerAddress(),
                                                    invoiceRequest.getBuyerAddressEmail(),
                                                    invoiceRequest.getBuyerNip(),
+                                                   invoiceRequest.getBuyerPhone(),
                                                    LocalDateTime.now(),
                                                    false,
                                                    invoiceRequest.getOrders());
 
             invoiceService.saveInvoiceWithOrders(newInvoice, invoiceRequest.getOrders());
+            return ResponseEntity.ok()
+                                 .contentType(MediaType.TEXT_PLAIN)
+                                 .body("Invoice saved successfully");
 
-            return ResponseEntity.ok("Invoice saved successfully");
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

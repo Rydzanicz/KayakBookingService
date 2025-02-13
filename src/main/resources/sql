@@ -13,17 +13,19 @@ CREATE TABLE invoices (
     address VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     nip VARCHAR(20),
+    phone VARCHAR(20),
     order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     is_email_send BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE orders (
-    id SERIAL PRIMARY KEY,
+    order_id SERIAL PRIMARY KEY,
+    invoice_id VARCHAR(255) NOT NULL,
     product_name VARCHAR(255) NOT NULL,
     product_description VARCHAR(255),
     quantity INT NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
-    CONSTRAINT orders_invoice_id_fkey FOREIGN KEY (invoice_id) REFERENCES invoices (invoice_id)
+    CONSTRAINT orders_invoice_id_fkey FOREIGN KEY (invoice_id) REFERENCES invoices (invoice_id) ON DELETE CASCADE
 );
 
 CREATE TABLE failed_processed_policy (
@@ -36,8 +38,8 @@ CREATE TABLE failed_processed_policy (
 );
 
 
-INSERT INTO invoices (invoice_id, name, address, email, nip, order_date, is_email_send)
-VALUES ('FV/000000001/2024', 'Jan Kowalski', 'ul. Testowa 10, 00-001 Warszawa', 'jan.kowalski@example.com', '1234567890', '2024-01-01 14:30:00', false);
+INSERT INTO invoices (invoice_id, name, address, email, nip,phone, order_date, is_email_send)
+VALUES ('FV/000000001/2024', 'Jan Kowalski', 'ul. Testowa 10, 00-001 Warszawa', 'jan.kowalski@example.com', '1234567890','123456789', '2024-01-01 14:30:00', false);
 
 INSERT INTO orders (invoice_id, product_name, product_description, quantity, price)
 VALUES

@@ -56,6 +56,8 @@ public class InvoiceControllerTest {
         validRequest.setBuyerAddress("Test Address");
         validRequest.setBuyerAddressEmail("buyer@example.com");
         validRequest.setBuyerNip("1234567890");
+        validRequest.setBuyerPhone("123456789");
+        validRequest.setBuyerPhone("123456789");
         validRequest.setOrders(orders);
 
         final Invoice lastInvoice = new Invoice(1,
@@ -63,6 +65,7 @@ public class InvoiceControllerTest {
                                                 "Last Address",
                                                 "last@example.com",
                                                 "0987654321",
+                                                "123456789",
                                                 LocalDateTime.now(),
                                                 false,
                                                 orders);
@@ -160,6 +163,7 @@ public class InvoiceControllerTest {
                                                 "Popowicka 68",
                                                 "jan.kowalski@example.com",
                                                 "",
+                                                "123456789",
                                                 ordersDate,
                                                 false,
                                                 orders);
@@ -178,14 +182,22 @@ public class InvoiceControllerTest {
     @Test
     public void testGetInvoicesByInvoiceId() {
         // given
-        final LocalDateTime ordersDate = LocalDateTime.parse("2024-01-01 14:30:00", formatter);
+        final LocalDateTime ordersDate = LocalDateTime.parse("2025-01-01 14:30:00", formatter);
         final List<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
-        final Invoice invoice = new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, ordersDate, false, orders);
-        when(invoiceService.getInvoicesByInvoiceId("FV/001/2024")).thenReturn(invoice);
+        final Invoice invoice = new Invoice(1,
+                                            "Jan Kowalski",
+                                            "Popowicka 68",
+                                            "jan.kowalski@example.com",
+                                            null,
+                                            "123456789",
+                                            ordersDate,
+                                            false,
+                                            orders);
+        when(invoiceService.getInvoicesByInvoiceId("FV/001/2025")).thenReturn(invoice);
 
         // when
-        final ResponseEntity<List<Invoice>> response = invoiceController.getInvoices("FV/001/2024", null);
+        final ResponseEntity<List<Invoice>> response = invoiceController.getInvoices("FV/001/2025", null);
 
         // then
         assertNotNull(response);
@@ -193,7 +205,7 @@ public class InvoiceControllerTest {
         assertEquals(1,
                      response.getBody()
                              .size());
-        verify(invoiceService, times(1)).getInvoicesByInvoiceId("FV/001/2024");
+        verify(invoiceService, times(1)).getInvoicesByInvoiceId("FV/001/2025");
     }
 
     @Test
@@ -231,7 +243,15 @@ public class InvoiceControllerTest {
         final List<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
         final List<Invoice> invoices = new ArrayList<>();
-        invoices.add(new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, ordersDate, false, orders));
+        invoices.add(new Invoice(1,
+                                 "Jan Kowalski",
+                                 "Popowicka 68",
+                                 "jan.kowalski@example.com",
+                                 null,
+                                 "123456789",
+                                 ordersDate,
+                                 false,
+                                 orders));
         when(invoiceService.getInvoicesByAddressEmail("jan.kowalski@example.com")).thenReturn(invoices);
 
         // when
@@ -254,8 +274,16 @@ public class InvoiceControllerTest {
         final List<Order> orders = new ArrayList<>();
         orders.add(new Order("Produkt A", "Opis A", 1, 100.0));
         final List<Invoice> invoices = new ArrayList<>();
-        invoices.add(new Invoice(1, "Jan Kowalski", "Popowicka 68", "jan.kowalski@example.com", null, ordersDate, false, orders));
-        invoices.add(new Invoice(2, "Anna Nowak", "Kwiatowa 12", "anna.nowak@example.com", null, ordersDate, false, orders));
+        invoices.add(new Invoice(1,
+                                 "Jan Kowalski",
+                                 "Popowicka 68",
+                                 "jan.kowalski@example.com",
+                                 null,
+                                 "123456789",
+                                 ordersDate,
+                                 false,
+                                 orders));
+        invoices.add(new Invoice(2, "Anna Nowak", "Kwiatowa 12", "anna.nowak@example.com", null, "123456789", ordersDate, false, orders));
         when(invoiceService.getAllInvoices()).thenReturn(invoices);
 
         // when
