@@ -1,0 +1,158 @@
+package com.example.KayakBooking.policy;
+
+import com.example.KayakBooking.model.FailedProcessedPolicyEntity;
+import com.example.KayakBooking.model.KayakBooking;
+import com.example.KayakBooking.service.EmailService;
+import com.example.KayakBooking.service.FailedProcessedPolicyService;
+import com.example.KayakBooking.service.BookingService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.mockito.Mockito.*;
+
+class EmailPolicyTest {
+
+    private BookingService bookingService;
+    private EmailService emailService;
+    private FailedProcessedPolicyService failedProcessedPolicyService;
+    private EmailPolicy emailPolicy;
+    final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    @BeforeEach
+    void setUp() {
+        bookingService = mock(BookingService.class);
+        emailService = mock(EmailService.class);
+        failedProcessedPolicyService = mock(FailedProcessedPolicyService.class);
+        emailPolicy = new EmailPolicy(bookingService, emailService, failedProcessedPolicyService);
+    }
+
+    @Test
+    void shouldSendEmailForUnsentOrders() {
+        // Given
+        final String buyerName = "Jan Kowalski";
+        final String buyerEmail = "jan.kowalski@example.com";
+        final String buyerPhone = "123123123";
+        final LocalDateTime ordersDate = LocalDateTime.parse("2025-01-01 14:30:00", formatter);
+        final int kayakOne = 1;
+        final int kayakTwo = 1;
+        final int kayakOne_Two = 1;
+
+        final KayakBooking kayakBooking = new KayakBooking(1,
+                                                           buyerName,
+                                                           buyerEmail,
+                                                           buyerPhone,
+                                                           ordersDate,
+                                                           kayakOne,
+                                                           kayakTwo,
+                                                           kayakOne_Two,
+                                                           false);
+        final List<KayakBooking> unsentKayakBookings = List.of(kayakBooking);
+
+        when(bookingService.getNoSendOrdersWithExcluding(anyList())).thenReturn(unsentKayakBookings);
+        when(failedProcessedPolicyService.findOrdersByOrderId(kayakBooking.getOrderId())).thenReturn(Optional.empty());
+        doNothing().when(emailService)
+                   .sendEmails(anyString());
+        doNothing().when(bookingService)
+                   .updateEmailSendStatus(anyString(), eq(true));
+
+        // When
+        emailPolicy.executeEmailPolicy();
+
+        // Then
+        verify(emailService, times(1)).sendEmails(eq(kayakBooking.getBuyerAddressEmail()));
+        verify(bookingService, times(1)).updateEmailSendStatus(eq(kayakBooking.getOrderId()), eq(true));
+    }
+
+    @Test
+    void shouldLogErrorWhenEmailSendingFails() {
+        // Given
+        final String buyerName = "Jan Kowalski";
+        final String buyerEmail = "jan.kowalski@example.com";
+        final String buyerPhone = "123123123";
+        final LocalDateTime ordersDate = LocalDateTime.parse("2025-01-01 14:30:00", formatter);
+        final int kayakOne = 1;
+        final int kayakTwo = 1;
+        final int kayakOne_Two = 1;
+
+        final KayakBooking kayakBooking = new KayakBooking(1,
+                                                           buyerName,
+                                                           buyerEmail,
+                                                           buyerPhone,
+                                                           ordersDate,
+                                                           kayakOne,
+                                                           kayakTwo,
+                                                           kayakOne_Two,
+                                                           false);
+        final List<KayakBooking> unsentKayakBookings = List.of(kayakBooking);
+
+        when(bookingService.getNoSendOrdersWithExcluding(anyList())).thenReturn(unsentKayakBookings);
+        when(failedProcessedPolicyService.findOrdersByOrderId(anyString())).thenReturn(Optional.empty());
+        doThrow(new RuntimeException("Email service failed")).when(emailService)
+                                                             .sendEmails(anyString());
+
+        // when
+        emailPolicy.executeEmailPolicy();
+
+        // then
+        verify(failedProcessedPolicyService, times(1)).logError(eq("EmailPolicy"),
+                                                                eq("Email service failed"),
+                                                                eq(kayakBooking.getOrderId()),
+                                                                any());
+        verify(bookingService, never()).updateEmailSendStatus(anyString(), eq(true));
+    }
+
+    @Test
+    void shouldSkipOrdersWithMaxRetryCount() {
+        // Given
+        final String buyerName = "Jan Kowalski";
+        final String buyerEmail = "jan.kowalski@example.com";
+        final String buyerPhone = "123123123";
+        final LocalDateTime ordersDate = LocalDateTime.parse("2025-01-01 14:30:00", formatter);
+        final int kayakOne = 1;
+        final int kayakTwo = 1;
+        final int kayakOne_Two = 1;
+
+        final KayakBooking kayakBooking = new KayakBooking(1,
+                                                           buyerName,
+                                                           buyerEmail,
+                                                           buyerPhone,
+                                                           ordersDate,
+                                                           kayakOne,
+                                                           kayakTwo,
+                                                           kayakOne_Two,
+                                                           false);
+        final List<KayakBooking> unsentKayakBookings = List.of(kayakBooking);
+
+        final FailedProcessedPolicyEntity failedPolicy = new FailedProcessedPolicyEntity();
+        failedPolicy.setRetryCount(11);
+
+        when(bookingService.getNoSendOrdersWithExcluding(anyList())).thenReturn(unsentKayakBookings);
+        when(failedProcessedPolicyService.findOrdersByOrderId(kayakBooking.getOrderId())).thenReturn(Optional.of(failedPolicy));
+
+        // When
+        emailPolicy.executeEmailPolicy();
+
+        // Then
+        verify(emailService, never()).sendEmails(anyString());
+        verify(failedProcessedPolicyService, never()).logError(anyString(), anyString(), anyString(), any());
+    }
+
+    @Test
+    void shouldNotProcessWhenNoUnsentOrders() {
+        // Given
+        when(bookingService.getNoSendOrdersWithExcluding(anyList())).thenReturn(new ArrayList<>());
+
+        // When
+        emailPolicy.executeEmailPolicy();
+
+        // Then
+        verify(emailService, never()).sendEmails(anyString());
+        verify(failedProcessedPolicyService, never()).logError(anyString(), anyString(), anyString(), any());
+    }
+}

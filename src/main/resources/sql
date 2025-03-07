@@ -3,11 +3,11 @@ CREATE DATABASE invoiceMailer_database;
 CREATE USER Viggo WITH PASSWORD 'Viggo123Password';
 GRANT ALL PRIVILEGES ON DATABASE invoiceMailer_database TO Viggo;
 
-DROP TABLE IF EXISTS invoices;
+DROP TABLE IF EXISTS kayakBookings;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS failed_processed_policy;
 
-CREATE TABLE invoices (
+CREATE TABLE kayakBookings (
     invoice_id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     address VARCHAR(255) NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE orders (
     product_description VARCHAR(255),
     quantity INT NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
-    CONSTRAINT orders_invoice_id_fkey FOREIGN KEY (invoice_id) REFERENCES invoices (invoice_id) ON DELETE CASCADE
+    CONSTRAINT orders_invoice_id_fkey FOREIGN KEY (invoice_id) REFERENCES kayakBookings (invoice_id) ON DELETE CASCADE
 );
 
 CREATE TABLE failed_processed_policy (
@@ -38,20 +38,20 @@ CREATE TABLE failed_processed_policy (
 );
 
 
-INSERT INTO invoices (invoice_id, name, address, email, nip,phone, order_date, is_email_send)
-VALUES ('FV/000000001/2024', 'Jan Kowalski', 'ul. Testowa 10, 00-001 Warszawa', 'jan.kowalski@example.com', '1234567890','123456789', '2024-01-01 14:30:00', false);
+INSERT INTO kayakBookings (invoice_id, name, address, email, nip,phone, order_date, is_email_send)
+VALUES ('ORDER/000000001/2024', 'Jan Kowalski', 'ul. Testowa 10, 00-001 Warszawa', 'jan.kowalski@example.com', '1234567890','123456789', '2024-01-01 14:30:00', false);
 
 INSERT INTO orders (invoice_id, product_name, product_description, quantity, price)
 VALUES
-('FV/000000001/2024', 'AdresLuks', 'Milka', 1, 130.00),
-('FV/000000001/2024', 'AdresLuks', 'Abi', 2, 260.00);
+('ORDER/000000001/2024', 'AdresLuks', 'Milka', 1, 130.00),
+('ORDER/000000001/2024', 'AdresLuks', 'Abi', 2, 260.00);
 
 
 INSERT INTO failed_processed_policy (invoice_id, name, retry_count, message)
 VALUES
   ('FV/000000009/2024', 'EmailPolicy', 1, 'Failed to send email due to connection timeout');
 
-SELECT * FROM invoices;
+SELECT * FROM kayakBookings;
 SELECT * FROM orders;
 SELECT * FROM failed_processed_policy;
 
@@ -60,9 +60,9 @@ Viggo123Password
 
 
 
-http://localhost:8080/get-invoices-data?invoiceId=FV/000000001/2024
-http://localhost:8080/get-invoices-data?addressEmail=Viggo@wp.pl
+http://localhost:8080/get-kayakBookings-data?invoiceId=ORDER/000000001/2024
+http://localhost:8080/get-kayakBookings-data?addressEmail=Viggo@wp.pl
 http://localhost:8080/get-all-unique-email
 
-    UPDATE invoices  SET is_email_send = false WHERE invoice_id = 'FV/000000011/2024';
+    UPDATE kayakBookings  SET is_email_send = false WHERE invoice_id = 'FV/000000011/2024';
       UPDATE failed_processed_policy  SET retry_count  = 2 WHERE invoice_id = 'FV/000000011/2024';
