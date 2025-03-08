@@ -16,16 +16,16 @@ public class EmailService {
     private final JavaMailSender mailSender;
 
     private final String emailBody = "Szanowni Państwo,\n\n"
-                                             + "Dziękujemy za dokonanie zakupu w naszej firmie. Poniżej znajdą Państwo szczegóły transakcji oraz fakturę VAT w załączniku.\n\n"
-                                             + "W razie jakichkolwiek pytań lub wątpliwości związanych z fakturą lub zakupem, prosimy o kontakt z naszym biurem obsługi klienta.\n"
+                                             + "Dziękujemy za zarejestrowanie się w spływu kajakowego.\n\n"
+                                             + "W razie jakichkolwiek pytań lub wątpliwości związanych z użytkowaniem serwisu, prosimy o kontakt z naszym biurem obsługi klienta.\n"
                                              + "Pamiętajcie, że na tę wiadomość nie należy odpowiadać, ponieważ jest generowana automatycznie.\n\n"
                                              + "Z wyrazami szacunku,\n"
                                              + "Michał Rydzanicz\n"
                                              + "---\n\n"
                                              + "**Dane kontaktowe:**\n"
                                              + "Email: rydzanicz.mm@gmail.com\n"
-                                             + "**Uwaga:** W przypadku problemów z otwarciem załącznika prosimy o kontakt pod adresem e-mail.\n\n"
-                                             + "Dziękujemy za zaufanie i zapraszamy ponownie!\n\n"
+                                             + "**Uwaga:** W przypadku jakichkolwiek problemów prosimy o kontakt pod adresem e-mail.\n\n"
+                                             + "Dziękujemy za zaufanie i zapraszamy do korzystania z naszych usług!\n\n"
                                              + "Z poważaniem";
 
     public EmailService(JavaMailSender mailSender) {

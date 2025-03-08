@@ -21,8 +21,8 @@ public interface OrderRepository extends JpaRepository<OrdersEntity, Long> {
     @Query(value = "SELECT * FROM orders ORDER BY order_id DESC LIMIT 1", nativeQuery = true)
     OrdersEntity getLastOrders();
 
-    @Query(value = "SELECT DISTINCT email FROM orders", nativeQuery = true)
-    List<String> findUniqueEmails();
+    @Query(value = "SELECT * FROM orders", nativeQuery = true)
+    List<OrdersEntity> findFutureTrips();
 
     @Modifying
     @Transactional

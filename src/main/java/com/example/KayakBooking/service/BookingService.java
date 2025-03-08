@@ -5,11 +5,14 @@ import com.example.KayakBooking.model.OrdersEntity;
 import com.example.KayakBooking.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
 public class BookingService {
     private final OrderRepository orderRepository;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public BookingService(final OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
@@ -17,6 +20,16 @@ public class BookingService {
 
     public KayakBooking getLastOrders() {
         return new KayakBooking(orderRepository.getLastOrders());
+    }
+
+    public List<OrdersEntity> getFutureTrips() {
+
+        return orderRepository.findFutureTrips()
+                              .stream()
+                              .filter(x -> LocalDateTime.parse(x.getOrderDate(), formatter)
+                                                        .isAfter(LocalDateTime.now()))
+                              .toList();
+
     }
 
     public void updateEmailSendStatus(final String orderId, final boolean status) {
@@ -51,7 +64,7 @@ public class BookingService {
     }
 
     public void saveOrder(final KayakBooking kayakBooking) {
-        if (kayakBooking == null ) {
+        if (kayakBooking == null) {
             throw new IllegalArgumentException("Kayak order cannot be null or empty.");
         }
         final OrdersEntity ordersEntity = new OrdersEntity(kayakBooking);

@@ -1,13 +1,17 @@
 package com.example.KayakBooking.controler;
 
 import com.example.KayakBooking.model.KayakBooking;
+import com.example.KayakBooking.model.OrdersEntity;
 import com.example.KayakBooking.service.BookingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 public class KayakBookingController {
@@ -24,7 +28,7 @@ public class KayakBookingController {
         }
 
         try {
-            final KayakBooking lastKayakBooking = bookingService.getLastOrders();
+             final KayakBooking lastKayakBooking = bookingService.getLastOrders();
             final KayakBooking newKayakBooking = new KayakBooking(lastKayakBooking.extractAndIncreaseOrderNumber(),
                                                                   kayakBookingRequest.getBuyerName(),
                                                                   kayakBookingRequest.getBuyerAddressEmail(),
@@ -44,6 +48,18 @@ public class KayakBookingController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                                  .body("Error saving order");
+        }
+    }
+
+    @GetMapping(value = "/get-future-trips", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<OrdersEntity> > getFutureTrips() {
+        try {
+            final List<OrdersEntity>  orderDates = bookingService.getFutureTrips();
+            return ResponseEntity.ok(orderDates);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .build();
         }
     }
 }

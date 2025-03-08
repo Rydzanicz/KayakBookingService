@@ -1,36 +1,26 @@
-CREATE DATABASE invoiceMailer_database;
+CREATE DATABASE kayakbooking_database;
 
 CREATE USER Viggo WITH PASSWORD 'Viggo123Password';
 GRANT ALL PRIVILEGES ON DATABASE invoiceMailer_database TO Viggo;
 
-DROP TABLE IF EXISTS kayakBookings;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS failed_processed_policy;
-
-CREATE TABLE kayakBookings (
-    invoice_id VARCHAR(255) PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    address VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    nip VARCHAR(20),
-    phone VARCHAR(20),
-    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    is_email_send BOOLEAN DEFAULT FALSE
-);
-
 CREATE TABLE orders (
-    order_id SERIAL PRIMARY KEY,
-    invoice_id VARCHAR(255) NOT NULL,
-    product_name VARCHAR(255) NOT NULL,
-    product_description VARCHAR(255),
-    quantity INT NOT NULL,
-    price DECIMAL(10, 2) NOT NULL,
-    CONSTRAINT orders_invoice_id_fkey FOREIGN KEY (invoice_id) REFERENCES kayakBookings (invoice_id) ON DELETE CASCADE
+    order_id VARCHAR(255) NOT NULL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    phone VARCHAR(15),
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    is_email_send BOOLEAN NOT NULL DEFAULT FALSE,
+    kayak_one INT NOT NULL DEFAULT 0,
+    kayak_two INT NOT NULL DEFAULT 0,
+    kayak_one_two INT NOT NULL DEFAULT 0
 );
+
 
 CREATE TABLE failed_processed_policy (
     id SERIAL PRIMARY KEY,
-    invoice_id VARCHAR(255) NOT NULL,
+    order_id VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
     date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     retry_count INTEGER DEFAULT 0,
@@ -38,27 +28,40 @@ CREATE TABLE failed_processed_policy (
 );
 
 
-INSERT INTO kayakBookings (invoice_id, name, address, email, nip,phone, order_date, is_email_send)
-VALUES ('ORDER/000000001/2024', 'Jan Kowalski', 'ul. Testowa 10, 00-001 Warszawa', 'jan.kowalski@example.com', '1234567890','123456789', '2024-01-01 14:30:00', false);
+INSERT INTO orders (
+    order_id,
+    name,
+    email,
+    phone,
+    order_date,
+    is_email_send,
+    kayak_one,
+    kayak_two,
+    kayak_one_two
+)
+VALUES (
+    'ORDER/000000003/2024',
+    'Jan Kowalski',
+    'jan.kowalski@email.com',
+    '123456789',
+    '2025-03-09 14:30:00',
+    true,
+    2,
+    1,
+    3
+);
 
-INSERT INTO orders (invoice_id, product_name, product_description, quantity, price)
-VALUES
-('ORDER/000000001/2024', 'AdresLuks', 'Milka', 1, 130.00),
-('ORDER/000000001/2024', 'AdresLuks', 'Abi', 2, 260.00);
 
-
-INSERT INTO failed_processed_policy (invoice_id, name, retry_count, message)
+INSERT INTO failed_processed_policy (order_id, name, retry_count, message)
 VALUES
   ('FV/000000009/2024', 'EmailPolicy', 1, 'Failed to send email due to connection timeout');
 
-SELECT * FROM kayakBookings;
 SELECT * FROM orders;
 SELECT * FROM failed_processed_policy;
 
-psql -U postgres -d invoicemailer_database
+ psql -U postgres -d kayakbooking_database
+
 Viggo123Password
-
-
 
 http://localhost:8080/get-kayakBookings-data?invoiceId=ORDER/000000001/2024
 http://localhost:8080/get-kayakBookings-data?addressEmail=Viggo@wp.pl
