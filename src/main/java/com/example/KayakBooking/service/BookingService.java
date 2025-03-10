@@ -29,7 +29,10 @@ public class BookingService {
                               .filter(x -> LocalDateTime.parse(x.getOrderDate(), formatter)
                                                         .isAfter(LocalDateTime.now()))
                               .toList();
+    }
 
+    public List<OrdersEntity> getTrips() {
+        return orderRepository.findFutureTrips();
     }
 
     public void updateEmailSendStatus(final String orderId, final boolean status) {
