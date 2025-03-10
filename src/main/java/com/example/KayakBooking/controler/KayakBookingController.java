@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.Optional;
 @RestController
 public class KayakBookingController {
     private final BookingService bookingService;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public KayakBookingController(final BookingService bookingService) {
         this.bookingService = bookingService;
@@ -117,16 +119,17 @@ public class KayakBookingController {
         if (startDate.isEmpty()) {
             return true;
         }
-        return !LocalDateTime.parse(order.getOrderDate())
+        return !LocalDateTime.parse(order.getOrderDate(), formatter)
                              .isBefore(startDate.get()
                                                 .atStartOfDay());
+
     }
 
     private boolean applyEndDateFilter(final OrdersEntity order, final Optional<LocalDate> endDate) {
         if (endDate.isEmpty()) {
             return true;
         }
-        return !LocalDateTime.parse(order.getOrderDate())
+        return !LocalDateTime.parse(order.getOrderDate(), formatter)
                              .isAfter(endDate.get()
                                              .atStartOfDay());
     }
