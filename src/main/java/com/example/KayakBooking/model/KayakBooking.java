@@ -199,4 +199,7 @@ public class KayakBooking {
     public void setEmailSend(boolean emailSend) {
         isEmailSend = emailSend;
     }
+    public void setEmailSend(String emailSend) {
+        isEmailSend = Boolean.parseBoolean(emailSend);
+    }
 }

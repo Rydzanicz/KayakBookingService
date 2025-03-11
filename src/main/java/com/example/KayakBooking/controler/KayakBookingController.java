@@ -52,6 +52,7 @@ public class KayakBookingController {
             updatedOrder.setKayakOne(kayakBookingRequest.getKayakOne());
             updatedOrder.setKayakTwo(kayakBookingRequest.getKayakTwo());
             updatedOrder.setKayakOne_Two(kayakBookingRequest.getKayakOne_Two());
+            updatedOrder.setEmailSend(kayakBookingRequest.getEmailSend());
 
             bookingService.updateOrder(updatedOrder);
 
