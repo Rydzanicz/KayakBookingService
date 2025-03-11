@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookingService {
@@ -72,5 +73,19 @@ public class BookingService {
         }
         final OrdersEntity ordersEntity = new OrdersEntity(kayakBooking);
         orderRepository.save(ordersEntity);
+    }
+
+    public Optional<OrdersEntity> findOrderById(String orderId) {
+        return Optional.ofNullable(orderRepository.findOrdersByOrderId(orderId));
+    }
+
+    public void deleteOrder(OrdersEntity order) {
+        orderRepository.delete(order);
+    }
+
+    public void updateOrder(KayakBooking updatedOrder) {
+
+        OrdersEntity entityToUpdate = new OrdersEntity(updatedOrder);
+        orderRepository.save(entityToUpdate);
     }
 }

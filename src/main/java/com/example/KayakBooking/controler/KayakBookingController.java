@@ -6,8 +6,11 @@ import com.example.KayakBooking.service.BookingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,6 +31,60 @@ public class KayakBookingController {
 
     public KayakBookingController(final BookingService bookingService) {
         this.bookingService = bookingService;
+    }
+
+    @PutMapping(value = "/update-order", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> updateOrder(@RequestBody KayakBookingRequest kayakBookingRequest) {
+        if (kayakBookingRequest == null) {
+            throw new IllegalArgumentException("Invalid request payload");
+        }
+
+        try {
+            String orderId = kayakBookingRequest.getOrderId();
+            Optional<OrdersEntity> optionalOrder = bookingService.findOrderById(orderId);
+
+            if (optionalOrder.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                                     .body("Order not found");
+            }
+
+            KayakBooking updatedOrder = new KayakBooking(optionalOrder.get());
+            updatedOrder.setKayakOne(kayakBookingRequest.getKayakOne());
+            updatedOrder.setKayakTwo(kayakBookingRequest.getKayakTwo());
+            updatedOrder.setKayakOne_Two(kayakBookingRequest.getKayakOne_Two());
+
+            bookingService.updateOrder(updatedOrder);
+
+            return ResponseEntity.ok("Order updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body("Error updating order");
+        }
+    }
+
+    @DeleteMapping(value = "/delete-order/{prefix}/{orderId}/{year}")
+    public ResponseEntity<String> deleteOrder(@PathVariable String prefix, @PathVariable String orderId, @PathVariable String year) {
+        if (prefix == null || orderId == null || year == null) {
+            throw new IllegalArgumentException("Invalid path variables");
+        }
+
+        String fullOrderId = String.format("%s/%s/%s", prefix, orderId, year);
+
+        try {
+            Optional<OrdersEntity> order = bookingService.findOrderById(fullOrderId);
+
+            if (order.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                                     .body("Order not found");
+            }
+
+            bookingService.deleteOrder(order.get());
+
+            return ResponseEntity.ok("Order deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body("Error deleting order");
+        }
     }
 
     @PostMapping(value = "/save-order", consumes = MediaType.APPLICATION_JSON_VALUE)

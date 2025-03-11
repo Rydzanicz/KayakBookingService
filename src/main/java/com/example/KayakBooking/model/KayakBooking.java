@@ -13,11 +13,11 @@ public class KayakBooking {
     private final String buyerName;
     private final String buyerAddressEmail;
     private final String buyerPhone;
-    private final int kayakOne;
-    private final int kayakTwo;
-    private final int kayakOne_Two;
+    private int kayakOne;
+    private int kayakTwo;
+    private int kayakOne_Two;
     private final LocalDateTime orderDate;
-    private final boolean isEmailSend;
+    private boolean isEmailSend;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -182,5 +182,21 @@ public class KayakBooking {
 
     public int getKayakOne_Two() {
         return kayakOne_Two;
+    }
+
+    public void setKayakOne(int kayakOne) {
+        this.kayakOne = kayakOne;
+    }
+
+    public void setKayakTwo(int kayakTwo) {
+        this.kayakTwo = kayakTwo;
+    }
+
+    public void setKayakOne_Two(int kayakOne_Two) {
+        this.kayakOne_Two = kayakOne_Two;
+    }
+
+    public void setEmailSend(boolean emailSend) {
+        isEmailSend = emailSend;
     }
 }

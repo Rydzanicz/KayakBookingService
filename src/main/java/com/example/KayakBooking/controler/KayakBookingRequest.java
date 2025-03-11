@@ -1,6 +1,8 @@
 package com.example.KayakBooking.controler;
 
 public class KayakBookingRequest {
+    private String orderId;
+    private String emailSend;
     private String buyerName;
     private String buyerAddressEmail;
     private String buyerPhone;
@@ -8,6 +10,22 @@ public class KayakBookingRequest {
     private int kayakOne;
     private int kayakTwo;
     private int kayakOne_Two;
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
+    public String getEmailSend() {
+        return emailSend;
+    }
+
+    public void setEmailSend(String emailSend) {
+        this.emailSend = emailSend;
+    }
 
     public void setBuyerName(String buyerName) {
         this.buyerName = buyerName;
