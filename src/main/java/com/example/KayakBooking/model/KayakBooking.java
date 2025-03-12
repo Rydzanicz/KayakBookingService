@@ -18,6 +18,7 @@ public class KayakBooking {
     private int kayakOne_Two;
     private final LocalDateTime orderDate;
     private boolean isEmailSend;
+    private final String typeTrip;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -29,7 +30,8 @@ public class KayakBooking {
                         final int kayakOne,
                         final int kayakTwo,
                         final int kayakOne_Two,
-                        final boolean isEmailSend) {
+                        final boolean isEmailSend,
+                        final String typeTrip) {
         if (buyerName == null || buyerName.isEmpty()) {
             throw new IllegalArgumentException("Name cannot be null or empty.");
         }
@@ -53,6 +55,7 @@ public class KayakBooking {
         this.kayakOne = kayakOne;
         this.kayakTwo = kayakTwo;
         this.kayakOne_Two = kayakOne_Two;
+        this.typeTrip = typeTrip;
     }
 
     public KayakBooking(final int orderNR,
@@ -63,7 +66,8 @@ public class KayakBooking {
                         final int kayakOne,
                         final int kayakTwo,
                         final int kayakOne_Two,
-                        final boolean isEmailSend) {
+                        final boolean isEmailSend,
+                        final String typeTrip) {
         if (buyerName == null || buyerName.isEmpty()) {
             throw new IllegalArgumentException("Name cannot be null or empty.");
         }
@@ -88,6 +92,7 @@ public class KayakBooking {
         this.kayakOne = kayakOne;
         this.kayakTwo = kayakTwo;
         this.kayakOne_Two = kayakOne_Two;
+        this.typeTrip = typeTrip;
     }
 
     public KayakBooking(final OrdersEntity order) {
@@ -102,6 +107,7 @@ public class KayakBooking {
         this.kayakTwo = order.getKayakTwo();
         this.kayakOne_Two = order.getKayakOne_Two();
         this.isEmailSend = order.isEmailSend();
+        this.typeTrip = order.getTypeTrip();
 
     }
 
@@ -199,7 +205,12 @@ public class KayakBooking {
     public void setEmailSend(boolean emailSend) {
         isEmailSend = emailSend;
     }
+
     public void setEmailSend(String emailSend) {
         isEmailSend = Boolean.parseBoolean(emailSend);
+    }
+
+    public String getTypeTrip() {
+        return typeTrip;
     }
 }

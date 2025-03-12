@@ -13,19 +13,19 @@ public class OrdersEntity {
 
     @Id
     @Column(name = "order_id", nullable = false)
-    private String orderId;
+    private final String orderId;
 
     @Column(name = "name", nullable = false)
-    private String name;
+    private final String name;
 
     @Column(name = "email", nullable = false)
-    private String email;
+    private final String email;
 
     @Column(name = "phone")
     private final String phone;
 
     @Column(name = "order_date", nullable = false)
-    private String orderDate;
+    private final String orderDate;
 
     @Column(name = "is_email_send", nullable = false)
     private final boolean isEmailSend;
@@ -39,6 +39,9 @@ public class OrdersEntity {
     @Column(name = "kayak_one_two", nullable = false)
     private final int kayakOne_Two;
 
+    @Column(name = "type_trip", nullable = false)
+    private final String typeTrip;
+
 
     public OrdersEntity() {
         this.orderId = null;
@@ -50,6 +53,7 @@ public class OrdersEntity {
         this.kayakTwo = 0;
         this.kayakOne_Two = 0;
         this.isEmailSend = false;
+        this.typeTrip = null;
     }
 
     public OrdersEntity(final KayakBooking kayakBooking) {
@@ -63,32 +67,24 @@ public class OrdersEntity {
         this.kayakTwo = kayakBooking.getKayakTwo();
         this.kayakOne_Two = kayakBooking.getKayakOne_Two();
         this.isEmailSend = kayakBooking.isEmailSend();
+        this.typeTrip = kayakBooking.getTypeTrip();
     }
 
     public String getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
-    }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
 
     public String getPhone() {
@@ -99,9 +95,6 @@ public class OrdersEntity {
         return orderDate;
     }
 
-    public void setOrderDate(String orderDate) {
-        this.orderDate = orderDate;
-    }
 
     public boolean isEmailSend() {
         return isEmailSend;
@@ -117,5 +110,10 @@ public class OrdersEntity {
 
     public int getKayakOne_Two() {
         return kayakOne_Two;
+    }
+
+    public String getTypeTrip() {
+
+        return typeTrip;
     }
 }

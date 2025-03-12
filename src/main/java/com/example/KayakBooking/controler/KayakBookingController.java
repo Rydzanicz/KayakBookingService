@@ -104,7 +104,8 @@ public class KayakBookingController {
                                                                   kayakBookingRequest.getKayakOne(),
                                                                   kayakBookingRequest.getKayakTwo(),
                                                                   kayakBookingRequest.getKayakOne_Two(),
-                                                                  false);
+                                                                  false,
+                                                                  kayakBookingRequest.getTraceId());
 
             bookingService.saveOrder(newKayakBooking);
             return ResponseEntity.ok()

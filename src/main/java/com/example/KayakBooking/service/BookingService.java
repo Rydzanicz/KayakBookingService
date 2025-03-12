@@ -64,7 +64,8 @@ public class BookingService {
                                 entity.getKayakOne(),
                                 entity.getKayakTwo(),
                                 entity.getKayakOne_Two(),
-                                entity.isEmailSend());
+                                entity.isEmailSend(),
+                                entity.getTypeTrip());
     }
 
     public void saveOrder(final KayakBooking kayakBooking) {

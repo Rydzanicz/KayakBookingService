@@ -10,6 +10,7 @@ public class KayakBookingRequest {
     private int kayakOne;
     private int kayakTwo;
     private int kayakOne_Two;
+    private String traceId;
 
     public String getOrderId() {
         return orderId;
@@ -82,5 +83,13 @@ public class KayakBookingRequest {
 
     public void setKayakOne_Two(int kayakOne_Two) {
         this.kayakOne_Two = kayakOne_Two;
+    }
+
+    public String getTraceId() {
+        return traceId;
+    }
+
+    public void setTraceId(String traceId) {
+        this.traceId = traceId;
     }
 }
