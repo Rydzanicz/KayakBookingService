@@ -14,7 +14,11 @@ public class LoginService {
         this.userRepository = userRepository;
     }
 
-    public Optional<UsersEntity> findByUsername(String username) {
+    public Optional<UsersEntity> findByUsername(final String username) {
         return userRepository.findByUsername(username);
+    }
+
+    public void updateEmailSendStatusByEmail(final String username, final boolean status) {
+        userRepository.updateEmailSendStatusByEmail(username, status);
     }
 }

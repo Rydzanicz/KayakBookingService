@@ -9,6 +9,7 @@ import com.example.KayakBooking.service.EmailService;
 import com.example.KayakBooking.service.FailedProcessedPolicyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.mockito.Mockito.*;
 
@@ -176,14 +178,15 @@ class EmailPolicyTest {
         final String password = "password";
         final Set<String> roles = Set.of("roles");
         final boolean reset = false;
-
+        final String generatedPassword = new BCryptPasswordEncoder().encode(UUID.randomUUID()
+                                                                                .toString());
         final UsersEntity users = new UsersEntity(id, username, password, roles, reset);
         final List<UsersEntity> unsentUsers = List.of(users);
 
         when(userRepository.findNoSend()).thenReturn(unsentUsers);
         when(failedProcessedPolicyService.findOrdersByOrderId(users.getUsername())).thenReturn(Optional.empty());
         doNothing().when(emailService)
-                   .sendEmailPassword(anyString());
+                   .sendEmailPassword(anyString(), anyString());
         doNothing().when(userRepository)
                    .updateEmailSendStatusByEmail(anyString(), eq(false));
 
@@ -191,7 +194,7 @@ class EmailPolicyTest {
         emailPolicy.executeEmailPasswordPolicy();
 
         // Then
-        verify(emailService, times(1)).sendEmailPassword(eq(users.getUsername()));
+        verify(emailService, times(1)).sendEmailPassword(eq(users.getUsername()), anyString());
         verify(userRepository, times(1)).updateEmailSendStatusByEmail(eq(users.getUsername()), eq(false));
     }
 
@@ -206,11 +209,12 @@ class EmailPolicyTest {
 
         final UsersEntity users = new UsersEntity(id, username, password, roles, reset);
         final List<UsersEntity> unsentUsers = List.of(users);
-
+        final String generatedPassword = new BCryptPasswordEncoder().encode(UUID.randomUUID()
+                                                                                .toString());
         when(userRepository.findNoSend()).thenReturn(unsentUsers);
         when(failedProcessedPolicyService.findOrdersByOrderId(anyString())).thenReturn(Optional.empty());
         doThrow(new RuntimeException("Email service failed")).when(emailService)
-                                                             .sendEmailPassword(anyString());
+                                                             .sendEmailPassword(anyString(), anyString());
 
         // when
         emailPolicy.executeEmailPasswordPolicy();

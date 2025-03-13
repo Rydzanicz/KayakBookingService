@@ -8,11 +8,13 @@ import com.example.KayakBooking.service.BookingService;
 import com.example.KayakBooking.service.EmailService;
 import com.example.KayakBooking.service.FailedProcessedPolicyService;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Component
 public class EmailPolicy {
@@ -76,7 +78,11 @@ public class EmailPolicy {
                 return;
             }
             try {
-                emailService.sendEmailPassword(usersEntity.getUsername());
+                final String generatedPassword = new BCryptPasswordEncoder().encode(UUID.randomUUID()
+                                                                                        .toString());
+                emailService.sendEmailPassword(usersEntity.getUsername(), generatedPassword);
+
+                userRepository.updatePasswordByUsername(usersEntity.getUsername(), generatedPassword);
                 userRepository.updateEmailSendStatusByEmail(usersEntity.getUsername(), false);
             } catch (Exception e) {
                 final String errorMessage = e.getCause() != null ? e.getCause()

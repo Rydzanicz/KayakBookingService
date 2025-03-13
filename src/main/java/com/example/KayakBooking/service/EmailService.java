@@ -39,7 +39,7 @@ public class EmailService {
 
     }
 
-    public void sendEmailPassword(final String recipientEmail) {
+    public void sendEmailPassword(final String recipientEmail, final String password) {
         final MimeMessage message = mailSender.createMimeMessage();
 
         try {
@@ -47,7 +47,7 @@ public class EmailService {
             helper.setFrom(EMAIL_FROM);
             helper.setTo(recipientEmail);
             helper.setSubject(SUBJECT);
-            helper.setText(emailBodyPassword);
+            helper.setText(emailBodyPassword + password);
 
             mailSender.send(message);
         } catch (Exception e) {

@@ -6,6 +6,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -31,7 +34,7 @@ class EmailServiceTest {
     @Test
     void testSendEmailSuccess() {
         // given
-        String recipientEmail = "test@example.com";
+        final String recipientEmail = "test@example.com";
 
         MimeMessage mockMessage = mock(MimeMessage.class);
         when(mailSender.createMimeMessage()).thenReturn(mockMessage);
@@ -46,7 +49,7 @@ class EmailServiceTest {
     @Test
     void testSendEmailThrowsException() {
         // given
-        String recipientEmail = "test@example.com";
+        final String recipientEmail = "test@example.com";
 
         MimeMessage mockMessage = mock(MimeMessage.class);
         when(mailSender.createMimeMessage()).thenReturn(mockMessage);
@@ -67,7 +70,7 @@ class EmailServiceTest {
     @Test
     void testEmailContent() throws Exception {
         // given
-        String recipientEmail = "test@example.com";
+        final String recipientEmail = "test@example.com";
 
         MimeMessage mockMessage = mock(MimeMessage.class);
         ArgumentCaptor<MimeMessage> messageCaptor = ArgumentCaptor.forClass(MimeMessage.class);
@@ -86,13 +89,14 @@ class EmailServiceTest {
     @Test
     void testSendEmailPasswordSuccess() {
         // given
-        String recipientEmail = "test@example.com";
-
+        final String recipientEmail = "test@example.com";
+        final String generatedPassword = new BCryptPasswordEncoder().encode(UUID.randomUUID()
+                                                                                .toString());
         MimeMessage mockMessage = mock(MimeMessage.class);
         when(mailSender.createMimeMessage()).thenReturn(mockMessage);
 
         // when
-        emailService.sendEmailPassword(recipientEmail);
+        emailService.sendEmailPassword(recipientEmail, generatedPassword);
 
         // then
         verify(mailSender, times(1)).send(mockMessage);
@@ -122,14 +126,15 @@ class EmailServiceTest {
     @Test
     void testEmailPasswordContent() throws Exception {
         // given
-        String recipientEmail = "test@example.com";
-
+        final String recipientEmail = "test@example.com";
+        final String generatedPassword = new BCryptPasswordEncoder().encode(UUID.randomUUID()
+                                                                                .toString());
         MimeMessage mockMessage = mock(MimeMessage.class);
         ArgumentCaptor<MimeMessage> messageCaptor = ArgumentCaptor.forClass(MimeMessage.class);
         when(mailSender.createMimeMessage()).thenReturn(mockMessage);
 
         // when
-        emailService.sendEmailPassword(recipientEmail);
+        emailService.sendEmailPassword(recipientEmail, generatedPassword);
 
         // then
         verify(mailSender, times(1)).send(messageCaptor.capture());

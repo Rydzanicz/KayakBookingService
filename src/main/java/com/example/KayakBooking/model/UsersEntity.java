@@ -23,12 +23,15 @@ public class UsersEntity {
     @Column(nullable = false)
     private boolean reset;
 
-    public UsersEntity(Long id, String username, String password, Set<String> roles, boolean reset) {
+    public UsersEntity(final Long id, final String username, final String password, final Set<String> roles, final boolean reset) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.roles = roles;
         this.reset = reset;
+    }
+
+    public UsersEntity() {
     }
 
     public Long getId() {
