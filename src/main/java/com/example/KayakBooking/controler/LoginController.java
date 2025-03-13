@@ -1,6 +1,6 @@
 package com.example.KayakBooking.controler;
 
-import com.example.KayakBooking.model.Users;
+import com.example.KayakBooking.model.UsersEntity;
 import com.example.KayakBooking.service.LoginService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +24,7 @@ public class LoginController {
     @PostMapping
     public ResponseEntity<String> login(@RequestParam String username, @RequestParam String password) {
 
-        final Optional<Users> user = loginService.findByUsername(username);
+        final Optional<UsersEntity> user = loginService.findByUsername(username);
         if (user.isPresent() && user.get()
                                     .getPassword()
                                     .equals(password)) {

@@ -44,6 +44,7 @@ public class KayakBookingControllerTest {
         validRequest.setKayakOne(1);
         validRequest.setKayakTwo(1);
         validRequest.setKayakOne_Two(1);
+        validRequest.setTraceId("Prawiedniki_Zemborzycki");
 
         final KayakBooking lastKayakBooking = new KayakBooking(1,
                                                                "Last Buyer",
@@ -53,7 +54,8 @@ public class KayakBookingControllerTest {
                                                                1,
                                                                1,
                                                                1,
-                                                               false);
+                                                               false,
+                                                               "Prawiedniki_Zemborzycki");
 
         when(bookingService.getLastOrders()).thenReturn(lastKayakBooking);
 

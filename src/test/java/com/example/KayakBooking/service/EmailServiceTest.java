@@ -82,4 +82,59 @@ class EmailServiceTest {
         MimeMessage sentMessage = messageCaptor.getValue();
         assertNotNull(sentMessage);
     }
+
+    @Test
+    void testSendEmailPasswordSuccess() {
+        // given
+        String recipientEmail = "test@example.com";
+
+        MimeMessage mockMessage = mock(MimeMessage.class);
+        when(mailSender.createMimeMessage()).thenReturn(mockMessage);
+
+        // when
+        emailService.sendEmailPassword(recipientEmail);
+
+        // then
+        verify(mailSender, times(1)).send(mockMessage);
+    }
+
+    @Test
+    void testSendEmailPasswordThrowsException() {
+        // given
+        String recipientEmail = "test@example.com";
+
+        MimeMessage mockMessage = mock(MimeMessage.class);
+        when(mailSender.createMimeMessage()).thenReturn(mockMessage);
+
+        doThrow(new RuntimeException("Mail server not available")).when(mailSender)
+                                                                  .send(any(MimeMessage.class));
+
+        // when
+        // then
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> emailService.sendEmails(recipientEmail));
+
+        assertEquals("Failed to send email.", exception.getMessage());
+        assertEquals("Mail server not available",
+                     exception.getCause()
+                              .getMessage());
+    }
+
+    @Test
+    void testEmailPasswordContent() throws Exception {
+        // given
+        String recipientEmail = "test@example.com";
+
+        MimeMessage mockMessage = mock(MimeMessage.class);
+        ArgumentCaptor<MimeMessage> messageCaptor = ArgumentCaptor.forClass(MimeMessage.class);
+        when(mailSender.createMimeMessage()).thenReturn(mockMessage);
+
+        // when
+        emailService.sendEmailPassword(recipientEmail);
+
+        // then
+        verify(mailSender, times(1)).send(messageCaptor.capture());
+
+        MimeMessage sentMessage = messageCaptor.getValue();
+        assertNotNull(sentMessage);
+    }
 }

@@ -120,12 +120,36 @@ public class KayakBookingController {
     }
 
     @GetMapping(value = "/get-future-trips", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> getFutureTrips(@RequestParam(defaultValue = "true") boolean isFuture,
-                                                 @RequestParam(required = false, defaultValue = "ASC") String sortDirection,
-                                                 @RequestParam(required = false, defaultValue = "0") int page,
-                                                 @RequestParam(required = false, defaultValue = "10") int size,
-                                                 @RequestParam(required = false) String startDate,
-                                                 @RequestParam(required = false) String endDate) {
+    public ResponseEntity<Object> getFutureTrips(@RequestParam String typeTrace) {
+        try {
+            if (typeTrace.isBlank()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                     .body("typeTrace parameter is required.");
+            }
+
+            final List<OrdersEntity> orderDates = bookingService.getFutureTrips();
+            final List<OrdersEntity> filteredData = orderDates.stream()
+                                                              .filter(x -> x.getTypeTrip()
+                                                                            .equalsIgnoreCase(typeTrace))
+                                                              .toList();
+
+            final Map<String, Object> response = new HashMap<>();
+            response.put("data", filteredData);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body("Error retrieving future trips.");
+        }
+    }
+
+    @GetMapping(value = "/get-trips", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> getTrips(@RequestParam(defaultValue = "true") boolean isFuture,
+                                           @RequestParam(required = false, defaultValue = "ASC") String sortDirection,
+                                           @RequestParam(required = false, defaultValue = "0") int page,
+                                           @RequestParam(required = false, defaultValue = "10") int size,
+                                           @RequestParam(required = false) String startDate,
+                                           @RequestParam(required = false) String endDate) {
         try {
             Optional<LocalDate> startLocalDate = Optional.ofNullable(startDate)
                                                          .map(LocalDate::parse);

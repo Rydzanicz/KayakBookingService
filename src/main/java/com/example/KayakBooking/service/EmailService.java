@@ -27,6 +27,7 @@ public class EmailService {
                                              + "**Uwaga:** W przypadku jakichkolwiek problemów prosimy o kontakt pod adresem e-mail.\n\n"
                                              + "Dziękujemy za zaufanie i zapraszamy do korzystania z naszych usług!\n\n"
                                              + "Z poważaniem";
+    private final String emailBodyPassword = "Szanowni Państwo,\n\n" + "Nowe hasło: ";
 
     public EmailService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
@@ -36,6 +37,22 @@ public class EmailService {
         sendEmail(recipientEmail);
         sendEmail(MY_EMAIL);
 
+    }
+
+    public void sendEmailPassword(final String recipientEmail) {
+        final MimeMessage message = mailSender.createMimeMessage();
+
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setFrom(EMAIL_FROM);
+            helper.setTo(recipientEmail);
+            helper.setSubject(SUBJECT);
+            helper.setText(emailBodyPassword);
+
+            mailSender.send(message);
+        } catch (Exception e) {
+            throw new IllegalStateException("Failed to send email.", e);
+        }
     }
 
     private void sendEmail(final String recipientEmail) {

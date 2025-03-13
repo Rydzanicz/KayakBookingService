@@ -1,10 +1,12 @@
 package com.example.KayakBooking.model;
 
 import jakarta.persistence.*;
+
 import java.util.Set;
 
 @Entity
-public class Users {
+@Table(name = "users")
+public class UsersEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,9 +18,19 @@ public class Users {
     private String password;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    private Set<String> roles; // Kolekcja ról przypisanych użytkownikowi
+    private Set<String> roles;
 
-    // Gettery i Settery
+    @Column(nullable = false)
+    private boolean reset;
+
+    public UsersEntity(Long id, String username, String password, Set<String> roles, boolean reset) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+        this.reset = reset;
+    }
+
     public Long getId() {
         return id;
     }
@@ -49,5 +61,13 @@ public class Users {
 
     public void setRoles(Set<String> roles) {
         this.roles = roles;
+    }
+
+    public boolean isReset() {
+        return reset;
+    }
+
+    public void setReset(boolean reset) {
+        this.reset = reset;
     }
 }

@@ -1,6 +1,6 @@
 package com.example.KayakBooking.service;
 
-import com.example.KayakBooking.model.Users;
+import com.example.KayakBooking.model.UsersEntity;
 import com.example.KayakBooking.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +14,7 @@ public class LoginService {
         this.userRepository = userRepository;
     }
 
-    public Optional<Users> findByUsername(String username) {
+    public Optional<UsersEntity> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 }

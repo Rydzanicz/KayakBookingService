@@ -2,9 +2,11 @@ package com.example.KayakBooking.policy;
 
 import com.example.KayakBooking.model.FailedProcessedPolicyEntity;
 import com.example.KayakBooking.model.KayakBooking;
+import com.example.KayakBooking.model.UsersEntity;
+import com.example.KayakBooking.repository.UserRepository;
+import com.example.KayakBooking.service.BookingService;
 import com.example.KayakBooking.service.EmailService;
 import com.example.KayakBooking.service.FailedProcessedPolicyService;
-import com.example.KayakBooking.service.BookingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.mockito.Mockito.*;
 
@@ -23,13 +26,16 @@ class EmailPolicyTest {
     private FailedProcessedPolicyService failedProcessedPolicyService;
     private EmailPolicy emailPolicy;
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private UserRepository userRepository;
 
     @BeforeEach
     void setUp() {
         bookingService = mock(BookingService.class);
+        userRepository = mock(UserRepository.class);
         emailService = mock(EmailService.class);
         failedProcessedPolicyService = mock(FailedProcessedPolicyService.class);
-        emailPolicy = new EmailPolicy(bookingService, emailService, failedProcessedPolicyService);
+
+        emailPolicy = new EmailPolicy(bookingService, userRepository, emailService, failedProcessedPolicyService);
     }
 
     @Test
@@ -42,6 +48,7 @@ class EmailPolicyTest {
         final int kayakOne = 1;
         final int kayakTwo = 1;
         final int kayakOne_Two = 1;
+        final String traceID = "Prawiedniki_Zemborzycki";
 
         final KayakBooking kayakBooking = new KayakBooking(1,
                                                            buyerName,
@@ -51,7 +58,8 @@ class EmailPolicyTest {
                                                            kayakOne,
                                                            kayakTwo,
                                                            kayakOne_Two,
-                                                           false);
+                                                           false,
+                                                           traceID);
         final List<KayakBooking> unsentKayakBookings = List.of(kayakBooking);
 
         when(bookingService.getNoSendOrdersWithExcluding(anyList())).thenReturn(unsentKayakBookings);
@@ -79,6 +87,7 @@ class EmailPolicyTest {
         final int kayakOne = 1;
         final int kayakTwo = 1;
         final int kayakOne_Two = 1;
+        final String traceID = "Prawiedniki_Zemborzycki";
 
         final KayakBooking kayakBooking = new KayakBooking(1,
                                                            buyerName,
@@ -88,7 +97,8 @@ class EmailPolicyTest {
                                                            kayakOne,
                                                            kayakTwo,
                                                            kayakOne_Two,
-                                                           false);
+                                                           false,
+                                                           traceID);
         final List<KayakBooking> unsentKayakBookings = List.of(kayakBooking);
 
         when(bookingService.getNoSendOrdersWithExcluding(anyList())).thenReturn(unsentKayakBookings);
@@ -117,6 +127,7 @@ class EmailPolicyTest {
         final int kayakOne = 1;
         final int kayakTwo = 1;
         final int kayakOne_Two = 1;
+        final String traceID = "Prawiedniki_Zemborzycki";
 
         final KayakBooking kayakBooking = new KayakBooking(1,
                                                            buyerName,
@@ -126,7 +137,8 @@ class EmailPolicyTest {
                                                            kayakOne,
                                                            kayakTwo,
                                                            kayakOne_Two,
-                                                           false);
+                                                           false,
+                                                           traceID);
         final List<KayakBooking> unsentKayakBookings = List.of(kayakBooking);
 
         final FailedProcessedPolicyEntity failedPolicy = new FailedProcessedPolicyEntity();
@@ -155,4 +167,99 @@ class EmailPolicyTest {
         verify(emailService, never()).sendEmails(anyString());
         verify(failedProcessedPolicyService, never()).logError(anyString(), anyString(), anyString(), any());
     }
+
+    @Test
+    void shouldSendEmailForUnsentPasswordReset() {
+        // Given
+        final Long id = 0L;
+        final String username = "username";
+        final String password = "password";
+        final Set<String> roles = Set.of("roles");
+        final boolean reset = false;
+
+        final UsersEntity users = new UsersEntity(id, username, password, roles, reset);
+        final List<UsersEntity> unsentUsers = List.of(users);
+
+        when(userRepository.findNoSend()).thenReturn(unsentUsers);
+        when(failedProcessedPolicyService.findOrdersByOrderId(users.getUsername())).thenReturn(Optional.empty());
+        doNothing().when(emailService)
+                   .sendEmailPassword(anyString());
+        doNothing().when(userRepository)
+                   .updateEmailSendStatusByEmail(anyString(), eq(false));
+
+        // When
+        emailPolicy.executeEmailPasswordPolicy();
+
+        // Then
+        verify(emailService, times(1)).sendEmailPassword(eq(users.getUsername()));
+        verify(userRepository, times(1)).updateEmailSendStatusByEmail(eq(users.getUsername()), eq(false));
+    }
+
+    @Test
+    void shouldLogErrorWhenEmailSendingPasswordResetFails() {
+        // Given
+        final Long id = 0L;
+        final String username = "username";
+        final String password = "password";
+        final Set<String> roles = Set.of("roles");
+        final boolean reset = false;
+
+        final UsersEntity users = new UsersEntity(id, username, password, roles, reset);
+        final List<UsersEntity> unsentUsers = List.of(users);
+
+        when(userRepository.findNoSend()).thenReturn(unsentUsers);
+        when(failedProcessedPolicyService.findOrdersByOrderId(anyString())).thenReturn(Optional.empty());
+        doThrow(new RuntimeException("Email service failed")).when(emailService)
+                                                             .sendEmailPassword(anyString());
+
+        // when
+        emailPolicy.executeEmailPasswordPolicy();
+
+        // then
+        verify(failedProcessedPolicyService, times(1)).logError(eq("EmailPolicy"),
+                                                                eq("Email service failed"),
+                                                                eq(users.getUsername()),
+                                                                any());
+        verify(bookingService, never()).updateEmailSendStatus(anyString(), eq(false));
+    }
+
+    @Test
+    void shouldSkipPasswordResetWithMaxRetryCount() {
+        // Given
+        final Long id = 0L;
+        final String username = "username";
+        final String password = "password";
+        final Set<String> roles = Set.of("roles");
+        final boolean reset = true;
+
+        final UsersEntity users = new UsersEntity(id, username, password, roles, reset);
+        final List<UsersEntity> unsentUsers = List.of(users);
+
+        final FailedProcessedPolicyEntity failedPolicy = new FailedProcessedPolicyEntity();
+        failedPolicy.setRetryCount(11);
+
+        when(userRepository.findNoSend()).thenReturn(unsentUsers);
+        when(failedProcessedPolicyService.findOrdersByOrderId(users.getUsername())).thenReturn(Optional.of(failedPolicy));
+
+        // When
+        emailPolicy.executeEmailPasswordPolicy();
+
+        // Then
+        verify(emailService, never()).sendEmails(anyString());
+        verify(failedProcessedPolicyService, never()).logError(anyString(), anyString(), anyString(), any());
+    }
+
+    @Test
+    void shouldNotProcessWhenNoPasswordReset() {
+        // Given
+        when(bookingService.getNoSendOrdersWithExcluding(anyList())).thenReturn(new ArrayList<>());
+
+        // When
+        emailPolicy.executeEmailPasswordPolicy();
+
+        // Then
+        verify(emailService, never()).sendEmails(anyString());
+        verify(failedProcessedPolicyService, never()).logError(anyString(), anyString(), anyString(), any());
+    }
+
 }

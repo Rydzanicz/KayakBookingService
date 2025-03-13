@@ -46,6 +46,7 @@ public class KayakBookingServiceTest {
         final int kayakOne = 1;
         final int kayakTwo = 1;
         final int kayakOne_Two = 1;
+        final String traceID = "Prawiedniki_Zemborzycki";
 
         final OrdersEntity lastOrdersEntity = new OrdersEntity(new KayakBooking(5,
                                                                                 buyerName,
@@ -55,7 +56,8 @@ public class KayakBookingServiceTest {
                                                                                 kayakOne,
                                                                                 kayakTwo,
                                                                                 kayakOne_Two,
-                                                                                false));
+                                                                                false,
+                                                                                traceID));
         when(orderRepository.getLastOrders()).thenReturn(lastOrdersEntity);
 
         // when
@@ -85,6 +87,8 @@ public class KayakBookingServiceTest {
         final int kayakOne = 1;
         final int kayakTwo = 1;
         final int kayakOne_Two = 1;
+        final String traceID = "Prawiedniki_Zemborzycki";
+
         final KayakBooking kayakBooking = new KayakBooking(1,
                                                            buyerName,
                                                            buyerEmail,
@@ -93,7 +97,8 @@ public class KayakBookingServiceTest {
                                                            kayakOne,
                                                            kayakTwo,
                                                            kayakOne_Two,
-                                                           false);
+                                                           false,
+                                                           traceID);
         final OrdersEntity savedEntity = new OrdersEntity(kayakBooking);
         when(orderRepository.save(any(OrdersEntity.class))).thenReturn(savedEntity);
 
