@@ -52,7 +52,7 @@ public class EmailPolicy {
             }
 
             try {
-                emailService.sendEmails(kayakBooking.getBuyerAddressEmail());
+                emailService.sendEmails(kayakBooking);
                 bookingService.updateEmailSendStatus(kayakBooking.getOrderId(), true);
             } catch (Exception e) {
                 final String errorMessage = e.getCause() != null ? e.getCause()

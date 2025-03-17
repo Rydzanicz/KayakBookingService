@@ -67,7 +67,7 @@ class EmailPolicyTest {
         when(bookingService.getNoSendOrdersWithExcluding(anyList())).thenReturn(unsentKayakBookings);
         when(failedProcessedPolicyService.findOrdersByOrderId(kayakBooking.getOrderId())).thenReturn(Optional.empty());
         doNothing().when(emailService)
-                   .sendEmails(anyString());
+                   .sendEmails(any());
         doNothing().when(bookingService)
                    .updateEmailSendStatus(anyString(), eq(true));
 
@@ -75,7 +75,7 @@ class EmailPolicyTest {
         emailPolicy.executeEmailPolicy();
 
         // Then
-        verify(emailService, times(1)).sendEmails(eq(kayakBooking.getBuyerAddressEmail()));
+        verify(emailService, times(1)).sendEmails(eq(kayakBooking));
         verify(bookingService, times(1)).updateEmailSendStatus(eq(kayakBooking.getOrderId()), eq(true));
     }
 
@@ -106,7 +106,7 @@ class EmailPolicyTest {
         when(bookingService.getNoSendOrdersWithExcluding(anyList())).thenReturn(unsentKayakBookings);
         when(failedProcessedPolicyService.findOrdersByOrderId(anyString())).thenReturn(Optional.empty());
         doThrow(new RuntimeException("Email service failed")).when(emailService)
-                                                             .sendEmails(anyString());
+                                                             .sendEmails(any());
 
         // when
         emailPolicy.executeEmailPolicy();
@@ -153,7 +153,7 @@ class EmailPolicyTest {
         emailPolicy.executeEmailPolicy();
 
         // Then
-        verify(emailService, never()).sendEmails(anyString());
+        verify(emailService, never()).sendEmails(any());
         verify(failedProcessedPolicyService, never()).logError(anyString(), anyString(), anyString(), any());
     }
 
@@ -166,7 +166,7 @@ class EmailPolicyTest {
         emailPolicy.executeEmailPolicy();
 
         // Then
-        verify(emailService, never()).sendEmails(anyString());
+        verify(emailService, never()).sendEmails(any());
         verify(failedProcessedPolicyService, never()).logError(anyString(), anyString(), anyString(), any());
     }
 
@@ -249,7 +249,7 @@ class EmailPolicyTest {
         emailPolicy.executeEmailPasswordPolicy();
 
         // Then
-        verify(emailService, never()).sendEmails(anyString());
+        verify(emailService, never()).sendEmails(any());
         verify(failedProcessedPolicyService, never()).logError(anyString(), anyString(), anyString(), any());
     }
 
@@ -262,8 +262,7 @@ class EmailPolicyTest {
         emailPolicy.executeEmailPasswordPolicy();
 
         // Then
-        verify(emailService, never()).sendEmails(anyString());
+        verify(emailService, never()).sendEmails(any());
         verify(failedProcessedPolicyService, never()).logError(anyString(), anyString(), anyString(), any());
     }
-
 }
