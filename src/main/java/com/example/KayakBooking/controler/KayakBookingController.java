@@ -3,6 +3,7 @@ package com.example.KayakBooking.controler;
 import com.example.KayakBooking.model.KayakBooking;
 import com.example.KayakBooking.model.OrdersEntity;
 import com.example.KayakBooking.service.BookingService;
+import com.example.KayakBooking.service.FailedProcessedPolicyService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +29,11 @@ import java.util.Optional;
 public class KayakBookingController {
     private final BookingService bookingService;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private final FailedProcessedPolicyService failedProcessedPolicyService;
 
-    public KayakBookingController(final BookingService bookingService) {
+    public KayakBookingController(final BookingService bookingService, final FailedProcessedPolicyService failedProcessedPolicyService) {
         this.bookingService = bookingService;
+        this.failedProcessedPolicyService = failedProcessedPolicyService;
     }
 
     @PutMapping(value = "/update-order", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -40,8 +43,8 @@ public class KayakBookingController {
         }
 
         try {
-            String orderId = kayakBookingRequest.getOrderId();
-            Optional<OrdersEntity> optionalOrder = bookingService.findOrderById(orderId);
+            final String orderId = kayakBookingRequest.getOrderId();
+            final Optional<OrdersEntity> optionalOrder = bookingService.findOrderById(orderId);
 
             if (optionalOrder.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -57,6 +60,30 @@ public class KayakBookingController {
             bookingService.updateOrder(updatedOrder);
 
             return ResponseEntity.ok("Order updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body("Error updating order");
+        }
+    }
+
+    @PutMapping("/reset-email")
+    public ResponseEntity<String> resetEmail(@RequestParam String orderId) {
+        if (orderId == null) {
+            throw new IllegalArgumentException("Invalid request payload");
+        }
+
+        try {
+            final Optional<OrdersEntity> optionalOrder = bookingService.findOrderById(orderId);
+
+            if (optionalOrder.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                                     .body("Order not found");
+            }
+
+            bookingService.updateEmailSendStatus(orderId, false);
+            failedProcessedPolicyService.deleteByOrderId(orderId);
+
+            return ResponseEntity.ok("Email updated successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                                  .body("Error updating order");

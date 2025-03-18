@@ -4,6 +4,7 @@ import com.example.KayakBooking.controler.KayakBookingController;
 import com.example.KayakBooking.controler.KayakBookingRequest;
 import com.example.KayakBooking.model.KayakBooking;
 import com.example.KayakBooking.service.BookingService;
+import com.example.KayakBooking.service.FailedProcessedPolicyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -23,6 +24,7 @@ public class KayakBookingControllerTest {
 
     @Mock
     private BookingService bookingService;
+    private FailedProcessedPolicyService failedProcessedPolicyService;
 
     private KayakBookingController kayakBookingController;
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -30,7 +32,7 @@ public class KayakBookingControllerTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        kayakBookingController = new KayakBookingController(bookingService);
+        kayakBookingController = new KayakBookingController(bookingService, failedProcessedPolicyService);
     }
 
     @Test

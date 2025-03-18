@@ -27,5 +27,9 @@ public interface FailedProcessedPolicyRepository extends JpaRepository<FailedPro
                            @Param("date") String date,
                            @Param("retryCount") int retryCount);
 
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM FailedProcessedPolicyEntity f WHERE f.orderId = :orderId")
+    int deleteByOrderId(@Param("orderId") String orderId);
 }
 

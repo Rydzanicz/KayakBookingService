@@ -27,10 +27,10 @@ public interface OrderRepository extends JpaRepository<OrdersEntity, Long> {
     @Modifying
     @Transactional
     @Query("UPDATE OrdersEntity i SET i.isEmailSend = :status WHERE i.orderId = :orderId")
-    void updateEmailSendStatus(String orderId, boolean status);
+    void updateEmailSendStatus(final String orderId,final boolean status);
 
     @Query("SELECT i FROM OrdersEntity i WHERE i.isEmailSend = false AND (i.orderId NOT IN :excludedIds OR :excludedIds IS NULL)")
-    List<OrdersEntity> findUnsentOrdersExcluding(@Param("excludedIds") List<String> excludedIds);
+    List<OrdersEntity> findUnsentOrdersExcluding(final @Param("excludedIds") List<String> excludedIds);
 
     @Query("SELECT i FROM OrdersEntity i WHERE i.isEmailSend = false")
     List<OrdersEntity> findNoSendOrders();

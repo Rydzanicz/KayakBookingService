@@ -51,4 +51,9 @@ public class FailedProcessedPolicyService {
                                       failedProcessedPolicyEntity.getDate(),
                                       failedProcessedPolicyEntity.getRetryCount());
     }
+
+    @Transactional
+    public void deleteByOrderId(final String orderId) {
+        repository.deleteByOrderId(orderId);
+    }
 }
