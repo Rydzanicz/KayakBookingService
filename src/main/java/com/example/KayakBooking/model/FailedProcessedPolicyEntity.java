@@ -33,6 +33,9 @@ public class FailedProcessedPolicyEntity {
     @Column(name = "message", nullable = false)
     private String message;
 
+    @Column(name = "reset", nullable = false)
+    private boolean reset;
+
 
     public FailedProcessedPolicyEntity() {
         orderId = null;
@@ -40,6 +43,7 @@ public class FailedProcessedPolicyEntity {
         date = null;
         retryCount = 0;
         message = null;
+        reset = false;
     }
 
     public Long getId() {
@@ -96,5 +100,13 @@ public class FailedProcessedPolicyEntity {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public boolean isReset() {
+        return reset;
+    }
+
+    public void setReset(boolean reset) {
+        this.reset = reset;
     }
 }

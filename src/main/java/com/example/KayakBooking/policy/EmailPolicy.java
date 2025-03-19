@@ -38,7 +38,13 @@ public class EmailPolicy {
 
     @Scheduled(cron = "${email.policy.cron}")
     public void executeEmailPolicy() {
+        final List<FailedProcessedPolicyEntity> failed = failedProcessedPolicyService.findAllFailedPolicies();
+        processedFailed.removeIf(kayakBooking -> failed.stream()
+                                                       .anyMatch(failedBooking -> failedBooking.getOrderId()
+                                                                                               .equals(kayakBooking.getOrderId())));
+
         final List<KayakBooking> unsentKayakBookings = bookingService.getNoSendOrdersWithExcluding(processedFailed);
+
         if (unsentKayakBookings.isEmpty()) {
             return;
         }
@@ -54,6 +60,7 @@ public class EmailPolicy {
             try {
                 emailService.sendEmails(kayakBooking);
                 bookingService.updateEmailSendStatus(kayakBooking.getOrderId(), true);
+                failedProcessedPolicyService.updateReset(kayakBooking.getOrderId(), false);
             } catch (Exception e) {
                 final String errorMessage = e.getCause() != null ? e.getCause()
                                                                     .getLocalizedMessage() : e.getMessage();
@@ -65,7 +72,10 @@ public class EmailPolicy {
     @Scheduled(cron = "${email.policy.cron}")
     public void executeEmailPasswordPolicy() {
         final List<UsersEntity> unsentUsers = userRepository.findNoSend();
-
+        final List<FailedProcessedPolicyEntity> failed = failedProcessedPolicyService.findAllFailedPolicies();
+        processedFailed.removeIf(kayakBooking -> failed.stream()
+                                                       .anyMatch(failedBooking -> failedBooking.getOrderId()
+                                                                                               .equals(kayakBooking.getOrderId())));
         if (unsentUsers.isEmpty()) {
             return;
         }
@@ -84,6 +94,8 @@ public class EmailPolicy {
 
                 userRepository.updatePasswordByUsername(usersEntity.getUsername(), generatedPassword);
                 userRepository.updateEmailSendStatusByEmail(usersEntity.getUsername(), false);
+                failedProcessedPolicyService.updateReset(usersEntity.getUsername(), false);
+
             } catch (Exception e) {
                 final String errorMessage = e.getCause() != null ? e.getCause()
                                                                     .getLocalizedMessage() : e.getMessage();

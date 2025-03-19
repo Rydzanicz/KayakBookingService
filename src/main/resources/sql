@@ -25,7 +25,8 @@ CREATE TABLE failed_processed_policy (
     name VARCHAR(255) NOT NULL,
     date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     retry_count INTEGER DEFAULT 0,
-    message VARCHAR(512) NOT NULL
+    message VARCHAR(512) NOT NULL,
+    reset BOOLEAN DEFAULT FALSE
 );
 
 

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -16,8 +17,9 @@ public interface FailedProcessedPolicyRepository extends JpaRepository<FailedPro
     @Query(value = "SELECT * FROM failed_processed_policy WHERE order_id = :orderId LIMIT 1", nativeQuery = true)
     Optional<FailedProcessedPolicyEntity> findOrdersByOrderId(@Param("orderId") String orderId);
 
-    @Query(value = "SELECT * FROM failed_processed_policy WHERE id = :id LIMIT 1", nativeQuery = true)
-    Optional<FailedProcessedPolicyEntity> findOrdersById(@Param("id") Long id);
+    @Query(value = "SELECT * FROM failed_processed_policy f WHERE f.reset = true", nativeQuery = true)
+    List<FailedProcessedPolicyEntity> findAllFailedPolicies();
+
 
     @Modifying
     @Transactional
@@ -29,7 +31,12 @@ public interface FailedProcessedPolicyRepository extends JpaRepository<FailedPro
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM FailedProcessedPolicyEntity f WHERE f.orderId = :orderId")
-    int deleteByOrderId(@Param("orderId") String orderId);
+    @Query("UPDATE FailedProcessedPolicyEntity f SET f.retryCount = 1 WHERE f.orderId = :orderId")
+    int updateRetryCount(@Param("orderId") String orderId);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE FailedProcessedPolicyEntity f SET f.reset = :status WHERE f.orderId = :orderId")
+    int updateReset(@Param("orderId") String orderId, @Param("status") Boolean status);
 }
 

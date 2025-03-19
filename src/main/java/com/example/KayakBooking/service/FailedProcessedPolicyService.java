@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -13,12 +14,16 @@ public class FailedProcessedPolicyService {
 
     private final FailedProcessedPolicyRepository repository;
 
-    public FailedProcessedPolicyService(FailedProcessedPolicyRepository repository) {
+    public FailedProcessedPolicyService(final FailedProcessedPolicyRepository repository) {
         this.repository = repository;
     }
 
     public Optional<FailedProcessedPolicyEntity> findOrdersByOrderId(final String orderId) {
         return repository.findOrdersByOrderId(orderId);
+    }
+
+    public List<FailedProcessedPolicyEntity> findAllFailedPolicies() {
+        return repository.findAllFailedPolicies();
     }
 
     public void logError(final String policyName,
@@ -31,7 +36,7 @@ public class FailedProcessedPolicyService {
             failedProcessedPolicy.setDate(LocalDateTime.now());
             failedProcessedPolicy.setMessage(message);
 
-            updateRetryCount(failedProcessedPolicy);
+            updateFailedPolicy(failedProcessedPolicy);
             return;
         }
 
@@ -45,7 +50,7 @@ public class FailedProcessedPolicyService {
     }
 
     @Transactional
-    private void updateRetryCount(final FailedProcessedPolicyEntity failedProcessedPolicyEntity) {
+    private void updateFailedPolicy(final FailedProcessedPolicyEntity failedProcessedPolicyEntity) {
         repository.updateFailedPolicy(failedProcessedPolicyEntity.getOrderId(),
                                       failedProcessedPolicyEntity.getMessage(),
                                       failedProcessedPolicyEntity.getDate(),
@@ -53,7 +58,12 @@ public class FailedProcessedPolicyService {
     }
 
     @Transactional
-    public void deleteByOrderId(final String orderId) {
-        repository.deleteByOrderId(orderId);
+    public void updateRetryCount(final String orderId) {
+        repository.updateRetryCount(orderId);
+    }
+
+    @Transactional
+    public void updateReset(final String orderId, final boolean status) {
+        repository.updateReset(orderId, status);
     }
 }

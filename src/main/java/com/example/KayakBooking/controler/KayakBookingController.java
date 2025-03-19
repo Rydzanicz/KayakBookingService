@@ -81,7 +81,8 @@ public class KayakBookingController {
             }
 
             bookingService.updateEmailSendStatus(orderId, false);
-            failedProcessedPolicyService.deleteByOrderId(orderId);
+            failedProcessedPolicyService.updateRetryCount(orderId);
+            failedProcessedPolicyService.updateReset(orderId, true);
 
             return ResponseEntity.ok("Email updated successfully");
         } catch (Exception e) {
