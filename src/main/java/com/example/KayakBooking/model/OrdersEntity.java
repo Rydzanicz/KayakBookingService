@@ -67,7 +67,8 @@ public class OrdersEntity {
         this.kayakTwo = kayakBooking.getKayakTwo();
         this.kayakOne_Two = kayakBooking.getKayakOne_Two();
         this.isEmailSend = kayakBooking.isEmailSend();
-        this.typeTrip = kayakBooking.getTypeTrip();
+        this.typeTrip = kayakBooking.getTypeTrip()
+                                    .toString();
     }
 
     public String getOrderId() {

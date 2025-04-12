@@ -18,7 +18,7 @@ public class KayakBooking {
     private int kayakOne_Two;
     private final LocalDateTime orderDate;
     private boolean isEmailSend;
-    private final String typeTrip;
+    private final TypeTrip typeTrip;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -31,7 +31,7 @@ public class KayakBooking {
                         final int kayakTwo,
                         final int kayakOne_Two,
                         final boolean isEmailSend,
-                        final String typeTrip) {
+                        final TypeTrip typeTrip) {
         if (buyerName == null || buyerName.isEmpty()) {
             throw new IllegalArgumentException("Name cannot be null or empty.");
         }
@@ -67,7 +67,7 @@ public class KayakBooking {
                         final int kayakTwo,
                         final int kayakOne_Two,
                         final boolean isEmailSend,
-                        final String typeTrip) {
+                        final TypeTrip typeTrip) {
         if (buyerName == null || buyerName.isEmpty()) {
             throw new IllegalArgumentException("Name cannot be null or empty.");
         }
@@ -107,7 +107,7 @@ public class KayakBooking {
         this.kayakTwo = order.getKayakTwo();
         this.kayakOne_Two = order.getKayakOne_Two();
         this.isEmailSend = order.isEmailSend();
-        this.typeTrip = order.getTypeTrip();
+        this.typeTrip = TypeTrip.valueOf(order.getTypeTrip());
 
     }
 
@@ -210,7 +210,7 @@ public class KayakBooking {
         isEmailSend = Boolean.parseBoolean(emailSend);
     }
 
-    public String getTypeTrip() {
+    public TypeTrip getTypeTrip() {
         return typeTrip;
     }
 }

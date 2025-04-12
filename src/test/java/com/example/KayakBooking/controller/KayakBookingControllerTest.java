@@ -3,6 +3,7 @@ package com.example.KayakBooking.controller;
 import com.example.KayakBooking.controler.KayakBookingController;
 import com.example.KayakBooking.controler.KayakBookingRequest;
 import com.example.KayakBooking.model.KayakBooking;
+import com.example.KayakBooking.model.TypeTrip;
 import com.example.KayakBooking.service.BookingService;
 import com.example.KayakBooking.service.FailedProcessedPolicyService;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,7 +58,7 @@ public class KayakBookingControllerTest {
                                                                1,
                                                                1,
                                                                false,
-                                                               "Prawiedniki_Zemborzycki");
+                                                               TypeTrip.Prawiedniki_Zemborzycki);
 
         when(bookingService.getLastOrders()).thenReturn(lastKayakBooking);
 

@@ -2,6 +2,7 @@ package com.example.KayakBooking.controler;
 
 import com.example.KayakBooking.model.KayakBooking;
 import com.example.KayakBooking.model.OrdersEntity;
+import com.example.KayakBooking.model.TypeTrip;
 import com.example.KayakBooking.service.BookingService;
 import com.example.KayakBooking.service.FailedProcessedPolicyService;
 import org.springframework.http.HttpStatus;
@@ -133,7 +134,7 @@ public class KayakBookingController {
                                                                   kayakBookingRequest.getKayakTwo(),
                                                                   kayakBookingRequest.getKayakOne_Two(),
                                                                   false,
-                                                                  kayakBookingRequest.getTraceId());
+                                                                  TypeTrip.valueOf(kayakBookingRequest.getTraceId()));
 
             bookingService.saveOrder(newKayakBooking);
             return ResponseEntity.ok()

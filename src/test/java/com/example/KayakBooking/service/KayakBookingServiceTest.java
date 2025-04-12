@@ -2,6 +2,7 @@ package com.example.KayakBooking.service;
 
 import com.example.KayakBooking.model.KayakBooking;
 import com.example.KayakBooking.model.OrdersEntity;
+import com.example.KayakBooking.model.TypeTrip;
 import com.example.KayakBooking.repository.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,7 +47,7 @@ public class KayakBookingServiceTest {
         final int kayakOne = 1;
         final int kayakTwo = 1;
         final int kayakOne_Two = 1;
-        final String traceID = "Prawiedniki_Zemborzycki";
+        final TypeTrip traceID = TypeTrip.Prawiedniki_Zemborzycki;
 
         final OrdersEntity lastOrdersEntity = new OrdersEntity(new KayakBooking(5,
                                                                                 buyerName,
@@ -87,7 +88,7 @@ public class KayakBookingServiceTest {
         final int kayakOne = 1;
         final int kayakTwo = 1;
         final int kayakOne_Two = 1;
-        final String traceID = "Prawiedniki_Zemborzycki";
+        final TypeTrip traceID = TypeTrip.Prawiedniki_Zemborzycki;
 
         final KayakBooking kayakBooking = new KayakBooking(1,
                                                            buyerName,

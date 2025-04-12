@@ -2,6 +2,7 @@ package com.example.KayakBooking.policy;
 
 import com.example.KayakBooking.model.FailedProcessedPolicyEntity;
 import com.example.KayakBooking.model.KayakBooking;
+import com.example.KayakBooking.model.TypeTrip;
 import com.example.KayakBooking.model.UsersEntity;
 import com.example.KayakBooking.repository.UserRepository;
 import com.example.KayakBooking.service.BookingService;
@@ -50,7 +51,7 @@ class EmailPolicyTest {
         final int kayakOne = 1;
         final int kayakTwo = 1;
         final int kayakOne_Two = 1;
-        final String traceID = "Prawiedniki_Zemborzycki";
+        final TypeTrip traceID = TypeTrip.Prawiedniki_Zemborzycki;
 
         final KayakBooking kayakBooking = new KayakBooking(1,
                                                            buyerName,
@@ -89,7 +90,7 @@ class EmailPolicyTest {
         final int kayakOne = 1;
         final int kayakTwo = 1;
         final int kayakOne_Two = 1;
-        final String traceID = "Prawiedniki_Zemborzycki";
+        final TypeTrip traceID = TypeTrip.Prawiedniki_Zemborzycki;
 
         final KayakBooking kayakBooking = new KayakBooking(1,
                                                            buyerName,
@@ -129,7 +130,7 @@ class EmailPolicyTest {
         final int kayakOne = 1;
         final int kayakTwo = 1;
         final int kayakOne_Two = 1;
-        final String traceID = "Prawiedniki_Zemborzycki";
+        final TypeTrip traceID = TypeTrip.Prawiedniki_Zemborzycki;
 
         final KayakBooking kayakBooking = new KayakBooking(1,
                                                            buyerName,

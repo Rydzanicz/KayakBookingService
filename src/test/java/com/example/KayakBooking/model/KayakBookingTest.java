@@ -24,7 +24,7 @@ public class KayakBookingTest {
         final int kayakOne = 1;
         final int kayakTwo = 1;
         final int kayakOne_Two = 1;
-        final String traceID = "Prawiedniki_Zemborzycki";
+        final TypeTrip traceID = TypeTrip.Prawiedniki_Zemborzycki;
 
         //when
         final KayakBooking kayakBooking = new KayakBooking(1,
@@ -61,7 +61,7 @@ public class KayakBookingTest {
         final int kayakOne = 1;
         final int kayakTwo = 1;
         final int kayakOne_Two = 1;
-        final String traceID = "Prawiedniki_Zemborzycki";
+        final TypeTrip traceID = TypeTrip.Prawiedniki_Zemborzycki;
 
         //when
         //then
@@ -82,7 +82,7 @@ public class KayakBookingTest {
         final int kayakOne = 1;
         final int kayakTwo = 1;
         final int kayakOne_Two = 1;
-        final String traceID = "Prawiedniki_Zemborzycki";
+        final TypeTrip traceID = TypeTrip.Prawiedniki_Zemborzycki;
 
         //when
         //then
@@ -113,7 +113,7 @@ public class KayakBookingTest {
         final int kayakOne = 1;
         final int kayakTwo = 1;
         final int kayakOne_Two = 1;
-        final String traceID = "Prawiedniki_Zemborzycki";
+        final TypeTrip traceID = TypeTrip.Prawiedniki_Zemborzycki;
 
         //when
         //then
@@ -142,7 +142,7 @@ public class KayakBookingTest {
         final int kayakOne = 1;
         final int kayakTwo = 1;
         final int kayakOne_Two = 1;
-        final String traceID = "Prawiedniki_Zemborzycki";
+        final TypeTrip traceID = TypeTrip.Prawiedniki_Zemborzycki;
 
 
         //when
@@ -222,7 +222,7 @@ public class KayakBookingTest {
         final int kayakOne = 1;
         final int kayakTwo = 1;
         final int kayakOne_Two = 1;
-        final String traceID = "Prawiedniki_Zemborzycki";
+        final TypeTrip traceID = TypeTrip.Prawiedniki_Zemborzycki;
 
         final KayakBooking kayakBooking = new KayakBooking(900000000,
                                                            buyerName,

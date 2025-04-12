@@ -2,6 +2,7 @@ package com.example.KayakBooking.service;
 
 import com.example.KayakBooking.model.KayakBooking;
 import com.example.KayakBooking.model.OrdersEntity;
+import com.example.KayakBooking.model.TypeTrip;
 import com.example.KayakBooking.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
@@ -65,7 +66,7 @@ public class BookingService {
                                 entity.getKayakTwo(),
                                 entity.getKayakOne_Two(),
                                 entity.isEmailSend(),
-                                entity.getTypeTrip());
+                                TypeTrip.valueOf(entity.getTypeTrip()));
     }
 
     public void saveOrder(final KayakBooking kayakBooking) {
