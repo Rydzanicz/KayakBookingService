@@ -61,10 +61,10 @@ VALUES
   ('FV/000000009/2024', 'EmailPolicy', 1, 'Failed to send email due to connection timeout');
 
 SELECT * FROM orders;
-SELECT * FROM usersEntity;
+SELECT * FROM users;
 SELECT * FROM failed_processed_policy;
 
-ALTER TABLE usersEntity
+ALTER TABLE users
 ADD COLUMN reset BOOLEAN DEFAULT FALSE NOT NULL;
  psql -U postgres -d kayakbooking_database
 $2a$10$VHIX/f6zOmzMdMPaFLUO6O6v35jcZKe/2k2EjKwqKNCShQfFGeOiO
@@ -78,8 +78,25 @@ http://localhost:8080/get-all-unique-email
       UPDATE failed_processed_policy  SET retry_count  = 2 WHERE invoice_id = 'FV/000000011/2024';
 
 
+CREATE TABLE failed_processed_policy (
+    id SERIAL PRIMARY KEY,
+    order_id VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    retry_count INTEGER DEFAULT 0,
+    message VARCHAR(512) NOT NULL,
+    reset BOOLEAN DEFAULT FALSE
+);
 
-      INSERT INTO usersEntity (username, password, roles, reset)
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    roles VARCHAR(100) NOT NULL,
+    reset BOOLEAN DEFAULT FALSE
+);
+
+      INSERT INTO users (username, password, roles, reset)
       VALUES ('rydzanicz.mm@gmail.com',
               '$2a$10$VHIX/f6zOmzMdMPaFLUO6O6v35jcZKe/2k2EjKwqKNCShQfFGeOiO',
               'ROLE_ADMIN',
